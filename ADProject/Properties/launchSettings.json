@@ -12,7 +12,6 @@
       "commandName": "IISExpress",
       "launchBrowser": true,
       "environmentVariables": {
-        "DB_CONNECTION_STRING": "Server=DESKTOP-00OV8A0;Database=ADProject;Integrated Security=true;",
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
