@@ -47,10 +47,14 @@ namespace ADProject
                 .AddDefaultTokenProviders();
 
             services.AddControllersWithViews();
+
+            services.AddDbContext<ADProjContext>
+            (o => o.UseSqlServer(Configuration.
+            GetConnectionString("DefaultConnection")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ADProjContext db)
         {
             if (env.IsDevelopment())
             {
@@ -63,6 +67,8 @@ namespace ADProject
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            db.Database.Migrate();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
