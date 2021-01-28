@@ -28,10 +28,15 @@ namespace ADProject
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            /*            services.AddDbContext<ADProjContext>(options =>
+                            options.UseSqlServer(
+                                Configuration.GetConnectionString("DefaultConnection")));*/
+
             services.AddDbContext<ADProjContext>(options =>
-                options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")));
-            services.AddDatabaseDeveloperPageExceptionFilter();
+                options.UseSqlServer(Environment.GetEnvironmentVariable("DB_CONNECTION_STRING"))); 
+
+
+             services.AddDatabaseDeveloperPageExceptionFilter();
 
             /*services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ADProjContext>();*/
@@ -48,9 +53,9 @@ namespace ADProject
 
             services.AddControllersWithViews();
 
-            services.AddDbContext<ADProjContext>
-            (o => o.UseSqlServer(Configuration.
-            GetConnectionString("DefaultConnection")));
+         //   services.AddDbContext<ADProjContext>
+         //   (o => o.UseSqlServer(Configuration.
+         //   GetConnectionString(Environment.GetEnvironmentVariable("Server=DESKTOP-00OV8A0;Database=Project;Integrated Security=true;"))));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -68,7 +73,7 @@ namespace ADProject
                 app.UseHsts();
             }
 
-            db.Database.Migrate();
+            db.Database.EnsureCreated();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
