@@ -13,6 +13,7 @@ namespace ADProject.Models
     {
         public User()
         {
+            Comments = new HashSet<Comment>();
             LikesDislikes = new HashSet<LikesDislike>();
             Recipes = new HashSet<Recipe>();
         }
@@ -42,6 +43,8 @@ namespace ADProject.Models
         [Column("isAdmin")]
         public bool? IsAdmin { get; set; }
 
+        [InverseProperty(nameof(Comment.User))]
+        public virtual ICollection<Comment> Comments { get; set; }
         [InverseProperty(nameof(LikesDislike.User))]
         public virtual ICollection<LikesDislike> LikesDislikes { get; set; }
         [InverseProperty(nameof(Recipe.User))]
