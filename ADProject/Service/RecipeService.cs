@@ -19,7 +19,7 @@ namespace ADProject.Service
         {
             _context.Add(recipe);
             var saveResult = await _context.SaveChangesAsync();
-            return saveResult == 1;
+            return saveResult >= 1;
         }
 
         public async Task<bool> AddRecipeIngredient(RecipeIngredient recipeIngredient)
