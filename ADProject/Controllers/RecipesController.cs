@@ -6,22 +6,29 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ADProject.Models;
+using ADProject.Service;
 
 namespace ADProject.Controllers
 {
     public class RecipesController : Controller
     {
         private readonly ADProjContext _context;
+        private readonly IRecipeService _recipesService;
 
-        public RecipesController(ADProjContext context)
+
+        public RecipesController(ADProjContext context, IRecipeService recipeService)
         {
             _context = context;
+            _recipesService = recipeService;
         }
 
         // GET: Recipes
         public async Task<IActionResult> Index()
         {
-            var aDProjContext = _context.Recipes.Include(r => r.User);
+            var aDProjContext = _context.Recipes
+                .Include(r => r.User)
+                .Include(r => r.RecipeSteps)
+                .Include(r => r.RecipeIngredients);
             return View(await aDProjContext.ToListAsync());
         }
 
@@ -35,6 +42,8 @@ namespace ADProject.Controllers
 
             var recipe = await _context.Recipes
                 .Include(r => r.User)
+                .Include(r => r.RecipeSteps)
+                .Include(r => r.RecipeIngredients)
                 .FirstOrDefaultAsync(m => m.RecipeId == id);
             if (recipe == null)
             {
@@ -44,10 +53,12 @@ namespace ADProject.Controllers
             return View(recipe);
         }
 
-        // GET: Recipes/Create
+        //GET: Recipes/Create
         public IActionResult Create()
         {
             ViewData["UserId"] = new SelectList(_context.Users, "UserId", "Email");
+//            ViewData["UserId"] = _context.Users.FirstOrDefault().UserId; 
+            ViewData["Recipe"] = new Recipe();
             return View();
         }
 
@@ -59,14 +70,34 @@ namespace ADProject.Controllers
         public async Task<IActionResult> Create([Bind("RecipeId,Title,Description,UserId,DateCreated,DurationInMins,Calories,ServingSize,IsPublished,MainMediaUrl")] Recipe recipe)
         {
             if (ModelState.IsValid)
-            {
-                _context.Add(recipe);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+            {   //uses Service class to add Recipe
+                var successful = await _recipesService.AddRecipe(recipe);
+                if (successful)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
             }
             ViewData["UserId"] = new SelectList(_context.Users, "UserId", "Email", recipe.UserId);
             return View(recipe);
         }
+
+        /*        [HttpPost]
+                [ValidateAntiForgeryToken]
+                public async Task<IActionResult> Create([FromBody] Recipe recipe)
+                {
+                    User user = _context.Users.FirstOrDefault(u => u.UserId == recipe.UserId);
+                    recipe.User = user;
+
+                    var successful = await _recipesService.AddRecipe(recipe);
+                    if(successful)
+                    {
+                        return RedirectToAction(nameof(Index));
+                    }
+
+                    ViewData["UserId"] = _context.Users.FirstOrDefault().UserId;
+                    return View();
+                }*/
+
 
         // GET: Recipes/Edit/5
         public async Task<IActionResult> Edit(int? id)
