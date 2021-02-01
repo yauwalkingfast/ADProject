@@ -57,14 +57,14 @@ namespace ADProject
             //This DI cannot use singleton because it couldnt scope another DI DBContext
             services.AddScoped<IRecipeService, RecipeService>();
 
-            services.AddCors(o => o.AddPolicy("ReactPolicy", builder =>
+/*            services.AddCors(o => o.AddPolicy("ReactPolicy", builder =>
             {
                 builder.AllowAnyOrigin()
                        .AllowAnyMethod()
                        .AllowAnyHeader()
                 //   .AllowCredentials()
                 ;
-            }));
+            }));*/
 
             //   services.AddDbContext<ADProjContext>
             //   (o => o.UseSqlServer(Configuration.
