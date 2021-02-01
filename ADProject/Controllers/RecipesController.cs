@@ -56,8 +56,8 @@ namespace ADProject.Controllers
         //GET: Recipes/Create
         public IActionResult Create()
         {
-            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "Email");
-//            ViewData["UserId"] = _context.Users.FirstOrDefault().UserId; 
+//           ViewData["UserId"] = new SelectList(_context.Users, "UserId", "Email");
+            ViewData["UserId"] = _context.Users.FirstOrDefault().UserId; 
             ViewData["Recipe"] = new Recipe();
             return View();
         }
@@ -65,38 +65,41 @@ namespace ADProject.Controllers
         // POST: Recipes/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("RecipeId,Title,Description,UserId,DateCreated,DurationInMins,Calories,ServingSize,IsPublished,MainMediaUrl")] Recipe recipe)
-        {
-            if (ModelState.IsValid)
-            {   //uses Service class to add Recipe
-                var successful = await _recipesService.AddRecipe(recipe);
-                if (successful)
-                {
-                    return RedirectToAction(nameof(Index));
-                }
-            }
-            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "Email", recipe.UserId);
-            return View(recipe);
-        }
-
         /*        [HttpPost]
                 [ValidateAntiForgeryToken]
-                public async Task<IActionResult> Create([FromBody] Recipe recipe)
+                public async Task<IActionResult> Create([Bind("RecipeId,Title,Description,UserId,DateCreated,DurationInMins,Calories,ServingSize,IsPublished,MainMediaUrl")] Recipe recipe)
                 {
-                    User user = _context.Users.FirstOrDefault(u => u.UserId == recipe.UserId);
-                    recipe.User = user;
-
-                    var successful = await _recipesService.AddRecipe(recipe);
-                    if(successful)
-                    {
-                        return RedirectToAction(nameof(Index));
+                    if (ModelState.IsValid)
+                    {   //uses Service class to add Recipe
+                        var successful = await _recipesService.AddRecipe(recipe);
+                        if (successful)
+                        {
+                            return RedirectToAction(nameof(Index));
+                        }
                     }
-
-                    ViewData["UserId"] = _context.Users.FirstOrDefault().UserId;
-                    return View();
+                    ViewData["UserId"] = new SelectList(_context.Users, "UserId", "Email", recipe.UserId);
+                    return View(recipe);
                 }*/
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([FromBody] Recipe recipe)
+        {
+            User user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == recipe.UserId);
+            recipe.User = user;
+            DateTime now = DateTime.Now;
+            recipe.DateCreated = now;
+            
+            var successful = await _recipesService.AddRecipe(recipe);
+            if (successful)
+            {
+                // Not redirecting as expected
+                return RedirectToAction(nameof(Index));
+            }
+
+            ViewData["UserId"] = recipe.UserId;
+            return View();
+        }
 
 
         // GET: Recipes/Edit/5
