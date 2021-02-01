@@ -93,12 +93,11 @@ namespace ADProject.Controllers
             var successful = await _recipesService.AddRecipe(recipe);
             if (successful)
             {
-                // Not redirecting as expected
-                return RedirectToAction(nameof(Index));
+                return Ok();
             }
 
             ViewData["UserId"] = recipe.UserId;
-            return View();
+            return BadRequest();
         }
 
 
