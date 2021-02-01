@@ -13,10 +13,11 @@ namespace ADProject.Models
     {
         public Recipe()
         {
-/*            LikesDislikes = new HashSet<LikesDislike>();
-            RecipeIngredients = new HashSet<RecipeIngredient>();
-            RecipeSteps = new HashSet<RecipeStep>();*/
+            /*            LikesDislikes = new HashSet<LikesDislike>();
+                        RecipeIngredients = new HashSet<RecipeIngredient>();
+                        RecipeSteps = new HashSet<RecipeStep>();*/
 
+            Comments = new List<Comment>();
             LikesDislikes = new List<LikesDislike>();
             RecipeIngredients = new List<RecipeIngredient>();
             RecipeSteps = new List<RecipeStep>();
@@ -56,6 +57,10 @@ namespace ADProject.Models
         public virtual ICollection<RecipeIngredient> RecipeIngredients { get; set; }
         [InverseProperty(nameof(RecipeStep.Recipe))]
         public virtual ICollection<RecipeStep> RecipeSteps { get; set; }*/
+
+        [InverseProperty(nameof(Comment.Recipe))]
+        public virtual ICollection<Comment> Comments { get; set; }
+       
 
         [InverseProperty(nameof(LikesDislike.Recipe))]
         public virtual IEnumerable<LikesDislike> LikesDislikes { get; set; }
