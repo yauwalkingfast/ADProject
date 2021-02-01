@@ -53,7 +53,9 @@ namespace ADProject.Models
         public virtual ICollection<RecipeStep> RecipeSteps { get; set; }*/
 
         [InverseProperty(nameof(Comment.Recipe))]
+
         public virtual IEnumerable<Comment> Comments { get; set; }
+
         [InverseProperty(nameof(LikesDislike.Recipe))]
         public virtual IEnumerable<LikesDislike> LikesDislikes { get; set; }
         [InverseProperty(nameof(RecipeIngredient.Recipe))]
