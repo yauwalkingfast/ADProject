@@ -17,7 +17,9 @@ namespace ADProject.Models
         [Column("tagName")]
         [StringLength(30)]
         public string TagName { get; set; }
-        [Column("isAllergen")]
-        public bool IsAllergen { get; set; }
+        [Required]
+        [Column("warning")]
+        [StringLength(200)]
+        public string Warning { get; set; }
     }
 }
