@@ -35,5 +35,14 @@ namespace ADProject.Service
             var saveResult = await _context.SaveChangesAsync();
             return saveResult == 1;
         }
+
+        public List<RecipeIngredient> FindRecipeStepsByRecipeId(int id)
+        {
+            List<RecipeIngredient> recipeIngredients = _context.RecipeIngredients.Where(
+                x => x.Recipe.RecipeId == id).ToList();
+
+            return recipeIngredients;
+
+        }
     }
 }

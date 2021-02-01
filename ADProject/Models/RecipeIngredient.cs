@@ -15,7 +15,7 @@ namespace ADProject.Models
         public int RecipeId { get; set; }
         [Required]
         [Column("ingredient")]
-        [StringLength(20)]
+        [StringLength(100)]
         public string Ingredient { get; set; }
         [Column("quantity")]
         public double Quantity { get; set; }

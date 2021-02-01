@@ -186,5 +186,27 @@ namespace ADProject.Controllers
         {
             return _context.Recipes.Any(e => e.RecipeId == id);
         }
+
+        
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        //[ValidateAntiForgeryToken]
+        public IActionResult GenerateAllergenTag(int recipeId)
+        {
+            //Saving the recipe into the DB first before generating the tags
+            /*if (ModelState.IsValid)
+            {   //uses Service class to add Recipe
+                var successful = await _recipesService.AddRecipe(recipe);
+                if (successful)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "Email", recipe.UserId);
+            return View(recipe);*/
+
+            return RedirectToAction("Post", "Tag", recipeId);
+        }
     }
 }
