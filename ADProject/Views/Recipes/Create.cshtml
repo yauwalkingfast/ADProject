@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Create";
+    int userId = (int)ViewData["UserId"];
 }
 
 <h1>Create</h1>
@@ -9,38 +10,40 @@
 <h4>Recipe</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Title" class="control-label"></label>
-                <input asp-for="Title" class="form-control" />
-                <span asp-validation-for="Title" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="UserId" class="control-label"></label>
-                <select asp-for="UserId" class ="form-control" asp-items="ViewBag.UserId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="DateCreated" class="control-label"></label>
-                <input asp-for="DateCreated" class="form-control" />
-                <span asp-validation-for="DateCreated" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DurationInMins" class="control-label"></label>
-                <input asp-for="DurationInMins" class="form-control" />
-                <span asp-validation-for="DurationInMins" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="MainMediaUrl" class="control-label"></label>
-                <input asp-for="MainMediaUrl" class="form-control" />
-                <span asp-validation-for="MainMediaUrl" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
+    <div id="create"></div>
+@*    <div class="col-md-4">
+            <form asp-action="Create">
+
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Title" class="control-label"></label>
+                    <input asp-for="Title" class="form-control" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="UserId" class="control-label"></label>
+                    <select asp-for="UserId" class="form-control" asp-items="ViewBag.UserId"></select>
+                </div>
+                <div class="form-group">
+                    <label asp-for="DateCreated" class="control-label"></label>
+                    <input asp-for="DateCreated" class="form-control" />
+                    <span asp-validation-for="DateCreated" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="DurationInMins" class="control-label"></label>
+                    <input asp-for="DurationInMins" class="form-control" />
+                    <span asp-validation-for="DurationInMins" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="MainMediaUrl" class="control-label"></label>
+                    <input asp-for="MainMediaUrl" class="form-control" />
+                    <span asp-validation-for="MainMediaUrl" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Create" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>*@
 </div>
 
 <div>
@@ -50,3 +53,266 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@functions{
+    public string GetAntiXsrfRequestToken()
+    {
+        return Xsrf.GetAndStoreTokens(Context).RequestToken;
+    }
+}
+
+<input type="hidden" id="RequestVerificationToken" 
+       name="RequestVerificationToken" value="@GetAntiXsrfRequestToken()">
+
+<!-- React JS -->
+<script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
+<script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+<script type="text/babel">
+    class Create extends React.Component {
+        constructor(props) {
+            super(props);
+            this.state = {
+                Title: "",
+                Description: "",
+                UserId: "@Html.Raw(userId)",
+                DurationInMins: 0,
+                Calories: 0,
+                ServingSize: 1,
+                IsPublished: true,
+                MainMediaUrl: "",
+                RecipeIngredients: [{
+                    Ingredient: "",
+                    Quantity: 0,
+                    UnitOfMeasurement: "",
+                }],
+                RecipeSteps: [{
+                    TextInstructions: "",
+                    MediaFileUrl: "",
+                }],
+                numSteps: 1,
+                numIngredients: 1,
+            };
+        }
+
+        submitHandler = (event) => {
+            event.preventDefault();
+            var RecipeSteps = this.state.RecipeSteps.map((step, index) => ({...step, StepNumber: index + 1}))
+            var state = {...this.state};
+            delete state.numIngredients;
+            delete state.numSteps;
+            const toSubmit = {
+                ...state,
+                RecipeSteps
+            }
+
+            console.log(toSubmit);
+            this.postRecipe(toSubmit);
+        }
+
+        postRecipe = (toSubmit) => {
+            let xhr = new XMLHttpRequest();
+            xhr.open("POST", "/Recipes/Create");
+            xhr.setRequestHeader("Content-Type", "application/json; charset=utf8");
+
+            xhr.setRequestHeader("RequestVerificationToken", 
+                    document.getElementById('RequestVerificationToken').value);
+
+            xhr.send(JSON.stringify(toSubmit));
+        }
+
+        handleChange = (event) => {
+            const { name, value } = event.target;
+            this.setState({
+                [name]: value
+            });
+        }
+
+        addIngredient = () => {
+            this.setState(state => {
+                const RecipeIngredients = [...state.RecipeIngredients, {
+                    Ingredient: "",
+                    Quantity: 0,
+                    UnitOfMeasurement: "",
+                }]
+                return {
+                    RecipeIngredients,
+                    numIngredients: state.numIngredients + 1
+                }
+            })
+        }
+
+        removeIngredient = (index) => {
+            this.setState(state => {
+                const RecipeIngredients = state.RecipeIngredients;
+                RecipeIngredients.splice(index, 1);
+                return {
+                    RecipeIngredients,
+                    numIngredients: state.numIngredients - 1
+                }
+            })
+        }
+
+        handleIngredientChange = (index) => {
+            const Ingredient = document.getElementById(`ingredient-name-${index}`).value;
+            const Quantity = document.getElementById(`ingredient-qty-${index}`).value;
+            const Unit = document.getElementById(`ingredient-unit-${index}`).value;
+            this.setState(state => {
+                const RecipeIngredients = state.RecipeIngredients;
+                RecipeIngredients[index] = {
+                    Ingredient,
+                    Quantity,
+                    Unit
+                }
+                return {
+                    RecipeIngredients
+                };
+            })
+        }
+
+        addStep = () => {
+            this.setState(state => {
+                const RecipeSteps = [...state.RecipeSteps, {
+                    TextInstructions: "",
+                    MediaFileUrl: "",
+                }]
+                return {
+                    RecipeSteps,
+                    numSteps: state.numSteps + 1
+                }
+            });
+        }
+
+        removeStep = (index) => {
+            this.setState(state => {
+                const RecipeSteps = state.RecipeSteps;
+                RecipeSteps.splice(index, 1);
+                return {
+                    RecipeSteps,
+                    numSteps: state.numSteps - 1
+                }
+            });
+        }
+
+        handleStepChange = (index) => {
+            const TextInstructions = document.getElementById(`step-instruction-${index}`).value;
+            const MediaFileUrl = document.getElementById(`step-mediafileurl-${index}`).value;
+            this.setState(state => {
+                const RecipeSteps = state.RecipeSteps;
+                RecipeSteps[index] = {
+                    TextInstructions,
+                    MediaFileUrl
+                }
+                return {
+                    RecipeSteps
+                };
+            })
+        }
+
+        render() {
+            return (
+                <div className="col-md-4">
+                    <form onSubmit={this.submitHandler}>
+                            <div className="form-group">
+                                <label className="control-label">Title</label>
+                                <input type="text" className="form-control" name="Title" value={this.state.Title} onChange={this.handleChange} />
+                            </div>
+                            <div className="form-group">
+                                <label className="control-label">Description</label>
+                                <input type="text"className="form-control" name="Description" value={this.state.Description} onChange={this.handleChange} />
+                            </div>
+                            <div className="form-group">
+                                <label className="control-label">DurationInMins</label>
+                                <input type="number" className="form-control" name="DurationInMins" value={this.state.DurationInMins} onChange={this.handleChange} />
+                            </div>
+                            <div className="form-group">
+                                <label className="control-label">Calories</label>
+                                <input type="number" className="form-control" name="Calories" value={this.state.Calories} onChange={this.handleChange} />
+                            </div>
+                            <div className="form-group">
+                                <label className="control-label">ServingSize</label>
+                                <input type="number" className="form-control" name="ServingSize" value={this.state.ServingSize} onChange={this.handleChange} />
+                            </div>
+                            <div className="form-group">
+                                <label className="control-label">MainMediaUrl</label>
+                                <input type="text" className="form-control" name="MainMediaUrl" value={this.state.MainMediaUrl} onChange={this.handleChange} />
+                            </div>
+
+                            {[...Array(this.state.numSteps)].map((element, index) => {
+                                var instruction;
+                                var file;
+
+                                if(!this.state.RecipeSteps[index]) {
+                                    instruction = "";
+                                    file = "";
+                                } else {
+                                    instruction = this.state.RecipeSteps[index].TextInstructions;
+                                    file = this.state.RecipeSteps[index].MediaFileUrl;
+                                }
+
+                                return(
+                                    <div key={index}>
+                                        <div>Step {index + 1}</div>
+                                        <div className="form-group">
+                                            <label className="control-label">TextInstructions</label>
+                                            <input type="text" id={`step-instruction-${index}`} className="form-control" name="step-instruction" onChange={() => this.handleStepChange(index)}  value={instruction} />
+                                        </div>
+                                        <div className="form-group">
+                                            <label className="control-label">MediaFileUrl</label>
+                                            <input type="text" id={`step-mediafileurl-${index}`} className="form-control" name="step-mediafileurl" onChange={() => this.handleStepChange(index)} value={file} />
+                                        </div>
+                                        <button type="button" className="btn btn-danger" onClick={() => this.removeStep(index)}>Remove Step</button>
+                                    </div>
+                                )
+                            })}
+                            <button className="btn btn-secondary" type="button" onClick={this.addStep}>Add Steps</button>
+
+                            {[...Array(this.state.numIngredients)].map((element, index) => {
+                                var ingredient;
+                                var qty;
+                                var unit;
+
+                                if(!this.state.RecipeIngredients[index]) {
+                                    ingredient = "";
+                                    qty = 0;
+                                    unit = "";
+                                } else {
+                                    ingredient = this.state.RecipeIngredients[index].Ingredient;
+                                    qty = this.state.RecipeIngredients[index].Quantity;
+                                    unit = this.state.RecipeIngredients[index].UnitOfMeasurement;
+                                }
+
+                                return(
+                                    <div key={index}>
+                                        <div>Ingredient {index + 1}</div>
+                                        <div className="form-group">
+                                            <label className="control-label">Ingredient</label>
+                                            <input type="text" id={`ingredient-name-${index}`} name="ingredient-name" onChange={() => this.handleIngredientChange(index)} value={ingredient} />
+                                        </div>
+                                        <div className="form-group">
+                                            <label className="control-label">Quantity</label>
+                                            <input type="number" id={`ingredient-qty-${index}`} name="ingredient-qty" onChange={() => this.handleIngredientChange(index)} value={qty} />
+                                        </div>
+                                        <div className="form-group">
+                                            <label className="control-label">UnitOfMeasurement</label>
+                                            <input type="text" id={`ingredient-unit-${index}`} name="ingredient-unit" onChange={() => this.handleIngredientChange(index)} value={unit} />
+                                        </div>
+                                        <button type="button" className="btn btn-danger" onClick={() => this.removeIngredient(index)}>Remove Ingredient</button>
+                                    </div>
+                                )
+                            })}
+                            <button className="btn btn-secondary" type="button" onClick={this.addIngredient}>Add Ingredient</button>
+
+                            <div className="form-group">
+                                <input type="submit" value="Create" className="btn btn-primary" />
+                            </div>
+                      </form>
+                </div>
+            )
+        }
+    }
+
+    ReactDOM.render(<Create />, document.querySelector("#create"));
+</script>

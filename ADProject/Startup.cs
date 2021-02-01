@@ -1,5 +1,7 @@
 using ADProject.Data;
+using ADProject.DbSeeder;
 using ADProject.Models;
+using ADProject.Service;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -52,10 +54,21 @@ namespace ADProject
                 .AddDefaultTokenProviders();
 
             services.AddControllersWithViews();
+            //This DI cannot use singleton because it couldnt scope another DI DBContext
+            services.AddScoped<IRecipeService, RecipeService>();
 
-         //   services.AddDbContext<ADProjContext>
-         //   (o => o.UseSqlServer(Configuration.
-         //   GetConnectionString(Environment.GetEnvironmentVariable("Server=DESKTOP-00OV8A0;Database=Project;Integrated Security=true;"))));
+/*            services.AddCors(o => o.AddPolicy("ReactPolicy", builder =>
+            {
+                builder.AllowAnyOrigin()
+                       .AllowAnyMethod()
+                       .AllowAnyHeader()
+                //   .AllowCredentials()
+                ;
+            }));*/
+
+            //   services.AddDbContext<ADProjContext>
+            //   (o => o.UseSqlServer(Configuration.
+            //   GetConnectionString(Environment.GetEnvironmentVariable("Server=DESKTOP-00OV8A0;Database=Project;Integrated Security=true;"))));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -73,7 +86,12 @@ namespace ADProject
                 app.UseHsts();
             }
 
+            app.UseCors("ReactPolicy");
+
+            db.Database.EnsureDeleted();
             db.Database.EnsureCreated();
+            new DbSeedData(db).Init();
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 

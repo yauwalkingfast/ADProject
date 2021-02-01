@@ -4,8 +4,6 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-#nullable disable
-
 namespace ADProject.Models
 {
     [Table("Recipe")]
@@ -13,9 +11,10 @@ namespace ADProject.Models
     {
         public Recipe()
         {
-            LikesDislikes = new HashSet<LikesDislike>();
-            RecipeIngredients = new HashSet<RecipeIngredient>();
-            RecipeSteps = new HashSet<RecipeStep>();
+            Comments = new List<Comment>();
+            LikesDislikes = new List<LikesDislike>();
+            RecipeIngredients = new List<RecipeIngredient>();
+            RecipeSteps = new List<RecipeStep>();
         }
 
         [Key]
@@ -45,11 +44,28 @@ namespace ADProject.Models
         [ForeignKey(nameof(UserId))]
         [InverseProperty("Recipes")]
         public virtual User User { get; set; }
-        [InverseProperty(nameof(LikesDislike.Recipe))]
+
+        /*[InverseProperty(nameof(LikesDislike.Recipe))]
         public virtual ICollection<LikesDislike> LikesDislikes { get; set; }
         [InverseProperty(nameof(RecipeIngredient.Recipe))]
         public virtual ICollection<RecipeIngredient> RecipeIngredients { get; set; }
         [InverseProperty(nameof(RecipeStep.Recipe))]
-        public virtual ICollection<RecipeStep> RecipeSteps { get; set; }
+        public virtual ICollection<RecipeStep> RecipeSteps { get; set; }*/
+
+        [InverseProperty(nameof(Comment.Recipe))]
+
+        public virtual IEnumerable<Comment> Comments { get; set; }
+
+        [InverseProperty(nameof(LikesDislike.Recipe))]
+        public virtual IEnumerable<LikesDislike> LikesDislikes { get; set; }
+        [InverseProperty(nameof(RecipeIngredient.Recipe))]
+        public virtual IEnumerable<RecipeIngredient> RecipeIngredients { get; set; }
+        [InverseProperty(nameof(RecipeStep.Recipe))]
+        public virtual IEnumerable<RecipeStep> RecipeSteps { get; set; }
+
+        public static implicit operator List<object>(Recipe v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
