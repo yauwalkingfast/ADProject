@@ -7,6 +7,12 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ADProject.Models;
 using ADProject.Service;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using ADProject.JsonObjects;
+using Newtonsoft.Json;
+using System.Diagnostics;
+using ADProject.GenerateTagsClass;
 
 namespace ADProject.Controllers
 {
@@ -187,13 +193,19 @@ namespace ADProject.Controllers
             return _context.Recipes.Any(e => e.RecipeId == id);
         }
 
-        
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        //[ValidateAntiForgeryToken]
-        public IActionResult GenerateAllergenTag(int recipeId)
+        public IActionResult GenerateAllergenTag([FromBody] int recipeId)
         {
+            GenerateTag trial = new GenerateTag(_recipesService);
+
+            string allergens = trial.GetAllergenTag(recipeId);
+
+            tempAllergenTags tempAlTags = JsonConvert.DeserializeObject<tempAllergenTags>(allergens);
+            if (tempAlTags.allergens != null)
+            {
+                Debug.WriteLine(tempAlTags.allergens[0]);
+            }
+
             //Saving the recipe into the DB first before generating the tags
             /*if (ModelState.IsValid)
             {   //uses Service class to add Recipe
@@ -206,7 +218,8 @@ namespace ADProject.Controllers
             ViewData["UserId"] = new SelectList(_context.Users, "UserId", "Email", recipe.UserId);
             return View(recipe);*/
 
-            return RedirectToAction("Post", "Tag", recipeId);
+            
+            return RedirectToAction("Create");
         }
     }
 }
