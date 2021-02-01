@@ -18,6 +18,8 @@ namespace ADProject.Models
         {
         }
 
+       
+        public virtual DbSet<Comment> Comments { get; set; }
         public virtual DbSet<FollowUser> FollowUsers { get; set; }
         public virtual DbSet<Group> Groups { get; set; }
         public virtual DbSet<GroupTag> GroupTags { get; set; }
@@ -37,15 +39,32 @@ namespace ADProject.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-/*#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Data Source=(LocalDb)\\MSSQLLocalDb;Initial Catalog=ADProj;Integrated Security=True");*/
+//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+                optionsBuilder.UseSqlServer("Data Source=(LocalDb)\\MSSQLLocalDb;Initial Catalog=ADProj;Integrated Security=True");
             }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
+            base.OnModelCreating(modelBuilder); //This is actually a bug fix so please don't remove this -- Wilson
             modelBuilder.HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");
+
+         
+
+            modelBuilder.Entity<Comment>(entity =>
+            {
+                entity.HasOne(d => d.Recipe)
+                    .WithMany(p => p.Comments)
+                    .HasForeignKey(d => d.RecipeId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Comments_RecipeId");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.Comments)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Comments_UserId");
+            });
 
             modelBuilder.Entity<FollowUser>(entity =>
             {
@@ -200,6 +219,10 @@ namespace ADProject.Models
             modelBuilder.Entity<Tag>(entity =>
             {
                 entity.Property(e => e.TagName).IsUnicode(false);
+
+                entity.Property(e => e.Warning)
+                    .IsUnicode(false)
+                    .HasDefaultValueSql("((0))");
             });
 
             modelBuilder.Entity<User>(entity =>

@@ -13,6 +13,8 @@ namespace ADProject.Models
     {
         public int RecipeId { get; set; }
         public int TagId { get; set; }
+        [Column("isAllergenTag")]
+        public bool IsAllergenTag { get; set; }
 
         [ForeignKey(nameof(RecipeId))]
         public virtual Recipe Recipe { get; set; }

@@ -13,6 +13,7 @@ namespace ADProject.Models
     {
         public Recipe()
         {
+            Comments = new HashSet<Comment>();
             LikesDislikes = new HashSet<LikesDislike>();
             RecipeIngredients = new HashSet<RecipeIngredient>();
             RecipeSteps = new HashSet<RecipeStep>();
@@ -45,6 +46,8 @@ namespace ADProject.Models
         [ForeignKey(nameof(UserId))]
         [InverseProperty("Recipes")]
         public virtual User User { get; set; }
+        [InverseProperty(nameof(Comment.Recipe))]
+        public virtual ICollection<Comment> Comments { get; set; }
         [InverseProperty(nameof(LikesDislike.Recipe))]
         public virtual ICollection<LikesDislike> LikesDislikes { get; set; }
         [InverseProperty(nameof(RecipeIngredient.Recipe))]
