@@ -39,7 +39,12 @@
             <th>
                 @Html.DisplayNameFor(model => model.User)
             </th>
-            <th></th>
+            <th>
+                Steps
+            </th>
+            <th>
+                Ingredients
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -71,6 +76,33 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.User.Email)
+            </td>
+            <td>
+                <ul>
+                    @foreach (var step in item.RecipeSteps)
+                    {
+                        <li>
+                            <div>
+                                @step.StepNumber
+                            </div>
+                            <div>
+                                @step.TextInstructions
+                            </div>
+                        </li>
+                    } 
+                </ul>
+            </td>
+            <td>
+                <ul>
+                    @foreach (var ingredient in item.RecipeIngredients)
+                    {
+                        <li>
+                            <div>
+                                @ingredient.Ingredient
+                            </div>
+                        </li>
+                    }
+                </ul>
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.RecipeId">Edit</a> |
