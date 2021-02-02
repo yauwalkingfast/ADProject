@@ -63,6 +63,19 @@ namespace ADProject.Service
             return recipe;
         }
 
+        public void AddRecipeNonAsync (Recipe recipe)
+        {
+            _context.Add(recipe);
+            _context.SaveChanges();
+        }
+        public Recipe FindRecipeById(int id)
+        {
+            Recipe recipe = _context.Recipes.Where(
+                x => x.RecipeId == id).SingleOrDefault();
+
+            return recipe;
+        }
+
         public List<RecipeIngredient> FindRecipeStepsByRecipeId(int id)
         {
             List<RecipeIngredient> recipeIngredients = _context.RecipeIngredients.Where(
