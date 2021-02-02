@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 #nullable disable
 
 namespace ADProject.Models
 {
+    [JsonObject]
     public partial class LikesDislike
     {
         [Key]
@@ -17,9 +19,12 @@ namespace ADProject.Models
         [Column("isLiked")]
         public bool IsLiked { get; set; }
 
+        [JsonIgnore]
         [ForeignKey(nameof(RecipeId))]
         [InverseProperty("LikesDislikes")]
         public virtual Recipe Recipe { get; set; }
+
+        [JsonIgnore]
         [ForeignKey(nameof(UserId))]
         [InverseProperty("LikesDislikes")]
         public virtual User User { get; set; }
