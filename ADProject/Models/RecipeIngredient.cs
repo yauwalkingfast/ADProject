@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 #nullable disable
 
 namespace ADProject.Models
 {
+    [JsonObject]
     public partial class RecipeIngredient
     {
         [Key]
@@ -23,6 +25,7 @@ namespace ADProject.Models
         [StringLength(20)]
         public string UnitOfMeasurement { get; set; }
 
+        [JsonIgnore]
         [ForeignKey(nameof(RecipeId))]
         [InverseProperty("RecipeIngredients")]
         public virtual Recipe Recipe { get; set; }

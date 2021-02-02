@@ -13,6 +13,7 @@ using ADProject.JsonObjects;
 using Newtonsoft.Json;
 using System.Diagnostics;
 using ADProject.GenerateTagsClass;
+using Newtonsoft.Json;
 
 namespace ADProject.Controllers
 {
@@ -31,11 +32,7 @@ namespace ADProject.Controllers
         // GET: Recipes
         public async Task<IActionResult> Index()
         {
-            var aDProjContext = _context.Recipes
-                .Include(r => r.User)
-                .Include(r => r.RecipeSteps)
-                .Include(r => r.RecipeIngredients);
-            return View(await aDProjContext.ToListAsync());
+            return View(await _recipesService.GetAllRecipes());
         }
 
         // GET: Recipes/Details/5
@@ -46,11 +43,8 @@ namespace ADProject.Controllers
                 return NotFound();
             }
 
-            var recipe = await _context.Recipes
-                .Include(r => r.User)
-                .Include(r => r.RecipeSteps)
-                .Include(r => r.RecipeIngredients)
-                .FirstOrDefaultAsync(m => m.RecipeId == id);
+            var recipe = await _recipesService.GetRecipeById(id);
+
             if (recipe == null)
             {
                 return NotFound();
@@ -62,8 +56,7 @@ namespace ADProject.Controllers
         //GET: Recipes/Create
         public IActionResult Create()
         {
-            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "Email");
-//            ViewData["UserId"] = _context.Users.FirstOrDefault().UserId; 
+            ViewData["UserId"] = _context.Users.FirstOrDefault().UserId; 
             ViewData["Recipe"] = new Recipe();
             return View();
         }
@@ -73,36 +66,22 @@ namespace ADProject.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("RecipeId,Title,Description,UserId,DateCreated,DurationInMins,Calories,ServingSize,IsPublished,MainMediaUrl")] Recipe recipe)
+        public async Task<IActionResult> Create([FromBody] Recipe recipe)
         {
-            if (ModelState.IsValid)
-            {   //uses Service class to add Recipe
-                var successful = await _recipesService.AddRecipe(recipe);
-                if (successful)
-                {
-                    return RedirectToAction(nameof(Index));
-                }
+            User user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == recipe.UserId);
+            recipe.User = user;
+            DateTime now = DateTime.Now;
+            recipe.DateCreated = now;
+            
+            var successful = await _recipesService.AddRecipe(recipe);
+            if (successful)
+            {
+                return Ok();
             }
-            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "Email", recipe.UserId);
-            return View(recipe);
+
+            ViewData["UserId"] = recipe.UserId;
+            return BadRequest();
         }
-
-        /*        [HttpPost]
-                [ValidateAntiForgeryToken]
-                public async Task<IActionResult> Create([FromBody] Recipe recipe)
-                {
-                    User user = _context.Users.FirstOrDefault(u => u.UserId == recipe.UserId);
-                    recipe.User = user;
-
-                    var successful = await _recipesService.AddRecipe(recipe);
-                    if(successful)
-                    {
-                        return RedirectToAction(nameof(Index));
-                    }
-
-                    ViewData["UserId"] = _context.Users.FirstOrDefault().UserId;
-                    return View();
-                }*/
 
 
         // GET: Recipes/Edit/5
@@ -113,13 +92,18 @@ namespace ADProject.Controllers
                 return NotFound();
             }
 
-            var recipe = await _context.Recipes.FindAsync(id);
+            var recipe = await _recipesService.GetRecipeById(id);
+
             if (recipe == null)
             {
                 return NotFound();
             }
-            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "Email", recipe.UserId);
-            return View(recipe);
+
+            ViewData["UserId"] = _context.Users.FirstOrDefault().UserId;
+            string json = JsonConvert.SerializeObject(recipe, Formatting.Indented);
+            ViewData["Recipe"] = json;
+
+            return View();
         }
 
         // POST: Recipes/Edit/5
@@ -127,36 +111,20 @@ namespace ADProject.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("RecipeId,Title,Description,UserId,DateCreated,DurationInMins,Calories,ServingSize,IsPublished,MainMediaUrl")] Recipe recipe)
+        public async Task<IActionResult> Edit(int id, [FromBody] Recipe recipe)
         {
             if (id != recipe.RecipeId)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if(await _recipesService.EditRecipe(id, recipe))
             {
-                try
-                {
-                    _context.Update(recipe);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!RecipeExists(recipe.RecipeId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                return Ok();
             }
-            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "Email", recipe.UserId);
-            return View(recipe);
-        }
+
+            return NotFound();
+;        }
 
         // GET: Recipes/Delete/5
         public async Task<IActionResult> Delete(int? id)
@@ -188,10 +156,6 @@ namespace ADProject.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool RecipeExists(int id)
-        {
-            return _context.Recipes.Any(e => e.RecipeId == id);
-        }
 
         [HttpPost]
         public IActionResult GenerateAllergenTag([FromBody] int recipeId)
@@ -221,5 +185,6 @@ namespace ADProject.Controllers
             
             return RedirectToAction("Create");
         }
+
     }
 }
