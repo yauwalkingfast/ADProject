@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace ADProject.JsonObjects
 {
-    public class recipeIngredientsJson
+    public class recieveIngredientsJson
     {
-        public recipeIngredientsJson() { }
-        public List<string> ingredients { get; set; }
+        public recieveIngredientsJson() { }
+        public List<RecipeIngredient> ingredients { get; set; }
     }
 }

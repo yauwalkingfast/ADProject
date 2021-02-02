@@ -10,6 +10,7 @@ namespace ADProject.Models
 {
     [Keyless]
     [Table("UsersGroup")]
+    
     public partial class UsersGroup
     {
         public int GroupId { get; set; }

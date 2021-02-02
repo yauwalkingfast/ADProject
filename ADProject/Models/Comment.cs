@@ -24,12 +24,9 @@ namespace ADProject.Models
         [StringLength(500)]
         public string Comment1 { get; set; }
 
-        [JsonIgnore]
         [ForeignKey(nameof(RecipeId))]
         [InverseProperty("Comments")]
         public virtual Recipe Recipe { get; set; }
-
-        [JsonIgnore]
         [ForeignKey(nameof(UserId))]
         [InverseProperty("Comments")]
         public virtual User User { get; set; }

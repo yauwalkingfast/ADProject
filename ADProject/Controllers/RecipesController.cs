@@ -13,7 +13,6 @@ using ADProject.JsonObjects;
 using Newtonsoft.Json;
 using System.Diagnostics;
 using ADProject.GenerateTagsClass;
-using Newtonsoft.Json;
 
 namespace ADProject.Controllers
 {
@@ -134,7 +133,7 @@ namespace ADProject.Controllers
                 return NotFound();
             }
 
-            var recipe = await _recipesService.FindById(id);
+            var recipe = await _recipesService.GetRecipeById(id);
 
             if (recipe == null)
             {
@@ -160,7 +159,7 @@ namespace ADProject.Controllers
         }
 
 
-        [HttpPost]
+/*        [HttpPost]
         public IActionResult GenerateAllergenTag([FromBody] int recipeId)
         {
             GenerateTag trial = new GenerateTag(_recipesService);
@@ -174,7 +173,7 @@ namespace ADProject.Controllers
             }
 
             //Saving the recipe into the DB first before generating the tags
-            /*if (ModelState.IsValid)
+            *//*if (ModelState.IsValid)
             {   //uses Service class to add Recipe
                 var successful = await _recipesService.AddRecipe(recipe);
                 if (successful)
@@ -183,10 +182,38 @@ namespace ADProject.Controllers
                 }
             }
             ViewData["UserId"] = new SelectList(_context.Users, "UserId", "Email", recipe.UserId);
-            return View(recipe);*/
+            return View(recipe);*//*
 
             
             return RedirectToAction("Create");
+        }*/
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult GenerateAllergenTag([FromBody] List<RecipeIngredient> recipeIngredients)
+        {
+            GenerateTag trial = new GenerateTag(_recipesService);
+
+            string allergens = trial.GetAllergenTag(recipeIngredients);
+
+            List<Tag> tags = new List<Tag>();
+
+            tempAllergenTags tempAlTags = JsonConvert.DeserializeObject<tempAllergenTags>(allergens);
+            if (tempAlTags.allergens != null)
+            {
+                Debug.WriteLine(tempAlTags.allergens[0]);
+                for(int i = 0; i < tempAlTags.allergens.Count; i++)
+                {
+                    tags.Add(new Tag
+                    {
+                        TagName = tempAlTags.allergens[i],
+                        Warning = tempAlTags.allergens[i]
+                    });
+                }
+            }
+
+            string json = JsonConvert.SerializeObject(tags, Formatting.Indented);
+            return Json(new { tags = json });
         }
 
     }
