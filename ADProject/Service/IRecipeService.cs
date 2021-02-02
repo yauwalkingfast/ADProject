@@ -12,5 +12,8 @@ namespace ADProject.Service
         Task<bool> AddRecipeSteps(RecipeStep recipeStep);
         Task<bool> AddRecipeIngredient(RecipeIngredient recipeIngredient);
         //Task<bool> Addfile(byte[] imgbyte);
+        Task<List<Recipe>> GetAllRecipes();
+        Task<Recipe> GetRecipeById(int? id);
+        Task<bool> EditRecipe(int id, Recipe recipe);
     }
 }
