@@ -55,12 +55,13 @@ namespace ADProject.Service
 
         public async Task<Recipe> FindById(int? id)
         {
-            var  recipe = await _context.Recipes
+            var recipe = await _context.Recipes
                 .Include(r => r.User)
                 .Include(r => r.RecipeSteps)
                 .Include(r => r.RecipeIngredients)
                 .FirstOrDefaultAsync(m => m.RecipeId == id);
             return recipe;
+        }
 
         public List<RecipeIngredient> FindRecipeStepsByRecipeId(int id)
         {
