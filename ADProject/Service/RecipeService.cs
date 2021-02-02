@@ -1,4 +1,5 @@
 ﻿using ADProject.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,6 +35,31 @@ namespace ADProject.Service
             _context.Add(recipeStep);
             var saveResult = await _context.SaveChangesAsync();
             return saveResult == 1;
+        }
+
+        public async Task<bool> DeleteRecipe(int id)
+        {
+            var recipe = await _context.Recipes
+                .Include(r => r.User)
+                //.Include(r => r.RecipeSteps)
+                //.Include(r => r.RecipeIngredients)
+                .FirstOrDefaultAsync(m => m.RecipeId == id);
+            
+            _context.Recipes.Remove(recipe); 
+            var saveResult = await _context.SaveChangesAsync();
+            return saveResult == 1;
+
+
+        }
+
+        public async Task<Recipe> FindById(int? id)
+        {
+            var  recipe = await _context.Recipes
+                .Include(r => r.User)
+                .Include(r => r.RecipeSteps)
+                .Include(r => r.RecipeIngredients)
+                .FirstOrDefaultAsync(m => m.RecipeId == id);
+            return recipe;
         }
     }
 }

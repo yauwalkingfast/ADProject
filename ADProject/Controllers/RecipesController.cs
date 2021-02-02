@@ -163,9 +163,8 @@ namespace ADProject.Controllers
                 return NotFound();
             }
 
-            var recipe = await _context.Recipes
-                .Include(r => r.User)
-                .FirstOrDefaultAsync(m => m.RecipeId == id);
+            var recipe = await _recipesService.FindById(id);
+
             if (recipe == null)
             {
                 return NotFound();
@@ -179,10 +178,14 @@ namespace ADProject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var recipe = await _context.Recipes.FindAsync(id);
-            _context.Recipes.Remove(recipe);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            var successful = await _recipesService.DeleteRecipe(id);
+            if (successful)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            return View("Error");
+            
         }
 
         private bool RecipeExists(int id)
