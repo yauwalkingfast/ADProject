@@ -7,6 +7,12 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ADProject.Models;
 using ADProject.Service;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using ADProject.JsonObjects;
+using Newtonsoft.Json;
+using System.Diagnostics;
+using ADProject.GenerateTagsClass;
 using Newtonsoft.Json;
 
 namespace ADProject.Controllers
@@ -149,5 +155,36 @@ namespace ADProject.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
+
+        [HttpPost]
+        public IActionResult GenerateAllergenTag([FromBody] int recipeId)
+        {
+            GenerateTag trial = new GenerateTag(_recipesService);
+
+            string allergens = trial.GetAllergenTag(recipeId);
+
+            tempAllergenTags tempAlTags = JsonConvert.DeserializeObject<tempAllergenTags>(allergens);
+            if (tempAlTags.allergens != null)
+            {
+                Debug.WriteLine(tempAlTags.allergens[0]);
+            }
+
+            //Saving the recipe into the DB first before generating the tags
+            /*if (ModelState.IsValid)
+            {   //uses Service class to add Recipe
+                var successful = await _recipesService.AddRecipe(recipe);
+                if (successful)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "Email", recipe.UserId);
+            return View(recipe);*/
+
+            
+            return RedirectToAction("Create");
+        }
+
     }
 }
