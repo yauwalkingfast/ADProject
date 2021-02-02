@@ -22,8 +22,9 @@ namespace ADProject.Models
         [JsonIgnore]
         [ForeignKey(nameof(RecipeId))]
         [InverseProperty("LikesDislikes")]
-        public virtual Recipe Recipe { get; set; }
 
+
+        public virtual Recipe Recipe { get; set; }
         [JsonIgnore]
         [ForeignKey(nameof(UserId))]
         [InverseProperty("LikesDislikes")]
