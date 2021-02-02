@@ -50,6 +50,7 @@ namespace ADProject.Models
         public virtual User User { get; set; }
 
         [InverseProperty(nameof(Comment.Recipe))]
+
         public virtual IEnumerable<Comment> Comments { get; set; }
 
         [InverseProperty(nameof(LikesDislike.Recipe))]

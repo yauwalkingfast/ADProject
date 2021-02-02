@@ -37,6 +37,15 @@ namespace ADProject.Service
             return saveResult == 1;
         }
 
+
+        public List<RecipeIngredient> FindRecipeStepsByRecipeId(int id)
+        {
+            List<RecipeIngredient> recipeIngredients = _context.RecipeIngredients.Where(
+                x => x.Recipe.RecipeId == id).ToList();
+
+            return recipeIngredients;
+        }
+
         public async Task<bool> EditRecipe(int id, Recipe recipe)
         {
             try
@@ -88,6 +97,7 @@ namespace ADProject.Service
                 .Include(r => r.Comments)
                 .Include(r => r.LikesDislikes)
                 .FirstOrDefaultAsync(r => r.RecipeId == id);
+
         }
     }
 }
