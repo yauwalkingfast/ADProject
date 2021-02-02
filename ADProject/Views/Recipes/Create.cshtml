@@ -66,8 +66,8 @@
        name="RequestVerificationToken" value="@GetAntiXsrfRequestToken()">
 
 <!-- React JS -->
-<script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
-<script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
+<script crossorigin src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
 <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
 
 <script type="text/babel">
@@ -119,6 +119,20 @@
 
             xhr.setRequestHeader("RequestVerificationToken", 
                     document.getElementById('RequestVerificationToken').value);
+
+            xhr.onreadystatechange = function () {
+                if (this.readyState === XMLHttpRequest.DONE) {
+                    // Request for recipe list page if add recipe is successful
+                    if (this.status === 200) {
+                        var url = window.location.href;
+                        var redirectUrl = url.split("/");
+                        redirectUrl.pop();
+                        window.location.assign(redirectUrl.join("/"));
+                    } else {
+                        alert("Error adding recipe");
+                    }
+                }
+            };
 
             xhr.send(JSON.stringify(toSubmit));
         }

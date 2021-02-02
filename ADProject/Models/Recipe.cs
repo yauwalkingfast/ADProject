@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace ADProject.Models
 {
+    [JsonObject]
     [Table("Recipe")]
     public partial class Recipe
     {
@@ -15,6 +17,8 @@ namespace ADProject.Models
             LikesDislikes = new List<LikesDislike>();
             RecipeIngredients = new List<RecipeIngredient>();
             RecipeSteps = new List<RecipeStep>();
+/*            RecipeTags = new List<RecipeTag>();
+*/        
         }
 
         [Key]
@@ -45,23 +49,21 @@ namespace ADProject.Models
         [InverseProperty("Recipes")]
         public virtual User User { get; set; }
 
-        /*[InverseProperty(nameof(LikesDislike.Recipe))]
-        public virtual ICollection<LikesDislike> LikesDislikes { get; set; }
-        [InverseProperty(nameof(RecipeIngredient.Recipe))]
-        public virtual ICollection<RecipeIngredient> RecipeIngredients { get; set; }
-        [InverseProperty(nameof(RecipeStep.Recipe))]
-        public virtual ICollection<RecipeStep> RecipeSteps { get; set; }*/
-
         [InverseProperty(nameof(Comment.Recipe))]
 
         public virtual IEnumerable<Comment> Comments { get; set; }
 
         [InverseProperty(nameof(LikesDislike.Recipe))]
         public virtual IEnumerable<LikesDislike> LikesDislikes { get; set; }
+
         [InverseProperty(nameof(RecipeIngredient.Recipe))]
         public virtual IEnumerable<RecipeIngredient> RecipeIngredients { get; set; }
+
         [InverseProperty(nameof(RecipeStep.Recipe))]
         public virtual IEnumerable<RecipeStep> RecipeSteps { get; set; }
+
+/*        [InverseProperty(nameof(RecipeTag.Recipe))]
+        public virtual IEnumerable<RecipeTag> RecipeTags { get; set; }*/
 
         public static implicit operator List<object>(Recipe v)
         {
