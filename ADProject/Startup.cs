@@ -14,6 +14,7 @@ using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace ADProject
@@ -57,14 +58,20 @@ namespace ADProject
             //This DI cannot use singleton because it couldnt scope another DI DBContext
             services.AddScoped<IRecipeService, RecipeService>();
 
-/*            services.AddCors(o => o.AddPolicy("ReactPolicy", builder =>
-            {
-                builder.AllowAnyOrigin()
-                       .AllowAnyMethod()
-                       .AllowAnyHeader()
-                //   .AllowCredentials()
-                ;
-            }));*/
+            // This is to handle reference loop situation when returning Json from async method
+            // in API controller
+            services.AddControllersWithViews()
+                        .AddJsonOptions(o => o.JsonSerializerOptions
+                        .ReferenceHandler = ReferenceHandler.Preserve);
+
+            /*            services.AddCors(o => o.AddPolicy("ReactPolicy", builder =>
+                        {
+                            builder.AllowAnyOrigin()
+                                   .AllowAnyMethod()
+                                   .AllowAnyHeader()
+                            //   .AllowCredentials()
+                            ;
+                        }));*/
 
             //   services.AddDbContext<ADProjContext>
             //   (o => o.UseSqlServer(Configuration.
