@@ -37,15 +37,26 @@
 <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
 <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
 
+<!-- axios -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js" integrity="sha512-bZS47S7sPOxkjU/4Bt0zrhEtWx0y0CRkhEp8IckzK+ltifIIE9EMIMTuT/mEzoIMewUINruDBIR/jJnbguonqQ==" crossorigin="anonymous"></script>
+
 <script type="text/babel">
     class Create extends React.Component {
         render() {
             return (
                 <div>
-                    <form onSubmit={this.submitHandler}>
+                    <form enctype="multipart/form-data" onSubmit={this.submitHandler}>
                             <div className="form-group">
                                 <label className="control-label">Title</label>
                                 <input type="text" className="form-control" name="Title" value={this.state.Title} onChange={this.handleChange} />
+                            </div>
+                            <div className="form-group">
+                                <label className="control-label">Cover Image</label>
+                                <input type="file" onChange={this.onMainMediaUrlChange} />
+                                {this.state.MainMediaUrl && <img src={this.state.MainMediaUrl} alt="MainMediaUrl" />}
+                                <button className="btn btn-secondary" value="upload" onClick={this.onMainMediaUpload}>
+                                    Upload!
+                                </button>
                             </div>
                             <div className="form-group">
                                 <label className="control-label">Description</label>
@@ -125,6 +136,34 @@
             )
         }
 
+        onMainMediaUpload = async (event) => {
+            event.preventDefault();
+            const file = this.state.MainSelectedFile;
+
+            const formData = new FormData();
+            formData.append("formFile", file);
+            formData.append("fileName", file.name);
+
+            try {
+                const { data: { fileUrl } } = await axios.post("/Recipes/FileUpload", formData);
+                console.log(fileUrl);
+
+                this.setState({
+                    MainMediaUrl: fileUrl.trim()
+                });
+            } catch(error) {
+                alert("Error uploading image");
+            }
+        }
+
+        onMainMediaUrlChange = (event) => {
+            console.log(event.target.files[0].name)
+            this.setState({
+                MainMediaUrl: "",
+                MainSelectedFile: event.target.files[0]
+            })
+        }
+
         constructor(props) {
             super(props);
             this.state = {
@@ -136,6 +175,7 @@
                 ServingSize: 1,
                 IsPublished: true,
                 MainMediaUrl: "",
+                MainSelectedFile: null,
                 RecipeIngredients: [{
                     Ingredient: "large eggs, room temperature",
                     Quantity: 4,
@@ -211,6 +251,7 @@
                 .filter(allergenTag => allergenTag.Tag.Warning.trim() !== "");
 
             var state = {...this.state};
+            delete state.MainSelectedFile;
             const toSubmit = {
                 ...state,
                 RecipeSteps,
