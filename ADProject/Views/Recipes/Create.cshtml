@@ -53,7 +53,7 @@
                             <div className="form-group">
                                 <label className="control-label">Cover Image</label>
                                 <input type="file" onChange={this.onMainMediaUrlChange} />
-                                {this.state.MainMediaUrl && <img src={this.state.MainMediaUrl} alt="MainMediaUrl" />}
+                                {this.state.MainMediaUrl && <img src={`@Url.Content("~/${this.state.MainMediaUrl}")`} alt="MainMediaUrl" />}
                                 <button className="btn btn-secondary" value="upload" onClick={this.onMainMediaUpload}>
                                     Upload!
                                 </button>

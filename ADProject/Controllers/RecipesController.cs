@@ -257,7 +257,7 @@ namespace ADProject.Controllers
             try
             {
                 file.FileName = Guid.NewGuid().ToString() + ".jpg";
-                string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "recipes", "images", file.FileName);
+                string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", file.FileName);
                 using(Stream stream = new FileStream(path, FileMode.Create))
                 {
                     file.FormFile.CopyTo(stream);
