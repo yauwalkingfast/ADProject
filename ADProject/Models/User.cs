@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 #nullable disable
 
 namespace ADProject.Models
 {
+    [JsonObject]
     [Table("User")]
     public partial class User
     {
@@ -43,10 +45,15 @@ namespace ADProject.Models
         [Column("isAdmin")]
         public bool? IsAdmin { get; set; }
 
+        [JsonIgnore]
         [InverseProperty(nameof(Comment.User))]
         public virtual ICollection<Comment> Comments { get; set; }
+
+        [JsonIgnore]
         [InverseProperty(nameof(LikesDislike.User))]
         public virtual ICollection<LikesDislike> LikesDislikes { get; set; }
+
+        [JsonIgnore]
         [InverseProperty(nameof(Recipe.User))]
         public virtual ICollection<Recipe> Recipes { get; set; }
     }

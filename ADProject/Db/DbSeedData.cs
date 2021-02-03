@@ -37,7 +37,10 @@ namespace ADProject.DbSeeder
             User user = db.Users.FirstOrDefault();
 
             List<RecipeIngredient> recipeIngredient = new List<RecipeIngredient>();
-            recipeIngredient.Add(new RecipeIngredient
+
+            //Please uncomment the following 2 ingredients after testing is over
+
+            /*recipeIngredient.Add(new RecipeIngredient
             {
                 Ingredient = "Chocolate",
                 Quantity = 100,
@@ -46,6 +49,57 @@ namespace ADProject.DbSeeder
             recipeIngredient.Add(new RecipeIngredient
             {
                 Ingredient = "Milk",
+                Quantity = 100,
+                UnitOfMeasurement = "ml"
+            });*/
+
+            //To test the generate allergen tags API connection; remove later. 
+            //Also, please change the ingredient string limit back to 20 from 100 after testing is over. 
+            recipeIngredient.Add(new RecipeIngredient
+            {
+                Ingredient = "4 large eggs, room temperature",
+                Quantity = 100,
+                UnitOfMeasurement = "ml"
+            });
+
+            recipeIngredient.Add(new RecipeIngredient
+            {
+                Ingredient = "2 cups sugar",
+                Quantity = 100,
+                UnitOfMeasurement = "ml"
+            });
+
+            recipeIngredient.Add(new RecipeIngredient
+            {
+                Ingredient = "1 teaspoon vanilla extract",
+                Quantity = 100,
+                UnitOfMeasurement = "ml"
+            });
+
+            recipeIngredient.Add(new RecipeIngredient
+            {
+                Ingredient = "2-1/4 cups all purpose flour",
+                Quantity = 100,
+                UnitOfMeasurement = "ml"
+            });
+
+            recipeIngredient.Add(new RecipeIngredient
+            {
+                Ingredient = "2-1/4 teaspoons baking powder",
+                Quantity = 100,
+                UnitOfMeasurement = "ml"
+            });
+
+            recipeIngredient.Add(new RecipeIngredient
+            {
+                Ingredient = "1-1/4 cups 2% milk",
+                Quantity = 100,
+                UnitOfMeasurement = "ml"
+            });
+
+            recipeIngredient.Add(new RecipeIngredient
+            {
+                Ingredient = "10 tablespoons butter, cubed",
                 Quantity = 100,
                 UnitOfMeasurement = "ml"
             });

@@ -66,8 +66,8 @@
        name="RequestVerificationToken" value="@GetAntiXsrfRequestToken()">
 
 <!-- React JS -->
-<script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
-<script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
+<script crossorigin src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
 <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
 
 <script type="text/babel">
@@ -84,21 +84,66 @@
                 IsPublished: true,
                 MainMediaUrl: "",
                 RecipeIngredients: [{
-                    Ingredient: "",
-                    Quantity: 0,
-                    UnitOfMeasurement: "",
-                }],
+                    Ingredient: "large eggs, room temperature",
+                    Quantity: 4,
+                    UnitOfMeasurement: "egg",
+                }, 
+                {
+                    Ingredient: "cups sugar",
+                    Quantity: 2,
+                    UnitOfMeasurement: "cups",
+                },
+                {
+                    Ingredient: "vanilia extract",
+                    Quantity: 1,
+                    UnitOfMeasurement: "teaspoon",
+                },
+                {
+                    Ingredient: "all-purpose flour",
+                    Quantity: 2.25,
+                    UnitOfMeasurement: "cups",
+                },
+                {
+                    Ingredient: "baking powder",
+                    Quantity: 2.25,
+                    UnitOfMeasurement: "cups",
+                },
+                {
+                    Ingredient: "2% milk",
+                    Quantity: 1.25,
+                    UnitOfMeasurement: "cups",
+                },
+                {
+                    Ingredient: "butter, cubed",
+                    Quantity: 10,
+                    UnitOfMeasurement: "tablespons",
+                },],
                 RecipeSteps: [{
                     TextInstructions: "",
                     MediaFileUrl: "",
                 }],
-                numSteps: 1,
-                numIngredients: 1,
+                RecipeTags: [{
+                    TagName: "",
+                    Warning: "",
+                }],
             };
+        }
+
+        generateAllergenTags = (event) => {
+            event.preventDefault();
+            const ingredient = [...this.state.RecipeIngredients];
+            console.log(ingredient);
+            this.fetchTags(ingredient, this.setTags);
         }
 
         submitHandler = (event) => {
             event.preventDefault();
+            const toSubmit = this.generateJson();
+            console.log(toSubmit);
+            this.postRecipe(toSubmit);
+        }
+
+        generateJson = () => {
             var RecipeSteps = this.state.RecipeSteps.map((step, index) => ({...step, StepNumber: index + 1}))
             var state = {...this.state};
             delete state.numIngredients;
@@ -107,9 +152,7 @@
                 ...state,
                 RecipeSteps
             }
-
-            console.log(toSubmit);
-            this.postRecipe(toSubmit);
+            return toSubmit;
         }
 
         postRecipe = (toSubmit) => {
@@ -120,7 +163,90 @@
             xhr.setRequestHeader("RequestVerificationToken", 
                     document.getElementById('RequestVerificationToken').value);
 
+            xhr.onreadystatechange = function () {
+                if (this.readyState === XMLHttpRequest.DONE) {
+                    // Request for recipe list page if add recipe is successful
+                    if (this.status === 200) {
+                        var url = window.location.href;
+                        var redirectUrl = url.split("/");
+                        redirectUrl.pop();
+                        window.location.assign(redirectUrl.join("/"));
+                    } else {
+                        alert("Error adding recipe");
+                    }
+                }
+            };
+
             xhr.send(JSON.stringify(toSubmit));
+        }
+
+        fetchTags = (ingredient, callback) => {
+            let xhr = new XMLHttpRequest();
+            xhr.open("POST", "/Recipes/GenerateAllergenTag");
+            xhr.setRequestHeader("Content-Type", "application/json; charset=utf8");
+
+            xhr.setRequestHeader("RequestVerificationToken", 
+                    document.getElementById('RequestVerificationToken').value);
+
+            xhr.onreadystatechange = function () {
+                if (this.readyState === XMLHttpRequest.DONE) {
+                    // Get tags from flask ML
+                    if (this.status === 200) {
+                        const { tags } = JSON.parse(this.response);
+                        console.log(tags);
+                        callback(tags);
+                    } else {
+                        alert("Error generate tags");
+                    }
+                }
+            };
+
+            xhr.send(JSON.stringify(ingredient));
+        }
+
+        setTags = (tags) => {
+            this.setState(state => {
+                return {
+                    RecipeTags: [...JSON.parse(tags)]
+                }
+            })
+            console.log(this.state.RecipeTags);
+        }
+
+        removeTag = (index) => {
+            this.setState(state => {
+                const RecipeTags = state.RecipeTags;
+                RecipeTags.splice(index, 1);
+                return {
+                    RecipeTags
+                }
+            })
+        }
+
+        addTag = () => {
+            this.setState(state => {
+                const RecipeTags = [...state.RecipeTags, {
+                    TagName: "",
+                    Warning: "",
+                }];
+                return {
+                    RecipeTags
+                }
+            })
+        }
+
+        handleTagChange = (event, index) => {
+            const newTag = event.target.value;
+            this.setState(state => {
+                const RecipeTags = state.RecipeTags;
+                RecipeTags[index] = {
+                    TagName: newTag,
+                    Warning: newTag,
+                };
+                return {
+                    RecipeTags
+                }
+            })
         }
 
         handleChange = (event) => {
@@ -136,10 +262,9 @@
                     Ingredient: "",
                     Quantity: 0,
                     UnitOfMeasurement: "",
-                }]
+                }];
                 return {
                     RecipeIngredients,
-                    numIngredients: state.numIngredients + 1
                 }
             })
         }
@@ -150,7 +275,6 @@
                 RecipeIngredients.splice(index, 1);
                 return {
                     RecipeIngredients,
-                    numIngredients: state.numIngredients - 1
                 }
             })
         }
@@ -177,10 +301,9 @@
                 const RecipeSteps = [...state.RecipeSteps, {
                     TextInstructions: "",
                     MediaFileUrl: "",
-                }]
+                }];
                 return {
                     RecipeSteps,
-                    numSteps: state.numSteps + 1
                 }
             });
         }
@@ -191,7 +314,6 @@
                 RecipeSteps.splice(index, 1);
                 return {
                     RecipeSteps,
-                    numSteps: state.numSteps - 1
                 }
             });
         }
@@ -213,7 +335,7 @@
 
         render() {
             return (
-                <div className="col-md-4">
+                <div>
                     <form onSubmit={this.submitHandler}>
                             <div className="form-group">
                                 <label className="control-label">Title</label>
@@ -240,28 +362,17 @@
                                 <input type="text" className="form-control" name="MainMediaUrl" value={this.state.MainMediaUrl} onChange={this.handleChange} />
                             </div>
 
-                            {[...Array(this.state.numSteps)].map((element, index) => {
-                                var instruction;
-                                var file;
-
-                                if(!this.state.RecipeSteps[index]) {
-                                    instruction = "";
-                                    file = "";
-                                } else {
-                                    instruction = this.state.RecipeSteps[index].TextInstructions;
-                                    file = this.state.RecipeSteps[index].MediaFileUrl;
-                                }
-
+                            {this.state.RecipeSteps.map((element, index) => {
                                 return(
                                     <div key={index}>
                                         <div>Step {index + 1}</div>
                                         <div className="form-group">
                                             <label className="control-label">TextInstructions</label>
-                                            <input type="text" id={`step-instruction-${index}`} className="form-control" name="step-instruction" onChange={() => this.handleStepChange(index)}  value={instruction} />
+                                            <input type="text" id={`step-instruction-${index}`} className="form-control" name="step-instruction" onChange={() => this.handleStepChange(index)}  value={element.TextInstructions} />
                                         </div>
                                         <div className="form-group">
                                             <label className="control-label">MediaFileUrl</label>
-                                            <input type="text" id={`step-mediafileurl-${index}`} className="form-control" name="step-mediafileurl" onChange={() => this.handleStepChange(index)} value={file} />
+                                            <input type="text" id={`step-mediafileurl-${index}`} className="form-control" name="step-mediafileurl" onChange={() => this.handleStepChange(index)} value={element.MediaFileUrl} />
                                         </div>
                                         <button type="button" className="btn btn-danger" onClick={() => this.removeStep(index)}>Remove Step</button>
                                     </div>
@@ -269,35 +380,21 @@
                             })}
                             <button className="btn btn-secondary" type="button" onClick={this.addStep}>Add Steps</button>
 
-                            {[...Array(this.state.numIngredients)].map((element, index) => {
-                                var ingredient;
-                                var qty;
-                                var unit;
-
-                                if(!this.state.RecipeIngredients[index]) {
-                                    ingredient = "";
-                                    qty = 0;
-                                    unit = "";
-                                } else {
-                                    ingredient = this.state.RecipeIngredients[index].Ingredient;
-                                    qty = this.state.RecipeIngredients[index].Quantity;
-                                    unit = this.state.RecipeIngredients[index].UnitOfMeasurement;
-                                }
-
+                            {this.state.RecipeIngredients.map((element, index) => {
                                 return(
                                     <div key={index}>
                                         <div>Ingredient {index + 1}</div>
                                         <div className="form-group">
                                             <label className="control-label">Ingredient</label>
-                                            <input type="text" id={`ingredient-name-${index}`} name="ingredient-name" onChange={() => this.handleIngredientChange(index)} value={ingredient} />
+                                            <input type="text" id={`ingredient-name-${index}`} name="ingredient-name" onChange={() => this.handleIngredientChange(index)} value={element.Ingredient} />
                                         </div>
                                         <div className="form-group">
                                             <label className="control-label">Quantity</label>
-                                            <input type="number" id={`ingredient-qty-${index}`} name="ingredient-qty" onChange={() => this.handleIngredientChange(index)} value={qty} />
+                                            <input type="number" id={`ingredient-qty-${index}`} name="ingredient-qty" onChange={() => this.handleIngredientChange(index)} value={element.Quantity} />
                                         </div>
                                         <div className="form-group">
                                             <label className="control-label">UnitOfMeasurement</label>
-                                            <input type="text" id={`ingredient-unit-${index}`} name="ingredient-unit" onChange={() => this.handleIngredientChange(index)} value={unit} />
+                                            <input type="text" id={`ingredient-unit-${index}`} name="ingredient-unit" onChange={() => this.handleIngredientChange(index)} value={element.UnitOfMeasurement} />
                                         </div>
                                         <button type="button" className="btn btn-danger" onClick={() => this.removeIngredient(index)}>Remove Ingredient</button>
                                     </div>
@@ -305,6 +402,15 @@
                             })}
                             <button className="btn btn-secondary" type="button" onClick={this.addIngredient}>Add Ingredient</button>
 
+                            <button className="btn btn-primary" type="button" onClick={this.generateAllergenTags}>Generate Allergen Tag</button>
+                            {this.state.RecipeTags.map((tag, index) => (
+                                <div key={index}>
+                                    <input type="text" onChange={() => this.handleTagChange(event, index)} value={tag.Warning} />
+                                    <button type="button" className="btn btn-danger" onClick={() => this.removeTag(index)}>X</button>
+                                </div>
+                            ))}
+                            <button type="button" className="btn btn-primary" onClick={this.addTag}>Add Tags</button>
+                            
                             <div className="form-group">
                                 <input type="submit" value="Create" className="btn btn-primary" />
                             </div>

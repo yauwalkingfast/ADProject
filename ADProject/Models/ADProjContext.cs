@@ -49,15 +49,18 @@ namespace ADProject.Models
             base.OnModelCreating(modelBuilder); //This is actually a bug fix so please don't remove this -- Wilson
             modelBuilder.HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");
 
-         
+            
 
             modelBuilder.Entity<Comment>(entity =>
             {
                 entity.HasOne(d => d.Recipe)
                     .WithMany(p => p.Comments)
-                    .HasForeignKey(d => d.RecipeId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Comments_RecipeId");
+                    //.OnDelete(DeleteBehavior.ClientSetNull)
+                    //.HasConstraintName("FK_RecipeIngredients_RecipeId");
+                    .HasForeignKey(d => d.RecipeId);
+                    /*.OnDelete(DeleteBehavior.ClientSetNull)
+                      .HasConstraintName("FK_RecipeIngredients_RecipeId")*/
+               
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Comments)
@@ -168,9 +171,9 @@ namespace ADProject.Models
 
                 entity.HasOne(d => d.Recipe)
                     .WithMany(p => p.RecipeIngredients)
-                    .HasForeignKey(d => d.RecipeId);
-                    //.OnDelete(DeleteBehavior.ClientSetNull)
-                    //.HasConstraintName("FK_RecipeIngredients_RecipeId");
+                    .HasForeignKey(d => d.RecipeId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_RecipeIngredients_RecipeId");
             });
 
             modelBuilder.Entity<RecipeStep>(entity =>
@@ -184,18 +187,22 @@ namespace ADProject.Models
                     .HasForeignKey(d => d.RecipeId);
                     //.OnDelete(DeleteBehavior.ClientSetNull)
                     //.HasConstraintName("FK_RecipeSteps_RecipeId");
+                
+                    /*.OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_RecipeSteps_RecipeId")*/
+                    
             });
 
             modelBuilder.Entity<RecipeTag>(entity =>
             {
                 entity.HasOne(d => d.Recipe)
-                    .WithMany()
+                    .WithMany(p => p.RecipeTags)
                     .HasForeignKey(d => d.RecipeId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_RecipeTags_RecipeId");
 
                 entity.HasOne(d => d.Tag)
-                    .WithMany()
+                    .WithMany(p => p.RecipeTags)
                     .HasForeignKey(d => d.TagId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_RecipeTags_TagId");
