@@ -13,6 +13,9 @@ using ADProject.JsonObjects;
 using Newtonsoft.Json;
 using System.Diagnostics;
 using ADProject.GenerateTagsClass;
+using System.IO;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 
 namespace ADProject.Controllers
 {
@@ -20,12 +23,14 @@ namespace ADProject.Controllers
     {
         private readonly ADProjContext _context;
         private readonly IRecipeService _recipesService;
+        private IHostingEnvironment Environment;
 
 
-        public RecipesController(ADProjContext context, IRecipeService recipeService)
+        public RecipesController(ADProjContext context, IRecipeService recipeService, IHostingEnvironment _environment)
         {
             _context = context;
             _recipesService = recipeService;
+            Environment = _environment;
         }
 
         // GET: Recipes
@@ -52,7 +57,7 @@ namespace ADProject.Controllers
             return View(recipe);
         }
 
-        //GET: Recipes/Create
+       // GET: Recipes/Create
         public IActionResult Create()
         {
             ViewData["UserId"] = _context.Users.FirstOrDefault().UserId; 
@@ -67,24 +72,30 @@ namespace ADProject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([FromBody] Recipe recipe)
         {
-            User user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == recipe.UserId);
+           User user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == recipe.UserId);
             recipe.User = user;
             DateTime now = DateTime.Now;
             recipe.DateCreated = now;
-            
-            var successful = await _recipesService.AddRecipe(recipe);
-            if (successful)
-            {
-                return Ok();
-            }
 
-            ViewData["UserId"] = recipe.UserId;
+           var successful = await _recipesService.AddRecipe(recipe);
+            if (successful)
+           {
+                return Ok();
+           }
+
+           ViewData["UserId"] = recipe.UserId;
             return BadRequest();
         }
 
 
-        // GET: Recipes/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        
+  
+
+
+
+
+// GET: Recipes/Edit/5
+public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
@@ -214,6 +225,32 @@ namespace ADProject.Controllers
 
             string json = JsonConvert.SerializeObject(tags, Formatting.Indented);
             return Json(new { tags = json });
+        }
+        [HttpPost]
+        public IActionResult FileUpload(List<IFormFile> postedFiles)
+        {
+            string wwwPath = this.Environment.WebRootPath;
+            string contentPath = this.Environment.ContentRootPath;
+
+            string path = Path.Combine(this.Environment.WebRootPath, "Uploads");
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+
+            List<string> uploadedFiles = new List<string>();
+            foreach (IFormFile postedFile in postedFiles)
+            {
+                string fileName = Path.GetFileName(postedFile.FileName);
+                using (FileStream stream = new FileStream(Path.Combine(path, fileName), FileMode.Create))
+                {
+                    postedFile.CopyTo(stream);
+                    uploadedFiles.Add(fileName);
+                    ViewBag.Message += string.Format("<b>{0}</b> uploaded.<br />", fileName);
+                }
+            }
+
+            return View();
         }
 
     }

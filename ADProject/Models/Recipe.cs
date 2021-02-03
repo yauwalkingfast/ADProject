@@ -44,8 +44,12 @@ namespace ADProject.Models
         public int? ServingSize { get; set; }
         [Column("isPublished")]
         public bool? IsPublished { get; set; }
-        [Column("mainMediaUrl")]
-        [StringLength(200)]
+       [Column("mainMediaUrl")]
+       [StringLength(200)]
+
+       // [DataType(DataType.Upload)]
+       // [Display(Name = "Upload File")]
+       // [Required(ErrorMessage = "Please choose file to upload.")]
         public string MainMediaUrl { get; set; }
 
         [ForeignKey(nameof(UserId))]
