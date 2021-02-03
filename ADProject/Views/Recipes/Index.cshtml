@@ -10,6 +10,7 @@
     <a asp-action="Create">Create New</a>
 </p>
 
+
     <table class="table">
         <thead>
             <tr>
@@ -75,7 +76,7 @@
                 <td>
                    <img src=@item.MainMediaUrl alt="a description of the image" width="100px">
                     @* @Html.DisplayFor(modelItem => item.MainMediaUrl)*@
-</td>
+              </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.User.Email)
                 </td>
@@ -83,6 +84,83 @@
                     <ul>
                         @foreach (var step in item.RecipeSteps)
                         {
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateCreated)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DurationInMins)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Calories)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ServingSize)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsPublished)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MainMediaUrl)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.User)
+            </th>
+            <th>
+                Steps
+            </th>
+            <th>
+                Ingredients
+            </th>
+            <th>
+                Allergen Tags
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateCreated)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DurationInMins)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Calories)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ServingSize)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsPublished)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MainMediaUrl)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.User.Email)
+            </td>
+            <td>
+                <ul>
+                    @foreach (var step in item.RecipeSteps)
+                    {
+
                         <li>
                             <div>
                                 @step.StepNumber
@@ -95,6 +173,7 @@
                             </div>
 
                         </li>
+
                         }
                     </ul>
                 </td>
@@ -148,6 +227,34 @@
             <a>Add to try Later</a>
         </td>
     </tr>
+
+                    }
+                </ul>
+            </td>
+            <td>
+                <ul>
+                    @foreach(var allergenTags in item.RecipeTags)
+                    {
+                        if(allergenTags.IsAllergenTag == true)
+                        {
+                            <li>
+                                <div>
+                                    @allergenTags.Tag.Warning
+                                </div>
+                            </li>
+                        }
+                    }
+                </ul>
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.RecipeId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.RecipeId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.RecipeId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+
 </table>
 <h3>Method</h3>
 <ul>

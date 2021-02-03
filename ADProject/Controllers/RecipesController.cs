@@ -13,9 +13,15 @@ using ADProject.JsonObjects;
 using Newtonsoft.Json;
 using System.Diagnostics;
 using ADProject.GenerateTagsClass;
+
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using System.IO;
+
 
 namespace ADProject.Controllers
 {
@@ -23,14 +29,11 @@ namespace ADProject.Controllers
     {
         private readonly ADProjContext _context;
         private readonly IRecipeService _recipesService;
-        private IHostingEnvironment Environment;
 
-
-        public RecipesController(ADProjContext context, IRecipeService recipeService, IHostingEnvironment _environment)
+        public RecipesController(ADProjContext context, IRecipeService recipeService)
         {
             _context = context;
             _recipesService = recipeService;
-            Environment = _environment;
         }
 
         // GET: Recipes
@@ -207,7 +210,7 @@ public async Task<IActionResult> Edit(int? id)
 
             string allergens = trial.GetAllergenTag(recipeIngredients);
 
-            List<Tag> tags = new List<Tag>();
+            List<RecipeTag> tags = new List<RecipeTag>();
 
             tempAllergenTags tempAlTags = JsonConvert.DeserializeObject<tempAllergenTags>(allergens);
             if (tempAlTags.allergens != null)
@@ -215,10 +218,14 @@ public async Task<IActionResult> Edit(int? id)
                 Debug.WriteLine(tempAlTags.allergens[0]);
                 for(int i = 0; i < tempAlTags.allergens.Count; i++)
                 {
-                    tags.Add(new Tag
+                    tags.Add(new RecipeTag
                     {
-                        TagName = tempAlTags.allergens[i],
-                        Warning = tempAlTags.allergens[i]
+                        IsAllergenTag = true,
+                        Tag = new Tag
+                        {
+                            TagName = tempAlTags.allergens[i],
+                            Warning = tempAlTags.allergens[i]
+                        }
                     });
                 }
             }
@@ -266,5 +273,53 @@ public async Task<IActionResult> Edit(int? id)
             
         }
 
+        /*        [HttpPost]
+                public IActionResult FileUpload(List<IFormFile> postedFiles)
+                {
+                    string wwwPath = this.Environment.WebRootPath;
+                    string contentPath = this.Environment.ContentRootPath;
+
+                    string path = Path.Combine(this.Environment.WebRootPath, "Uploads");
+                    if (!Directory.Exists(path))
+                    {
+                        Directory.CreateDirectory(path);
+                    }
+
+                    List<string> uploadedFiles = new List<string>();
+                    foreach (IFormFile postedFile in postedFiles)
+                    {
+                        string fileName = Path.GetFileName(postedFile.FileName);
+                        using (FileStream stream = new FileStream(Path.Combine(path, fileName), FileMode.Create))
+                        {
+                            postedFile.CopyTo(stream);
+                            uploadedFiles.Add(fileName);
+                            ViewBag.Message += string.Format("<b>{0}</b> uploaded.<br />", fileName);
+                        }
+                    }
+
+                    return View();
+                }*/
+
+        [HttpPost]
+        public IActionResult FileUpload([FromForm] FileModel file)
+        {
+            try
+            {
+                file.FileName = Guid.NewGuid().ToString() + ".jpg";
+                string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", file.FileName);
+                using(Stream stream = new FileStream(path, FileMode.Create))
+                {
+                    file.FormFile.CopyTo(stream);
+                }
+
+                string imageUrl = "images/" + file.FileName; 
+
+                return Json(new { fileUrl = imageUrl });
+            }
+            catch
+            {
+                return StatusCode(400);
+            }
+        }
     }
 
