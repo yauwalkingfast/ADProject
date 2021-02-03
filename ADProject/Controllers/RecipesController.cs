@@ -196,7 +196,7 @@ namespace ADProject.Controllers
 
             string allergens = trial.GetAllergenTag(recipeIngredients);
 
-            List<Tag> tags = new List<Tag>();
+            List<RecipeTag> tags = new List<RecipeTag>();
 
             tempAllergenTags tempAlTags = JsonConvert.DeserializeObject<tempAllergenTags>(allergens);
             if (tempAlTags.allergens != null)
@@ -204,10 +204,14 @@ namespace ADProject.Controllers
                 Debug.WriteLine(tempAlTags.allergens[0]);
                 for(int i = 0; i < tempAlTags.allergens.Count; i++)
                 {
-                    tags.Add(new Tag
+                    tags.Add(new RecipeTag
                     {
-                        TagName = tempAlTags.allergens[i],
-                        Warning = tempAlTags.allergens[i]
+                        IsAllergenTag = true,
+                        Tag = new Tag
+                        {
+                            TagName = tempAlTags.allergens[i],
+                            Warning = tempAlTags.allergens[i]
+                        }
                     });
                 }
             }

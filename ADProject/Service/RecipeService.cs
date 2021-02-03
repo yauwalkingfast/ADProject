@@ -18,6 +18,8 @@ namespace ADProject.Service
 
         public async Task<bool> AddRecipe(Recipe recipe)
         {
+            recipe.RecipeTags = await this.CheckTagsDatabase(recipe.RecipeTags.ToList());
+
             _context.Add(recipe);
             var saveResult = await _context.SaveChangesAsync();
             return saveResult >= 1;
@@ -83,10 +85,13 @@ namespace ADProject.Service
                 var dbRecipe = await _context.Recipes
                     .Include(r => r.RecipeSteps)
                     .Include(r => r.RecipeIngredients)
+                    .Include(r => r.RecipeTags)
+                    .ThenInclude(rtag => rtag.Tag)
                     .FirstOrDefaultAsync(r => r.RecipeId == id);
 
                 _context.RecipeIngredients.RemoveRange(dbRecipe.RecipeIngredients);
                 _context.RecipeSteps.RemoveRange(dbRecipe.RecipeSteps);
+                _context.RecipeTags.RemoveRange(dbRecipe.RecipeTags);
 
                 dbRecipe.Title = recipe.Title;
                 dbRecipe.Description = recipe.Description;
@@ -97,6 +102,8 @@ namespace ADProject.Service
                 dbRecipe.MainMediaUrl = recipe.MainMediaUrl;
                 dbRecipe.RecipeIngredients = recipe.RecipeIngredients;
                 dbRecipe.RecipeSteps = recipe.RecipeSteps;
+
+                dbRecipe.RecipeTags = await this.CheckTagsDatabase(recipe.RecipeTags.ToList());
 
                 await _context.SaveChangesAsync();
                 return true;
@@ -115,6 +122,8 @@ namespace ADProject.Service
                 .Include(r => r.RecipeIngredients)
                 .Include(r => r.Comments)
                 .Include(r => r.LikesDislikes)
+                .Include(r => r.RecipeTags)
+                .ThenInclude(rtag => rtag.Tag)
                 .ToListAsync();
         }
 
@@ -126,8 +135,24 @@ namespace ADProject.Service
                 .Include(r => r.RecipeIngredients)
                 .Include(r => r.Comments)
                 .Include(r => r.LikesDislikes)
+                .Include(r => r.RecipeTags)
+                .ThenInclude(rtag => rtag.Tag)
                 .FirstOrDefaultAsync(r => r.RecipeId == id);
+        }
 
+        // Check is the same tag already exist in the database
+        private async Task<List<RecipeTag>> CheckTagsDatabase(List<RecipeTag> recipeTag)
+        {
+            for (int i = 0; i < recipeTag.Count(); i++)
+            {
+                var existTag = await _context.Tags.FirstOrDefaultAsync(t => t.TagName.ToLower() == recipeTag[i].Tag.TagName.ToLower());
+                if (existTag != null)
+                {
+                    recipeTag[i].TagId = existTag.TagId;
+                    recipeTag[i].Tag = existTag;
+                }
+            }
+            return recipeTag;
         }
     }
 }
