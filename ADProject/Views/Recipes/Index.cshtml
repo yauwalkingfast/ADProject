@@ -45,6 +45,9 @@
             <th>
                 Ingredients
             </th>
+            <th>
+                Allergen Tags
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -101,6 +104,21 @@
                                 @ingredient.Ingredient
                             </div>
                         </li>
+                    }
+                </ul>
+            </td>
+            <td>
+                <ul>
+                    @foreach(var allergenTags in item.RecipeTags)
+                    {
+                        if(allergenTags.IsAllergenTag == true)
+                        {
+                            <li>
+                                <div>
+                                    @allergenTags.Tag.Warning
+                                </div>
+                            </li>
+                        }
                     }
                 </ul>
             </td>
