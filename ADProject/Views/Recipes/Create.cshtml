@@ -50,11 +50,16 @@
     <a asp-action="Index">Back to List</a>
 </div>
 <form method="post" enctype="multipart/form-data" asp-controller="Recipes" asp-action="FileUpload">
-    <span>Select File:</span>
-    <input type="file" name="postedFiles" multiple />
-    <input type="submit" value="Upload" />
-    <br />
-    <span style="color:green">@Html.Raw(ViewBag.Message)</span>
+    <dl>
+        <dt>
+            <label>Upload</label>
+        </dt>
+        <dd>
+            <input type="file" name="FormFile" id="FormFile">
+
+        </dd>
+    </dl>
+    <input class="btn" type="submit" value="Upload" />
 </form>
 
 @section Scripts {
