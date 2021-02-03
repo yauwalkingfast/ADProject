@@ -10,6 +10,7 @@ namespace ADProject.Models
 {
     [Keyless]
     [Table("UserAllergen")]
+    
     public partial class UserAllergen
     {
         public int UserId { get; set; }
