@@ -13,6 +13,9 @@ using ADProject.JsonObjects;
 using Newtonsoft.Json;
 using System.Diagnostics;
 using ADProject.GenerateTagsClass;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using System.IO;
 
 namespace ADProject.Controllers
 {
@@ -20,12 +23,13 @@ namespace ADProject.Controllers
     {
         private readonly ADProjContext _context;
         private readonly IRecipeService _recipesService;
+        private IHostingEnvironment Environment;
 
-
-        public RecipesController(ADProjContext context, IRecipeService recipeService)
+        public RecipesController(ADProjContext context, IRecipeService recipeService, IHostingEnvironment _environment)
         {
             _context = context;
             _recipesService = recipeService;
+            this.Environment = _environment;
         }
 
         // GET: Recipes
@@ -220,5 +224,53 @@ namespace ADProject.Controllers
             return Json(new { tags = json });
         }
 
+        /*        [HttpPost]
+                public IActionResult FileUpload(List<IFormFile> postedFiles)
+                {
+                    string wwwPath = this.Environment.WebRootPath;
+                    string contentPath = this.Environment.ContentRootPath;
+
+                    string path = Path.Combine(this.Environment.WebRootPath, "Uploads");
+                    if (!Directory.Exists(path))
+                    {
+                        Directory.CreateDirectory(path);
+                    }
+
+                    List<string> uploadedFiles = new List<string>();
+                    foreach (IFormFile postedFile in postedFiles)
+                    {
+                        string fileName = Path.GetFileName(postedFile.FileName);
+                        using (FileStream stream = new FileStream(Path.Combine(path, fileName), FileMode.Create))
+                        {
+                            postedFile.CopyTo(stream);
+                            uploadedFiles.Add(fileName);
+                            ViewBag.Message += string.Format("<b>{0}</b> uploaded.<br />", fileName);
+                        }
+                    }
+
+                    return View();
+                }*/
+
+        [HttpPost]
+        public IActionResult FileUpload([FromForm] FileModel file)
+        {
+            try
+            {
+                file.FileName = Guid.NewGuid().ToString() + ".jpg";
+                string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", file.FileName);
+                using(Stream stream = new FileStream(path, FileMode.Create))
+                {
+                    file.FormFile.CopyTo(stream);
+                }
+
+                string imageUrl = "images/" + file.FileName; 
+
+                return Json(new { fileUrl = imageUrl });
+            }
+            catch
+            {
+                return StatusCode(400);
+            }
+        }
     }
 }

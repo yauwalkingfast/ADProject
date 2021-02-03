@@ -172,8 +172,8 @@ namespace ADProject.Models
                 entity.HasOne(d => d.Recipe)
                     .WithMany(p => p.RecipeIngredients)
                     .HasForeignKey(d => d.RecipeId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_RecipeIngredients_RecipeId");
+/*                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_RecipeIngredients_RecipeId")*/;
             });
 
             modelBuilder.Entity<RecipeStep>(entity =>
@@ -198,8 +198,8 @@ namespace ADProject.Models
                 entity.HasOne(d => d.Recipe)
                     .WithMany(p => p.RecipeTags)
                     .HasForeignKey(d => d.RecipeId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_RecipeTags_RecipeId");
+/*                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_RecipeTags_RecipeId")*/;
 
                 entity.HasOne(d => d.Tag)
                     .WithMany(p => p.RecipeTags)
