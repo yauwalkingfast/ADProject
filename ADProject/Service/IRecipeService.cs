@@ -14,9 +14,10 @@ namespace ADProject.Service
         //Task<bool> Addfile(byte[] imgbyte);
 
         Task<bool> DeleteRecipe(int id);
-        Task<Recipe> FindById(int? id);
 
         List<RecipeIngredient> FindRecipeStepsByRecipeId(int id);
+        Recipe FindRecipeById(int id);
+        void AddRecipeNonAsync(Recipe recipe);
 
         Task<List<Recipe>> GetAllRecipes();
         Task<Recipe> GetRecipeById(int? id);

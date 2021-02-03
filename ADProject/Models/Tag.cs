@@ -11,6 +11,11 @@ namespace ADProject.Models
     [Table("Tag")]
     public partial class Tag
     {
+        public Tag()
+        {
+            RecipeTags = new HashSet<RecipeTag>();
+        }
+
         [Key]
         public int TagId { get; set; }
         [Required]
@@ -21,5 +26,8 @@ namespace ADProject.Models
         [Column("warning")]
         [StringLength(200)]
         public string Warning { get; set; }
+
+        [InverseProperty(nameof(RecipeTag.Tag))]
+        public virtual ICollection<RecipeTag> RecipeTags { get; set; }
     }
 }

@@ -5,6 +5,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
+#nullable disable
+
 namespace ADProject.Models
 {
     [JsonObject]
@@ -13,12 +15,13 @@ namespace ADProject.Models
     {
         public Recipe()
         {
+            
+
             Comments = new List<Comment>();
             LikesDislikes = new List<LikesDislike>();
             RecipeIngredients = new List<RecipeIngredient>();
             RecipeSteps = new List<RecipeStep>();
-/*            RecipeTags = new List<RecipeTag>();
-*/        
+            RecipeTags = new List<RecipeTag>();
         }
 
         [Key]
@@ -48,22 +51,17 @@ namespace ADProject.Models
         [ForeignKey(nameof(UserId))]
         [InverseProperty("Recipes")]
         public virtual User User { get; set; }
-
         [InverseProperty(nameof(Comment.Recipe))]
-
         public virtual IEnumerable<Comment> Comments { get; set; }
-
         [InverseProperty(nameof(LikesDislike.Recipe))]
         public virtual IEnumerable<LikesDislike> LikesDislikes { get; set; }
-
         [InverseProperty(nameof(RecipeIngredient.Recipe))]
         public virtual IEnumerable<RecipeIngredient> RecipeIngredients { get; set; }
-
         [InverseProperty(nameof(RecipeStep.Recipe))]
         public virtual IEnumerable<RecipeStep> RecipeSteps { get; set; }
 
-/*        [InverseProperty(nameof(RecipeTag.Recipe))]
-        public virtual IEnumerable<RecipeTag> RecipeTags { get; set; }*/
+        [InverseProperty(nameof(RecipeTag.Recipe))]
+        public virtual IEnumerable<RecipeTag> RecipeTags { get; set; }
 
         public static implicit operator List<object>(Recipe v)
         {
