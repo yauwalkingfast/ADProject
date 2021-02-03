@@ -1,6 +1,7 @@
 ﻿using ADProject.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -18,6 +19,29 @@ namespace ADProject.DbSeeder
         public void Init()
         {
             AddRecipes();
+            AddTags();
+        }
+
+        protected void AddTags()
+        {
+            string currentDir = Directory.GetCurrentDirectory();
+
+            using (var reader = new StreamReader(Path.Combine(currentDir, "Db", "FoodData.csv")))
+            {
+                while (!reader.EndOfStream)
+                {
+                    var line = reader.ReadLine();
+                    var data = line.Split(',');
+
+                    db.Tags.Add(new Tag
+                    {
+                        TagName = data[3],
+                        Warning = data[4]
+                    });
+                }
+            }
+
+            db.SaveChanges();
         }
 
         protected void AddRecipes()
