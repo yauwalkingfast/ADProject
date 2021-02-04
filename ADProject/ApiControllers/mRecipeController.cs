@@ -1,4 +1,5 @@
-﻿using ADProject.Models;
+﻿using ADProject.JsonObjects;
+using ADProject.Models;
 using ADProject.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -23,29 +24,44 @@ namespace ADProject.ApiControllers
             _recipesService = recipeService;
         }
 
-        [HttpGet]
+        /*[HttpGet]
         [Route("{id}")]
         public ActionResult<Recipe> GetRecipe(int id)
         {
             Recipe recipe = _recipesService.FindRecipeById(id);
-            
+
             if (recipe == null)
             {
                 return null;
             }
             return recipe;
+        }*/
+
+        [HttpGet]
+        [Route("{id}")]
+        public async Task<ActionResult<Recipe>> GetRecipeById(int id)
+        {
+            var recipe = await _recipesService.GetRecipeById(id);
+
+            if (recipe == null)
+            {
+                return NotFound();
+            }
+
+            return recipe;
         }
 
         [HttpPost]
         //[Route("post")]
-        public ActionResult<Recipe> CreateRecipe([FromBody] Recipe recipe)
+        public async Task<ActionResult<Recipe>> CreateRecipe([FromBody] Recipe recipe)
         {
             try
             {
                 recipe.User = _context.Users.FirstOrDefault();
                 DateTime now = DateTime.Now;
                 recipe.DateCreated = now;
-                _recipesService.AddRecipeNonAsync(recipe);
+                await _recipesService.AddRecipe(recipe);
+                //_recipesService.AddRecipeNonAsync(recipe);
                 
                 return recipe;
 
@@ -56,6 +72,34 @@ namespace ADProject.ApiControllers
             }
             
         }
+
+        [HttpDelete]
+        [Route("delete/{id}")]
+        public async Task<booleanJson> DeleteRecipe(int id)
+        {
+            booleanJson isDeleted = new booleanJson();
+
+            isDeleted.flag = await _recipesService.DeleteRecipe(id);
+            return isDeleted;
+        }
+
+        /*[HttpDelete]
+        [Route("deleterecipe/{​​id}​​")]
+        public async Task<ActionResult<booleanJson> DeleteRecipe(int id)
+        {​​
+            booleanJson sample = new booleanJson();
+            try
+            {​​
+                await _recipesService.DeleteRecipe(id);
+                sample.flag = true;
+                return sample;
+            }​​ catch
+            {​​
+                sample.flag = false;
+                return sample;
+            }​​
+        }*/
+
 
     }
 }
