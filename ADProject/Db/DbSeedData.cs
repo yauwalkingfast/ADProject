@@ -62,7 +62,7 @@ namespace ADProject.DbSeeder
             User user = db.Users.FirstOrDefault();
 
             List<RecipeIngredient> recipeIngredient = new List<RecipeIngredient>();
-
+            
             //Please uncomment the following 2 ingredients after testing is over
 
             /*recipeIngredient.Add(new RecipeIngredient
@@ -128,7 +128,7 @@ namespace ADProject.DbSeeder
                 Quantity = 100,
                 UnitOfMeasurement = "ml"
             });
-
+            
             List<RecipeStep> recipeSteps = new List<RecipeStep>();
             recipeSteps.Add(new RecipeStep
             {
@@ -143,6 +143,34 @@ namespace ADProject.DbSeeder
                 MediaFileUrl = "https://www.deliciousmagazine.co.uk/wp-content/uploads/2018/09/321197-1-eng-GB_4469.jpg"
             });
 
+            List<RecipeTag> recipeTag = new List<RecipeTag>();
+            recipeTag.Add(new RecipeTag 
+            { 
+                IsAllergenTag = true, 
+                Tag = new Tag 
+                { 
+                    TagName = "Milk", 
+                    Warning = "Lactose Intolerence" 
+                } 
+            });
+            recipeTag.Add(new RecipeTag 
+            { 
+                IsAllergenTag = false, 
+                Tag = new Tag 
+                { 
+                    TagName = "Cake", 
+                    Warning = "" 
+                } 
+            });
+            recipeTag.Add(new RecipeTag
+            {
+                IsAllergenTag = false,
+                Tag = new Tag
+                {
+                    TagName = "Dessert",
+                    Warning = ""          
+                }
+            });
             db.Recipes.Add(new Recipe
             {
                 UserId = user.UserId,
@@ -155,6 +183,7 @@ namespace ADProject.DbSeeder
                 MainMediaUrl = "https://th.bing.com/th/id/OIP.P70fg98tIgi-8b-pMMhZXAHaFj?pid=Api&rs=1",
                 RecipeIngredients = recipeIngredient,
                 RecipeSteps = recipeSteps,
+                RecipeTags= recipeTag
             });
 
             db.SaveChanges();
