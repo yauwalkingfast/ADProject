@@ -451,6 +451,10 @@
         setAllergenTags = (tags) => {
             this.setState(state => {
                 const RecipeTags = [...state.RecipeTags, ...JSON.parse(tags)]
+                    .filter(r => {
+                        return r.Tag.Warning.trim() !== "" || !r.IsAllergenTag;
+                    });
+
                 return {
                     RecipeTags
                 }
