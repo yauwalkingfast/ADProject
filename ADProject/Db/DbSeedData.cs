@@ -1,6 +1,7 @@
 ﻿using ADProject.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -18,6 +19,29 @@ namespace ADProject.DbSeeder
         public void Init()
         {
             AddRecipes();
+            AddTags();
+        }
+
+        protected void AddTags()
+        {
+            string currentDir = Directory.GetCurrentDirectory();
+
+            using (var reader = new StreamReader(Path.Combine(currentDir, "Db", "FoodData.csv")))
+            {
+                while (!reader.EndOfStream)
+                {
+                    var line = reader.ReadLine();
+                    var data = line.Split(',');
+
+                    db.Tags.Add(new Tag
+                    {
+                        TagName = data[3],
+                        Warning = data[4]
+                    });
+                }
+            }
+
+            db.SaveChanges();
         }
 
         protected void AddRecipes()
@@ -109,13 +133,13 @@ namespace ADProject.DbSeeder
             {
                 StepNumber = 1,
                 TextInstructions = "mix chocolate with milk",
-                MediaFileUrl = "step 1 image"
+                MediaFileUrl = "https://www.wikihow.com/images/thumb/f/ff/Make-a-Simple-Chocolate-Cake-Step-3-Version-3.jpg/aid1334248-v4-728px-Make-a-Simple-Chocolate-Cake-Step-3-Version-3.jpg"
             });
             recipeSteps.Add(new RecipeStep
             {
                 StepNumber = 2,
                 TextInstructions = "put in oven",
-                MediaFileUrl = "step 2 image"
+                MediaFileUrl = "https://www.deliciousmagazine.co.uk/wp-content/uploads/2018/09/321197-1-eng-GB_4469.jpg"
             });
 
             db.Recipes.Add(new Recipe
@@ -127,7 +151,7 @@ namespace ADProject.DbSeeder
                 DurationInMins = 60,
                 Calories = 500,
                 IsPublished = true,
-                MainMediaUrl = "some image url",
+                MainMediaUrl = "https://th.bing.com/th/id/OIP.P70fg98tIgi-8b-pMMhZXAHaFj?pid=Api&rs=1",
                 RecipeIngredients = recipeIngredient,
                 RecipeSteps = recipeSteps,
             });

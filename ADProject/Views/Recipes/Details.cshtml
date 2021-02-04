@@ -95,6 +95,20 @@
                 </dd>
             </div>
         }
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.RecipeTags)
+        </dt>
+        @foreach (var allergenTag in Model.RecipeTags)
+        {
+            if(allergenTag.IsAllergenTag == true)
+            {
+                <div>
+                    <dd class="col-sm-10">
+                        @allergenTag.Tag.Warning
+                    </dd>
+                </div>
+            }
+        }
     </dl>
 </div>
 <div>
