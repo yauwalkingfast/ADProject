@@ -20,6 +20,7 @@ namespace ADProject.DbSeeder
         {
             AddRecipes();
             AddTags();
+            AddGroups();
         }
 
         protected void AddTags()
@@ -186,6 +187,47 @@ namespace ADProject.DbSeeder
             });
 
             db.SaveChanges();
+        }
+
+        protected void AddGroups()
+        {
+            db.Users.Add(new User
+            {
+                FirstName = "Tingkai",
+                LastName = "Chua",
+                Username = "ctk",
+                Password = "12435",
+                Email = "ctk@email.com",
+                IsAdmin = true
+            });
+
+            db.SaveChanges();
+
+            db.Groups.Add(new Group
+            {
+                GroupName = "Hololive Fans",
+                GroupPhoto = "sakura.com",
+                Description = "For all hololive fans",
+                DateCreated = new DateTime(2008, 5, 1, 8, 30, 52),
+                IsPublished = true
+
+            });
+
+            db.SaveChanges();
+
+            /*User user = db.Users.FirstOrDefault();
+            Group group = db.Groups.FirstOrDefault();
+
+            db.UsersGroups.Add(new UsersGroup
+            {
+                GroupId = group.GroupId,
+                UserId = user.UserId,
+                IsMod = true
+            });
+
+            db.SaveChanges();*/
+
+
         }
     }
 }
