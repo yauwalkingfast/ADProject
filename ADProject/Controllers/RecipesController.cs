@@ -137,7 +137,6 @@ namespace ADProject.Controllers
             }
 
             return NotFound();
-            ;
         }
 
         // GET: Recipes/Delete/5

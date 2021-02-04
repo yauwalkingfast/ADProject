@@ -50,116 +50,231 @@
 <!-- axios -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js" integrity="sha512-bZS47S7sPOxkjU/4Bt0zrhEtWx0y0CRkhEp8IckzK+ltifIIE9EMIMTuT/mEzoIMewUINruDBIR/jJnbguonqQ==" crossorigin="anonymous"></script>
 
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+    .create-form-header {
+        text-align: center;
+    }
+
+    hr {
+        border-color: black;
+    }
+
+    textarea {
+        min-height: 200px;
+        resize: none;
+    }
+
+    .icon-button {
+        background-color: Transparent;
+        background-repeat:no-repeat;
+        border: none;
+        cursor:pointer;
+        overflow: hidden;
+        outline:none;
+    }
+</style>
+
 <script type="text/babel">
     class Create extends React.Component {
         render() {
             return (
-                <div className="row">
-                    <form enctype="multipart/form-data" onSubmit={this.submitHandler}>
-                            <div className="form-group">
-                                <label className="control-label">Title</label>
-                                <input type="text" className="form-control" name="Title" value={this.state.Title} onChange={this.handleChange} />
-                            </div>
-                            <div className="form-group">
-                                <label className="control-label">Cover Image</label>
-                                <input type="file" onChange={this.onMainMediaUrlChange} />
-                                {this.state.MainMediaUrl && <img src={`@Url.Content("~/${this.state.MainMediaUrl}")`} alt="MainMediaUrl" />}
-                                <button className="btn btn-secondary" value="upload" onClick={this.onMainMediaUpload}>
-                                    Upload!
-                                </button>
-                            </div>
-                            <div className="form-group">
-                                <label className="control-label">Description</label>
-                                <input type="text"className="form-control" name="Description" value={this.state.Description} onChange={this.handleChange} />
-                            </div>
-                            <div className="form-group">
-                                <label className="control-label">DurationInMins</label>
-                                <input type="number" className="form-control" name="DurationInMins" value={this.state.DurationInMins} onChange={this.handleChange} />
-                            </div>
-                            <div className="form-group">
-                                <label className="control-label">Calories</label>
-                                <input type="number" className="form-control" name="Calories" value={this.state.Calories} onChange={this.handleChange} />
-                            </div>
-                            <div className="form-group">
-                                <label className="control-label">ServingSize</label>
-                                <input type="number" className="form-control" name="ServingSize" value={this.state.ServingSize} onChange={this.handleChange} />
-                            </div>
+                <div className="px-2">
+                    <h2 className="create-form-header">Create New Recipes</h2>
+                    <hr />
+                    <div className="row justify-content-center">
+                        <form enctype="multipart/form-data" onSubmit={this.submitHandler}>
 
-                            {this.state.RecipeSteps.map((element, index) => {
-                                return(
-                                    <div key={index}>
-                                        <div>Step {index + 1}</div>
-                                        <div className="form-group">
-                                            <label className="control-label">TextInstructions</label>
-                                            <input type="text" className="form-control" name="step-instruction" onChange={() => this.handleStepChange(event, index)}  value={element.TextInstructions} />
+                            <div className="row">
+                                <div className="col-sm">
+                                    <div className="form-group">
+                                        <label className="control-label font-weight-bold">Recipe Name</label>
+                                        <input type="text" className="form-control" name="Title" value={this.state.Title} onChange={this.handleChange} />
+                                    </div>
+                                    <div className="form-group">
+                                        <label className="control-label font-weight-bold">Cover Image</label>
+                                        <input type="file" onChange={this.onMainMediaUrlChange} />
+                                        {this.state.MainMediaUrl && <img src={`@Url.Content("~/${this.state.MainMediaUrl}")`} alt="MainMediaUrl" />}
+                                        <button className="btn btn-secondary" value="upload" onClick={this.onMainMediaUpload}>
+                                            Upload!
+                                        </button>
+                                    </div>
+                                    <div className="form-group">
+                                        <label className="control-label font-weight-bold">Description</label>
+                                        <textarea type="text" className="form-control" name="Description" value={this.state.Description} onChange={this.handleChange}></textarea>
+                                    </div>
+                                </div>
+                                <div className="col-sm">
+                                    <div className="form-group">
+                                        <label className="control-label font-weight-bold">Duration (Minutes)</label>
+                                        <input type="number" className="form-control" name="DurationInMins" value={this.state.DurationInMins} onChange={this.handleChange} />
+                                    </div>
+                                    <div className="form-group">
+                                        <label className="control-label font-weight-bold">Calories</label>
+                                        <input type="number" className="form-control" name="Calories" value={this.state.Calories} onChange={this.handleChange} />
+                                    </div>
+                                    <div className="form-group">
+                                        <label className="control-label font-weight-bold">Serving Size</label>
+                                        <input type="number" className="form-control" name="ServingSize" value={this.state.ServingSize} onChange={this.handleChange} />
+                                    </div>
+                                    <div className="row">
+                                        <div className="col-sm">
+                                            <div className="row justify-content-between">
+                                                <div className="col-sm">
+                                                    <label className="control-label font-weight-bold">Allergen Tags</label>
+                                                </div>
+                                            </div>
+                                            <div className="row justify-content-between">
+                                                <div className="col-sm">
+                                                    {this.state.RecipeTags.map((tag, index) => {
+                                                        if(tag.IsAllergenTag) {
+                                                            return (
+                                                                <div className="row mb-1" key={index}>
+                                                                    <div className="col-sm-10">
+                                                                        <input type="text" className="form-control" onChange={() => this.handleAllergenTagChange(event, index)} value={tag.Tag.Warning} />
+                                                                    </div>
+                                                                    <div className="col-sm-2">
+                                                                        <button type="button" className="icon-button" onClick={() => this.removeAllergenTag(index)}>
+                                                                            <i class="fa fa-times" aria-hidden="true"></i>
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            )
+                                                        }
+                                                    })}
+                                                </div>
+                                            </div>
+                                            <div className="row">
+                                                <div className="col-sm-6">
+                                                    <button type="button" className="icon-button" onClick={this.addAllergenTag}>
+                                                        <i class="fa fa-plus" aria-hidden="true">Add Allergen Tag</i>
+                                                    </button>
+                                                </div>
+                                                <div className="col-sm-6">
+                                                    <button className="icon-button" type="button" onClick={this.generateAllergenTags}>
+                                                        <i class="fa fa-plus-square" aria-hidden="true">Generate Allergen Tags</i>
+                                                    </button>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div className="form-group">
-                                            <label className="control-label">Step Image</label>
-                                            <input type="file" onChange={() => this.onStepUrlChange(event, index)} />
-                                            {element.MediaFileUrl && <img src={`@Url.Content("~/${element.MediaFileUrl}")`} alt="MainMediaUrl" />}
-                                            <button className="btn btn-secondary" value="upload" onClick={() => this.onStepMediaUpload(event, index)}>
-                                                Upload!
+                                    </div>
+                                    <div className="row mb-5">
+                                        <div className="col-sm">
+                                            <label className="control-label font-weight-bold">Tags</label>
+                                            {this.state.RecipeTags.map((tag, index) => {
+                                                if(!tag.IsAllergenTag) {
+                                                    return (
+                                                        <div className="row mb-1" key={index}>
+                                                            <div className="col-sm-10">
+                                                                <input type="text" className="form-control" onChange={() => this.handleTagChange(event, index)} value={tag.Tag.TagName} />
+                                                            </div>
+                                                            <div className="col-sm-2">
+                                                                <button type="button" className="icon-button" onClick={() => this.removeTag(index)}>
+                                                                    <i class="fa fa-times" aria-hidden="true"></i>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    )
+                                                }
+                                            })}
+                                            <button type="button" className="icon-button" onClick={this.addTag}>
+                                                <i class="fa fa-plus" aria-hidden="true">Add Tags</i>
                                             </button>
                                         </div>
-                                        <button type="button" className="btn btn-danger" onClick={() => this.removeStep(index)}>Remove Step</button>
                                     </div>
-                                )
-                            })}
-                            <button className="btn btn-secondary" type="button" onClick={this.addStep}>Add Steps</button>
-
-                            {this.state.RecipeIngredients.map((element, index) => {
-                                return(
-                                    <div key={index}>
-                                        <div>Ingredient {index + 1}</div>
-                                        <div className="form-group">
-                                            <label className="control-label">Ingredient</label>
-                                            <input type="text" id={`ingredient-name-${index}`} name="ingredient-name" onChange={() => this.handleIngredientChange(index)} value={element.Ingredient} />
-                                        </div>
-                                        <div className="form-group">
-                                            <label className="control-label">Quantity</label>
-                                            <input type="number" id={`ingredient-qty-${index}`} name="ingredient-qty" onChange={() => this.handleIngredientChange(index)} value={element.Quantity} />
-                                        </div>
-                                        <div className="form-group">
-                                            <label className="control-label">UnitOfMeasurement</label>
-                                            <input type="text" id={`ingredient-unit-${index}`} name="ingredient-unit" onChange={() => this.handleIngredientChange(index)} value={element.UnitOfMeasurement} />
-                                        </div>
-                                        <button type="button" className="btn btn-danger" onClick={() => this.removeIngredient(index)}>Remove Ingredient</button>
-                                    </div>
-                                )
-                            })}
-                            <button className="btn btn-secondary" type="button" onClick={this.addIngredient}>Add Ingredient</button>
-
-                            <label className="control-label">Allergen Tags</label>
-                            <button className="btn btn-primary" type="button" onClick={this.generateAllergenTags}>Generate Allergen Tag</button>
-                            {this.state.RecipeTags.map((tag, index) => {
-                                if(tag.IsAllergenTag) {
-                                    return (
-                                        <div key={index}>
-                                            <input type="text" onChange={() => this.handleAllergenTagChange(event, index)} value={tag.Tag.Warning} />
-                                            <button type="button" className="btn btn-danger" onClick={() => this.removeAllergenTag(index)}>X</button>
-                                        </div>
-                                    )
-                                }
-                            })}
-                            <button type="button" className="btn btn-primary" onClick={this.addAllergenTag}>Add Allergen Tag</button>
-
-                            <label className="control-label">Tags</label>
-                            {this.state.RecipeTags.map((tag, index) => {
-                                if(!tag.IsAllergenTag) {
-                                    return (
-                                        <div key={index}>
-                                            <input type="text" onChange={() => this.handleTagChange(event, index)} value={tag.Tag.TagName} />
-                                            <button type="button" className="btn btn-danger" onClick={() => this.removeTag(index)}>X</button>
-                                        </div>
-                                    )
-                                }
-                            })}
-                            <button type="button" className="btn btn-primary" onClick={this.addTag}>Add Tag</button>
-                            
-                            <div className="form-group">
-                                <input type="submit" value="Create" className="btn btn-primary" />
+                                </div>
                             </div>
-                      </form>
+
+                            <div className="row">
+                                <div className="col-sm">
+                                    <label className="control-label font-weight-bold">Ingredients</label>
+                                </div>
+                            </div>
+
+                            <div className="row">
+                                <div className="col-sm">
+                                    {this.state.RecipeIngredients.map((element, index) => {
+                                        return(
+                                            <div className="row" key={index}>
+                                                <div className="form-group col-sm-6">
+                                                    <input type="text" className="form-control" placeholder="Ingredient" id={`ingredient-name-${index}`} name="ingredient-name" onChange={() => this.handleIngredientChange(index)} value={element.Ingredient} />
+                                                </div>
+                                                <div className="form-group col-sm-2">
+                                                    <input type="number" className="form-control" placeholder="Quantity" id={`ingredient-qty-${index}`} name="ingredient-qty" onChange={() => this.handleIngredientChange(index)} value={element.Quantity} />
+                                                </div>
+                                                <div className="form-group col-sm-3">
+                                                    <input type="text" className="form-control" placeholder="Unit" id={`ingredient-unit-${index}`} name="ingredient-unit" onChange={() => this.handleIngredientChange(index)} value={element.UnitOfMeasurement} />
+                                                </div>
+                                                <div className="col-sm-1">
+                                                    <button type="button" className="icon-button" onClick={() => this.removeIngredient(index)}>
+                                                        <i class="fa fa-times" aria-hidden="true"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        )
+                                    })}
+                                </div>
+                            </div>
+
+                            <div className="row">
+                                <div className="col-sm mb-5">
+                                    <button className="icon-button" type="button" onClick={this.addIngredient}>
+                                        <i class="fa fa-plus" aria-hidden="true">Add ingredient</i>    
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div className="row">
+                                <div className="col-sm">
+                                    {this.state.RecipeSteps.map((element, index) => {
+                                        return(
+                                            <div key={index}>
+                                                <div className="row">
+                                                    <div className="col-sm font-weight-bold">
+                                                        Step {index + 1}
+                                                    </div>
+                                                </div>
+                                                <div className="row">
+                                                    <div className="form-group col-sm-6">
+                                                        <label className="control-label">Step Image</label>
+                                                        <input type="file" onChange={() => this.onStepUrlChange(event, index)} />
+                                                        {element.MediaFileUrl && <img src={`@Url.Content("~/${element.MediaFileUrl}")`} alt="MainMediaUrl" />}
+                                                        <button className="btn btn-secondary" value="upload" onClick={() => this.onStepMediaUpload(event, index)}>
+                                                            Upload!
+                                                        </button>
+                                                    </div>
+                                                    <div className="form-group col-sm-5">
+                                                        <textarea type="text" placeholder="Step Instructions" className="form-control" name="step-instruction" onChange={() => this.handleStepChange(event, index)}  value={element.TextInstructions}></textarea>
+                                                    </div>
+                                                    <div className="col-sm-1">
+                                                        <button type="button" className="icon-button" onClick={() => this.removeStep(index)}>
+                                                            <i class="fa fa-times" aria-hidden="true"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )
+                                    })}
+                                </div>
+                            </div>
+
+                            <div className="row ">
+                                <div className="col-sm">
+                                    <button className="icon-button" type="button" onClick={this.addStep}>
+                                        <i class="fa fa-plus" aria-hidden="true">Add Step</i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div className="row mt-3">  
+                                <div className="col-sm-2 offset-sm-10">
+                                    <input type="submit" value="Create" className="btn btn-primary" />
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
                 </div>
             )
         }
