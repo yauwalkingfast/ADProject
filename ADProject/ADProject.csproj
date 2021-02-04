@@ -7,13 +7,18 @@
 
   <ItemGroup>
     <Compile Remove="wwwroot\recipes\**" />
+    <Compile Remove="wwwroot\Uploads\**" />
     <Content Remove="wwwroot\recipes\**" />
+    <Content Remove="wwwroot\Uploads\**" />
     <EmbeddedResource Remove="wwwroot\recipes\**" />
+    <EmbeddedResource Remove="wwwroot\Uploads\**" />
     <None Remove="wwwroot\recipes\**" />
+    <None Remove="wwwroot\Uploads\**" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="EntityFramework" Version="6.4.4" />
+    <PackageReference Include="Microsoft.AspNet.Mvc" Version="5.2.7" />
     <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.7" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="5.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
