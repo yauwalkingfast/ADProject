@@ -297,7 +297,13 @@
         generateJson = () => {
             var RecipeSteps = this.state.RecipeSteps
                 .filter(step => step.TextInstructions.trim() !== "")
-                .map((step, index) => ({...step, StepNumber: index + 1}))
+                .map((step, index) => {
+                    delete step.MediaSelectedFile;
+                    return {
+                        ...step, 
+                        StepNumber: index + 1
+                    }
+                });
             
             var RecipeIngredients = this.state.RecipeIngredients
                 .filter(ingredient => ingredient.Ingredient.trim() !== "");
