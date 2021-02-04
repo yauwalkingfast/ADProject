@@ -118,14 +118,32 @@
                             })}
                             <button className="btn btn-secondary" type="button" onClick={this.addIngredient}>Add Ingredient</button>
 
+                            <label className="control-label">Allergen Tags</label>
                             <button className="btn btn-primary" type="button" onClick={this.generateAllergenTags}>Generate Allergen Tag</button>
-                            {this.state.RecipeTags.map((tag, index) => (
-                                <div key={index}>
-                                    <input type="text" onChange={() => this.handleTagChange(event, index)} value={tag.Tag.Warning} />
-                                    <button type="button" className="btn btn-danger" onClick={() => this.removeTag(index)}>X</button>
-                                </div>
-                            ))}
-                            <button type="button" className="btn btn-primary" onClick={this.addTag}>Add Tags</button>
+                            {this.state.RecipeTags.map((tag, index) => {
+                                if(tag.IsAllergenTag) {
+                                    return (
+                                        <div key={index}>
+                                            <input type="text" onChange={() => this.handleAllergenTagChange(event, index)} value={tag.Tag.Warning} />
+                                            <button type="button" className="btn btn-danger" onClick={() => this.removeAllergenTag(index)}>X</button>
+                                        </div>
+                                    )
+                                }
+                            })}
+                            <button type="button" className="btn btn-primary" onClick={this.addAllergenTag}>Add Allergen Tag</button>
+
+                            <label className="control-label">Tags</label>
+                            {this.state.RecipeTags.map((tag, index) => {
+                                if(!tag.IsAllergenTag) {
+                                    return (
+                                        <div key={index}>
+                                            <input type="text" onChange={() => this.handleTagChange(event, index)} value={tag.Tag.TagName} />
+                                            <button type="button" className="btn btn-danger" onClick={() => this.removeTag(index)}>X</button>
+                                        </div>
+                                    )
+                                }
+                            })}
+                            <button type="button" className="btn btn-primary" onClick={this.addTag}>Add Tag</button>
 
                             <div className="form-group">
                                 <input type="submit" value="Edit" className="btn btn-primary" />
@@ -229,6 +247,12 @@
                         TagName: "",
                         Warning: "",
                     }
+                }, {
+                    IsAllergenTag: false,
+                    Tag: {
+                        TagName: "",
+                        Warning: ""
+                    }
                 }],
             };
         }
@@ -282,10 +306,10 @@
             event.preventDefault();
             const ingredient = [...this.state.RecipeIngredients];
             console.log(ingredient);
-            this.fetchTags(ingredient, this.setTags);
+            this.fetchAllergenTags(ingredient, this.setAllergenTags);
         }
 
-        fetchTags = (ingredient, callback) => {
+        fetchAllergenTags = (ingredient, callback) => {
             let xhr = new XMLHttpRequest();
             xhr.open("POST", "/Recipes/GenerateAllergenTag");
             xhr.setRequestHeader("Content-Type", "application/json; charset=utf8");
@@ -309,13 +333,73 @@
             xhr.send(JSON.stringify(ingredient));
         }
 
-        setTags = (tags) => {
+        setAllergenTags = (tags) => {
             this.setState(state => {
+                const RecipeTags = [...state.RecipeTags, ...JSON.parse(tags)]
                 return {
-                    RecipeTags: [...JSON.parse(tags)]
+                    RecipeTags
                 }
             })
             console.log(this.state.RecipeTags);
+        }
+
+        removeAllergenTag = (index) => {
+            this.setState(state => {
+                const RecipeTags = state.RecipeTags;
+                RecipeTags.splice(index, 1);
+                return {
+                    RecipeTags
+                }
+            })
+        }
+
+        addAllergenTag = () => {
+            this.setState(state => {
+                const RecipeTags = [...state.RecipeTags, {
+                    IsAllergenTag: true,
+                    Tag: {
+                        TagName: "",
+                        Warning: "",
+                    }
+                }];
+                return {
+                    RecipeTags
+                }
+            })
+        }
+
+        handleAllergenTagChange = (event, index) => {
+            const newTag = event.target.value;
+            this.setState(state => {
+                const RecipeTags = state.RecipeTags;
+                RecipeTags[index] = {
+                    IsAllergenTag: true,
+                    Tag: {
+                        TagName: newTag,
+                        Warning: newTag,
+                    }
+                };
+                return {
+                    RecipeTags
+                }
+            })
+        }
+
+        handleTagChange = (event, index) => {
+            const newTag = event.target.value;
+            this.setState(state => {
+                const RecipeTags = state.RecipeTags;
+                RecipeTags[index] = {
+                    IsAllergenTag: false,
+                    Tag: {
+                        TagName: newTag,
+                        Warning: newTag,
+                    }
+                }
+                return {
+                    RecipeTags
+                }
+            })
         }
 
         removeTag = (index) => {
@@ -331,29 +415,12 @@
         addTag = () => {
             this.setState(state => {
                 const RecipeTags = [...state.RecipeTags, {
-                    IsAllergenTag: true,
+                    IsAllergenTag: false,
                     Tag: {
                         TagName: "",
                         Warning: "",
                     }
                 }];
-                return {
-                    RecipeTags
-                }
-            })
-        }
-
-        handleTagChange = (event, index) => {
-            const newTag = event.target.value;
-            this.setState(state => {
-                const RecipeTags = state.RecipeTags;
-                RecipeTags[index] = {
-                    IsAllergenTag: true,
-                    Tag: {
-                        TagName: newTag,
-                        Warning: newTag,
-                    }
-                };
                 return {
                     RecipeTags
                 }
