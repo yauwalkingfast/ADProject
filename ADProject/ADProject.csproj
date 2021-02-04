@@ -1,9 +1,20 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <UserSecretsId>aspnet-ADProject-F1AEA88A-1CA0-4F3D-8559-0B3A736A1930</UserSecretsId>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="wwwroot\recipes\**" />
+    <Compile Remove="wwwroot\Uploads\**" />
+    <Content Remove="wwwroot\recipes\**" />
+    <Content Remove="wwwroot\Uploads\**" />
+    <EmbeddedResource Remove="wwwroot\recipes\**" />
+    <EmbeddedResource Remove="wwwroot\Uploads\**" />
+    <None Remove="wwwroot\recipes\**" />
+    <None Remove="wwwroot\Uploads\**" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="EntityFramework" Version="6.4.4" />
@@ -26,10 +37,7 @@
   </ItemGroup>
 
   <ItemGroup>
-
-    <Folder Include="wwwroot\Uploads\" />
-    <Folder Include="wwwroot\recipes\images\" />
-
+    <Folder Include="wwwroot\images\" />
   </ItemGroup>
 
 </Project>
