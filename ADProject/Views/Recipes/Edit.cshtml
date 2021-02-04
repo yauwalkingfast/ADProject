@@ -10,9 +10,7 @@
 
 <h4>Recipe</h4>
 <hr />
-<div class="row">
-    <div id="edit"></div>
-</div>
+<div id="edit"></div>
 
 <div>
     <a asp-action="Index">Back to List</a>
@@ -45,7 +43,7 @@
     class Edit extends React.Component {
         render() {
             return (
-                <div>
+                <div className="row">
                     <form onSubmit={this.submitHandler}>
                             <div className="form-group">
                                 <label className="control-label">Title</label>
@@ -75,10 +73,6 @@
                                 <label className="control-label">ServingSize</label>
                                 <input type="number" className="form-control" name="ServingSize" value={this.state.ServingSize} onChange={this.handleChange} />
                             </div>
-                            <div className="form-group">
-                                <label className="control-label">MainMediaUrl</label>
-                                <input type="text" className="form-control" name="MainMediaUrl" value={this.state.MainMediaUrl} onChange={this.handleChange} />
-                            </div>
 
                             {this.state.RecipeSteps.map((element, index) => {
                                 return(
@@ -86,11 +80,15 @@
                                         <div>Step {index + 1}</div>
                                         <div className="form-group">
                                             <label className="control-label">TextInstructions</label>
-                                            <input type="text" id={`step-instruction-${index}`} className="form-control" name="step-instruction" onChange={() => this.handleStepChange(index)}  value={element.TextInstructions} />
+                                            <input type="text" className="form-control" name="step-instruction" onChange={() => this.handleStepChange(event, index)}  value={element.TextInstructions} />
                                         </div>
                                         <div className="form-group">
-                                            <label className="control-label">MediaFileUrl</label>
-                                            <input type="text" id={`step-mediafileurl-${index}`} className="form-control" name="step-mediafileurl" onChange={() => this.handleStepChange(index)} value={element.MediaFileUrl} />
+                                            <label className="control-label">Step Image</label>
+                                            <input type="file" onChange={() => this.onStepUrlChange(event, index)} />
+                                            {element.MediaFileUrl && <img src={`@Url.Content("~/${element.MediaFileUrl}")`} alt="MainMediaUrl" />}
+                                            <button className="btn btn-secondary" value="upload" onClick={() => this.onStepMediaUpload(event, index)}>
+                                                Upload!
+                                            </button>
                                         </div>
                                         <button type="button" className="btn btn-danger" onClick={() => this.removeStep(index)}>Remove Step</button>
                                     </div>
@@ -130,11 +128,49 @@
                             <button type="button" className="btn btn-primary" onClick={this.addTag}>Add Tags</button>
 
                             <div className="form-group">
-                                <input type="submit" value="Create" className="btn btn-primary" />
+                                <input type="submit" value="Edit" className="btn btn-primary" />
                             </div>
                       </form>
                 </div>
             )
+        }
+
+        onStepUrlChange = (event, index) => {
+            console.log(event.target.files[0].name);
+            this.setState(state => {
+                const RecipeSteps = state.RecipeSteps;
+                RecipeSteps[index].MediaFileUrl = "";
+                RecipeSteps[index].MediaSelectedFile = event.target.files[0];
+
+                return {
+                    RecipeSteps
+                }
+            })
+        }
+
+        onStepMediaUpload = async (event, index) => {
+            event.preventDefault();
+            const file = this.state.RecipeSteps[index].MediaSelectedFile;
+
+            const formData = new FormData();
+            formData.append("formFile", file);
+            formData.append("fileName", file.name);
+
+            try {
+                const { data: { fileUrl } } = await axios.post("/Recipes/FileUpload", formData);
+                console.log(fileUrl);
+
+                this.setState(state => {
+                    const RecipeSteps = state.RecipeSteps;
+                    RecipeSteps[index].MediaFileUrl = fileUrl.trim();
+                    console.log(RecipeSteps);
+                    return {
+                        RecipeSteps
+                    }
+                });
+            } catch(error) {
+                alert("Error uploading step image");
+            }
         }
 
         onMainMediaUpload = async (event) => {
@@ -185,6 +221,7 @@
                 RecipeSteps: [{
                     TextInstructions: "",
                     MediaFileUrl: "",
+                    MediaSelectedFile: null,
                 }],
                 RecipeTags: [{
                     IsAllergenTag: true,
@@ -216,7 +253,13 @@
         generateJson = () => {
             var RecipeSteps = this.state.RecipeSteps
                 .filter(step => step.TextInstructions.trim() !== "")
-                .map((step, index) => ({...step, StepNumber: index + 1}))
+                .map((step, index) => {
+                    delete step.MediaSelectedFile;
+                    return {
+                        ...step, 
+                        StepNumber: index + 1
+                    }
+                });
             
             var RecipeIngredients = this.state.RecipeIngredients
                 .filter(ingredient => ingredient.Ingredient.trim() !== "");
@@ -225,6 +268,7 @@
                 .filter(allergenTag => allergenTag.Tag.Warning.trim() !== "");
 
             var state = {...this.state};
+            delete state.MainSelectedFile;
             const toSubmit = {
                 ...state,
                 RecipeSteps,
@@ -393,7 +437,8 @@
                 const RecipeSteps = [...state.RecipeSteps, {
                     TextInstructions: "",
                     MediaFileUrl: "",
-                }]
+                    MediaSelectedFile: null,
+                }];
                 return {
                     RecipeSteps,
                 }
@@ -410,14 +455,14 @@
             });
         }
 
-        handleStepChange = (index) => {
-            const TextInstructions = document.getElementById(`step-instruction-${index}`).value;
-            const MediaFileUrl = document.getElementById(`step-mediafileurl-${index}`).value;
+        handleStepChange = (event, index) => {
+            const TextInstructions = event.target.value;
             this.setState(state => {
                 const RecipeSteps = state.RecipeSteps;
+                const oldStep = RecipeSteps[index]
                 RecipeSteps[index] = {
-                    TextInstructions,
-                    MediaFileUrl
+                    ...oldStep,
+                    TextInstructions
                 }
                 return {
                     RecipeSteps
