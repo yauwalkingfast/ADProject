@@ -24,7 +24,6 @@ namespace ADProject.Models
         [ForeignKey(nameof(RecipeId))]
         [InverseProperty("RecipeTags")]
         public virtual Recipe Recipe { get; set; }
-
         [ForeignKey(nameof(TagId))]
         [InverseProperty("RecipeTags")]
         public virtual Tag Tag { get; set; }
