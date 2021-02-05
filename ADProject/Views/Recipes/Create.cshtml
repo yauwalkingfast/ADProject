@@ -5,10 +5,6 @@
     int userId = (int)ViewData["UserId"];
 }
 
-<h1>Create</h1>
-
-<h4>Recipe</h4>
-<hr />
 <div id="create"></div>
 
 <div>
@@ -74,6 +70,62 @@
         overflow: hidden;
         outline:none;
     }
+    .files input {
+        outline: 2px dashed #92b0b3;
+        outline-offset: -10px;
+        -webkit-transition: outline-offset .15s ease-in-out, background-color .15s linear;
+        transition: outline-offset .15s ease-in-out, background-color .15s linear;
+        padding: 120px 0px 85px 35%;
+        text-align: center !important;
+        margin: 0;
+        width: 100% !important;
+    }
+    .files input:focus{     
+        outline: 2px dashed #92b0b3;  
+        outline-offset: -10px;
+        -webkit-transition: outline-offset .15s ease-in-out, background-color .15s linear;
+        transition: outline-offset .15s ease-in-out, background-color .15s linear; border:1px solid #92b0b3;
+    }
+    .files{ 
+        position:relative
+    }
+    .files:after {  pointer-events: none;
+        position: absolute;
+        top: 50px;
+        left: 0;
+        width: 50px;
+        right: 0;
+        height: 56px;
+        content: "";
+        background-image: url(https://image.flaticon.com/icons/png/128/109/109612.png);
+        display: block;
+        margin: 0 auto;
+        background-size: 100%;
+        background-repeat: no-repeat;
+    }
+    .color input{ 
+        background-color:#f1f1f1;
+    }
+    .files:before {
+        position: absolute;
+        bottom: 50px;
+        left: 0;  pointer-events: none;
+        width: 100%;
+        right: 0;
+        height: 57px;
+        content: " or drag it here. ";
+        display: block;
+        margin: 0 auto;
+        color: #2ea591;
+        font-weight: 600;
+        text-transform: capitalize;
+        text-align: center;
+    }
+    .main-image {
+        width: 350px;
+        height: 300px;
+        overflow: hidden;
+    }
 </style>
 
 <script type="text/babel">
@@ -94,11 +146,36 @@
                                     </div>
                                     <div className="form-group">
                                         <label className="control-label font-weight-bold">Cover Image</label>
-                                        <input type="file" onChange={this.onMainMediaUrlChange} />
-                                        {this.state.MainMediaUrl && <img src={`@Url.Content("~/${this.state.MainMediaUrl}")`} alt="MainMediaUrl" />}
-                                        <button className="btn btn-secondary" value="upload" onClick={this.onMainMediaUpload}>
-                                            Upload!
-                                        </button>
+                                        {this.state.MainMediaUrl ? (
+                                            <div className="row">
+                                                <div className="col-sm">
+                                                    <div className="row">
+                                                        <div className="col-sm">
+                                                            <img src={`@Url.Content("~/${this.state.MainMediaUrl}")`} className="img-fluid main-image mb-2" alt="MainMediaUrl" />
+                                                        </div>
+                                                    </div>
+                                                    <div className="row">
+                                                        <div className="col-sm">
+                                                            <input type="file" onChange={this.onMainMediaUrlChange} />
+                                                        </div>
+                                                    </div>
+                                                    <div className="row">
+                                                        <div className="col-sm">
+                                                            <button className="btn btn-secondary mt-4" value="upload" onClick={this.onMainMediaUpload}>
+                                                                Change
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <div className="files">
+                                                <input type="file" className="form-control" onChange={this.onMainMediaUrlChange} />
+                                                <button className="btn btn-secondary mt-4" value="upload" onClick={this.onMainMediaUpload}>
+                                                    Upload
+                                                </button>
+                                            </div>
+                                        )}
                                     </div>
                                     <div className="form-group">
                                         <label className="control-label font-weight-bold">Description</label>
@@ -237,12 +314,36 @@
                                                 </div>
                                                 <div className="row">
                                                     <div className="form-group col-sm-6">
-                                                        <label className="control-label">Step Image</label>
-                                                        <input type="file" onChange={() => this.onStepUrlChange(event, index)} />
-                                                        {element.MediaFileUrl && <img src={`@Url.Content("~/${element.MediaFileUrl}")`} alt="MainMediaUrl" />}
-                                                        <button className="btn btn-secondary" value="upload" onClick={() => this.onStepMediaUpload(event, index)}>
-                                                            Upload!
-                                                        </button>
+                                                        {element.MediaFileUrl ? (
+                                                            <div className="row">
+                                                                <div className="col-sm">
+                                                                    <div className="row">
+                                                                        <div className="col-sm">
+                                                                            <img src={`@Url.Content("~/${element.MediaFileUrl}")`} className="img-fluid main-image mb-2" alt="MainMediaUrl" />
+                                                                        </div>
+                                                                    </div>
+                                                                    <div className="row">
+                                                                        <div className="col-sm">
+                                                                            <input type="file" onChange={() => this.onStepUrlChange(event, index)} />
+                                                                        </div>
+                                                                    </div>
+                                                                    <div className="row">
+                                                                        <div className="col-sm">
+                                                                            <button className="btn btn-secondary mt-4" value="upload" onClick={() => this.onStepMediaUpload(event, index)}>
+                                                                                Change
+                                                                            </button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        ) : (
+                                                            <div className="files">
+                                                                <input type="file" className="form-control" onChange={() => this.onStepUrlChange(event, index)} />
+                                                                <button className="btn btn-secondary mt-4" value="upload" onClick={() => this.onStepMediaUpload(event, index)}>
+                                                                    Upload
+                                                                </button>
+                                                            </div>
+                                                        )}
                                                     </div>
                                                     <div className="form-group col-sm-5">
                                                         <textarea type="text" placeholder="Step Instructions" className="form-control" name="step-instruction" onChange={() => this.handleStepChange(event, index)}  value={element.TextInstructions}></textarea>
@@ -277,72 +378,6 @@
                     </div>
                 </div>
             )
-        }
-
-        onStepUrlChange = (event, index) => {
-            console.log(event.target.files[0].name);
-            this.setState(state => {
-                const RecipeSteps = state.RecipeSteps;
-                RecipeSteps[index].MediaFileUrl = "";
-                RecipeSteps[index].MediaSelectedFile = event.target.files[0];
-
-                return {
-                    RecipeSteps
-                }
-            })
-        }
-
-        onStepMediaUpload = async (event, index) => {
-            event.preventDefault();
-            const file = this.state.RecipeSteps[index].MediaSelectedFile;
-
-            const formData = new FormData();
-            formData.append("formFile", file);
-            formData.append("fileName", file.name);
-
-            try {
-                const { data: { fileUrl } } = await axios.post("/Recipes/FileUpload", formData);
-                console.log(fileUrl);
-
-                this.setState(state => {
-                    const RecipeSteps = state.RecipeSteps;
-                    RecipeSteps[index].MediaFileUrl = fileUrl.trim();
-                    console.log(RecipeSteps);
-                    return {
-                        RecipeSteps
-                    }
-                });
-            } catch(error) {
-                alert("Error uploading step image");
-            }
-        }
-
-        onMainMediaUpload = async (event) => {
-            event.preventDefault();
-            const file = this.state.MainSelectedFile;
-
-            const formData = new FormData();
-            formData.append("formFile", file);
-            formData.append("fileName", file.name);
-
-            try {
-                const { data: { fileUrl } } = await axios.post("/Recipes/FileUpload", formData);
-                console.log(fileUrl);
-
-                this.setState({
-                    MainMediaUrl: fileUrl.trim()
-                });
-            } catch(error) {
-                alert("Error uploading main image");
-            }
-        }
-
-        onMainMediaUrlChange = (event) => {
-            console.log(event.target.files[0].name)
-            this.setState({
-                MainMediaUrl: "",
-                MainSelectedFile: event.target.files[0]
-            })
         }
 
         constructor(props) {
@@ -417,6 +452,80 @@
                     }
                 }],
             };
+        }
+
+        onStepUrlChange = (event, index) => {
+            console.log(event.target.files[0].name);
+            this.setState(state => {
+                const RecipeSteps = state.RecipeSteps;
+                RecipeSteps[index].MediaSelectedFile = event.target.files[0];
+
+                return {
+                    RecipeSteps
+                }
+            })
+        }
+
+        onStepMediaUpload = async (event, index) => {
+            event.preventDefault();
+            const file = this.state.RecipeSteps[index].MediaSelectedFile;
+
+            if(!file) {
+                alert("Please choose a new image");
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("formFile", file);
+            formData.append("fileName", file.name);
+
+            try {
+                const { data: { fileUrl } } = await axios.post("/Recipes/FileUpload", formData);
+                console.log(fileUrl);
+
+                this.setState(state => {
+                    const RecipeSteps = state.RecipeSteps;
+                    RecipeSteps[index].MediaFileUrl = fileUrl.trim();
+                    console.log(RecipeSteps);
+                    return {
+                        RecipeSteps
+                    }
+                });
+            } catch(error) {
+                alert("Error uploading step image");
+            }
+        }
+
+        onMainMediaUpload = async (event) => {
+            event.preventDefault();
+            const file = this.state.MainSelectedFile;
+            
+            if(!file) {
+                alert("Please choose a new image");
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("formFile", file);
+            formData.append("fileName", file.name);
+
+            try {
+                const { data: { fileUrl } } = await axios.post("/Recipes/FileUpload", formData);
+                console.log(fileUrl);
+
+                this.setState({
+                    MainMediaUrl: fileUrl.trim()
+                });
+            } catch(error) {
+                alert("Error uploading main image");
+            }
+        }
+
+        onMainMediaUrlChange = (event) => {
+            console.log(event.target.files[0].name)
+            this.setState({
+                MainSelectedFile: event.target.files[0]
+            })
         }
 
         generateAllergenTags = (event) => {
