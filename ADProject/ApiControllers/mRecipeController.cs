@@ -83,6 +83,16 @@ namespace ADProject.ApiControllers
             return isDeleted;
         }
 
+        [HttpPost]
+        [Route("update/{id}")]
+        public async Task<booleanJson> UpdateRecipe(int id, [FromBody] Recipe recipe)
+        {
+            booleanJson isUpdated = new booleanJson();
+
+            isUpdated.flag = await _recipesService.EditRecipe(id, recipe);
+            return isUpdated;
+        }
+
         /*[HttpDelete]
         [Route("deleterecipe/{​​id}​​")]
         public async Task<ActionResult<booleanJson> DeleteRecipe(int id)
