@@ -6,22 +6,27 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ADProject.Models;
+using ADProject.Service;
+using Microsoft.AspNetCore.Http;
+using System.IO;
 
 namespace ADProject.Controllers
 {
     public class GroupsController : Controller
     {
         private readonly ADProjContext _context;
+        private readonly IGroupService _groupService;
 
-        public GroupsController(ADProjContext context)
+        public GroupsController(ADProjContext context, IGroupService groupService)
         {
             _context = context;
+            _groupService = groupService;
         }
 
         // GET: Groups
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Groups.ToListAsync());
+            return View(await _groupService.GetAllGroups());
         }
 
         // GET: Groups/Details/5
@@ -32,14 +37,14 @@ namespace ADProject.Controllers
                 return NotFound();
             }
 
-            var @group = await _context.Groups
-                .FirstOrDefaultAsync(m => m.GroupId == id);
-            if (@group == null)
+            var group = await _groupService.GetGroupById(id);
+
+            if (group == null)
             {
                 return NotFound();
             }
 
-            return View(@group);
+            return View(group);
         }
 
         // GET: Groups/Create
@@ -53,15 +58,42 @@ namespace ADProject.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("GroupId,GroupName,GroupPhoto,Description,DateCreated,IsPublished")] Group @group)
+        public async Task<IActionResult> Create([Bind("GroupId,GroupName,GroupPicture,Description,DateCreated,IsPublished")] Group group)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(@group);
-                await _context.SaveChangesAsync();
+                var groupPicture = group.GroupPicture;
+                var groupPhoto = UploadPicture(groupPicture);
+                if(groupPhoto.Equals("error"))
+                {
+                    return View(group);
+                }
+                group.GroupPhoto = groupPhoto;
+                await _groupService.AddGroup(group);
                 return RedirectToAction(nameof(Index));
             }
-            return View(@group);
+            return View(group);
+        }
+
+        // It might be better to put this into a service
+        private string UploadPicture(IFormFile file)
+        {
+            try
+            {
+                string fileName = Guid.NewGuid().ToString() + ".jpg";
+                string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", fileName);
+                using (Stream stream = new FileStream(path, FileMode.Create))
+                {
+                    file.CopyTo(stream);
+                }
+
+                string imageUrl = "images/" + fileName;
+                return imageUrl;
+            } 
+            catch
+            {
+                return "error";
+            }
         }
 
         // GET: Groups/Edit/5
@@ -72,47 +104,73 @@ namespace ADProject.Controllers
                 return NotFound();
             }
 
-            var @group = await _context.Groups.FindAsync(id);
-            if (@group == null)
+            var group = await _groupService.GetGroupById(id);
+            if (group == null)
             {
                 return NotFound();
             }
-            return View(@group);
+            return View(group);
         }
 
         // POST: Groups/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        /*        [HttpPost]
+                [ValidateAntiForgeryToken]
+                public async Task<IActionResult> Edit(int id, [Bind("GroupId,GroupName,GroupPicture,Description,DateCreated,IsPublished")] Group group)
+                {
+                    if (id != group.GroupId)
+                    {
+                        return NotFound();
+                    }
+
+                    if (ModelState.IsValid)
+                    {
+                        try
+                        {
+                            _context.Update(group);
+                            await _context.SaveChangesAsync();
+                        }
+                        catch (DbUpdateConcurrencyException)
+                        {
+                            if (!GroupExists(group.GroupId))
+                            {
+                                return NotFound();
+                            }
+                            else
+                            {
+                                throw;
+                            }
+                        }
+                        return RedirectToAction(nameof(Index));
+                    }
+                    return View(group);
+                }*/
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("GroupId,GroupName,GroupPhoto,Description,DateCreated,IsPublished")] Group @group)
+        public async Task<IActionResult> Edit(int id, [Bind("GroupId,GroupName,GroupPicture,Description,DateCreated,IsPublished")] Group group)
         {
-            if (id != @group.GroupId)
+            if (id != group.GroupId)
             {
                 return NotFound();
             }
 
             if (ModelState.IsValid)
             {
-                try
+                var groupPicture = group.GroupPicture;
+                var groupPhoto = UploadPicture(groupPicture);
+                if (groupPhoto.Equals("error"))
                 {
-                    _context.Update(@group);
-                    await _context.SaveChangesAsync();
+                    return View(group);
                 }
-                catch (DbUpdateConcurrencyException)
+                group.GroupPhoto = groupPhoto;
+                if (await _groupService.EditGroup(id, group))
                 {
-                    if (!GroupExists(@group.GroupId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    return RedirectToAction(nameof(Index));
                 }
-                return RedirectToAction(nameof(Index));
             }
-            return View(@group);
+            return View(group);
         }
 
         // GET: Groups/Delete/5
@@ -123,9 +181,8 @@ namespace ADProject.Controllers
                 return NotFound();
             }
 
-            var @group = await _context.Groups
-                .FirstOrDefaultAsync(m => m.GroupId == id);
-            if (@group == null)
+            var group = await _groupService.GetGroupById(id);
+            if (group == null)
             {
                 return NotFound();
             }
@@ -138,10 +195,12 @@ namespace ADProject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var @group = await _context.Groups.FindAsync(id);
-            _context.Groups.Remove(@group);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            var successful = await _groupService.DeleteGroup(id);
+            if (successful)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            return View("Error");
         }
 
         private bool GroupExists(int id)
