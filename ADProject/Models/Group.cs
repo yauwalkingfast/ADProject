@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 #nullable disable
@@ -27,5 +28,8 @@ namespace ADProject.Models
         public DateTime DateCreated { get; set; }
         [Column("isPublished")]
         public bool IsPublished { get; set; }
+
+        [NotMapped]
+        public IFormFile GroupPicture { get; set; }
     }
 }

@@ -10,9 +10,11 @@ using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
@@ -58,6 +60,7 @@ namespace ADProject
             //This DI cannot use singleton because it couldnt scope another DI DBContext
             services.AddScoped<IRecipeService, RecipeService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IGroupService, GroupService>();
 
             // This is to handle reference loop situation when returning Json from async method
             // in API controller
@@ -102,6 +105,12 @@ namespace ADProject
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/static-files?view=aspnetcore-5.0
+            /*            app.UseStaticFiles(new StaticFileOptions
+                        {
+                            FileProvider = new PhysicalFileProvider(Path.Combine(env.ContentRootPath, "RecipesImage")),
+                            RequestPath = "/RecipesImage"
+                        });*/
 
             app.UseRouting();
 
