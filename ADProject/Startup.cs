@@ -57,6 +57,7 @@ namespace ADProject
             services.AddControllersWithViews();
             //This DI cannot use singleton because it couldnt scope another DI DBContext
             services.AddScoped<IRecipeService, RecipeService>();
+            services.AddScoped<IUserService, UserService>();
 
             // This is to handle reference loop situation when returning Json from async method
             // in API controller

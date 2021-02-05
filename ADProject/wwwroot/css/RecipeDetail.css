@@ -1,0 +1,27 @@
+﻿.image_ingredients {
+    width: 100%;
+    padding-top: 30px;
+}
+
+
+td {
+    padding: 10px;
+    text-align: left;
+}
+
+img {
+    height: 500px;
+    width: 500px;
+    border-radius: 8px;
+}
+
+div {
+    padding: 5px;
+}
+dt{
+    padding-top:20px;
+    padding-bottom:20px;
+}
+dd{
+    padding:10px;
+}
