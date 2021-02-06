@@ -16,6 +16,7 @@ namespace ADProject.Models
         [Column("commentsId")]
         public int CommentsId { get; set; }
         public int UserId { get; set; }
+        [Column("recipeId")]
         public int RecipeId { get; set; }
         [Column("dateposted", TypeName = "datetime")]
         public DateTime Dateposted { get; set; }

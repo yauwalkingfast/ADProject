@@ -16,8 +16,13 @@ namespace ADProject.Models
         public User()
         {
             Comments = new List<Comment>();
+            FollowUserFollowedUsers = new List<FollowUser>();
+            FollowUserFollowingUsers = new List<FollowUser>();
             LikesDislikes = new List<LikesDislike>();
             Recipes = new List<Recipe>();
+            SavedRecipes = new List<SavedRecipe>();
+            UserAllergens = new List<UserAllergen>();
+            UsersGroups = new List<UsersGroup>();
         }
 
         [Key]
@@ -48,13 +53,21 @@ namespace ADProject.Models
         [JsonIgnore]
         [InverseProperty(nameof(Comment.User))]
         public virtual IEnumerable<Comment> Comments { get; set; }
-
-        [JsonIgnore]
+        [InverseProperty(nameof(FollowUser.FollowedUser))]
+        public virtual IEnumerable<FollowUser> FollowUserFollowedUsers { get; set; }
+        [InverseProperty(nameof(FollowUser.FollowingUser))]
+        public virtual IEnumerable<FollowUser> FollowUserFollowingUsers { get; set; }
         [InverseProperty(nameof(LikesDislike.User))]
-        public virtual IEnumerable<LikesDislike> LikesDislikes { get; set; }
 
         [JsonIgnore]
+        public virtual IEnumerable<LikesDislike> LikesDislikes { get; set; }
         [InverseProperty(nameof(Recipe.User))]
         public virtual IEnumerable<Recipe> Recipes { get; set; }
+        [InverseProperty(nameof(SavedRecipe.User))]
+        public virtual IEnumerable<SavedRecipe> SavedRecipes { get; set; }
+        [InverseProperty(nameof(UserAllergen.User))]
+        public virtual IEnumerable<UserAllergen> UserAllergens { get; set; }
+        [InverseProperty(nameof(UsersGroup.User))]
+        public virtual IEnumerable<UsersGroup> UsersGroups { get; set; }
     }
 }
