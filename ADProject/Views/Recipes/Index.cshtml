@@ -4,171 +4,198 @@
     ViewData["Title"] = "Index";
 }
 <h1>My Recipes</h1>
-@*<h1>Index</h1>*@
 
 <p>
     <a asp-action="Create">Create New</a>
 </p>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DateCreated)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DurationInMins)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Calories)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ServingSize)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsPublished)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.MainMediaUrl)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.User)
-            </th>
-            <th>
-                Steps
-            </th>
-            <th>
-                Ingredients
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+@*<table class="table">
+        <thead>
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Title)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Description)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.DateCreated)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.DurationInMins)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Calories)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ServingSize)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.IsPublished)
-                </td>
-                <td>
-                    <img src=@item.MainMediaUrl alt="a description of the image" width="100px">
-                    @* @Html.DisplayFor(modelItem => item.MainMediaUrl)*@
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.User.Email)
-                </td>
-                <td>
-                    <ul>
-                        @foreach (var step in item.RecipeSteps)
-                        {
-                            <li>
-                                <div>
-                                    @step.StepNumber
-                                </div>
-                                <div>
-                                    <img src=@step.MediaFileUrl alt="a description of the image" width="100px">
-                                </div>
-                                <div>
-                                    @step.TextInstructions
-                                </div>
-
-                            </li>
-                        }
-                    </ul>
-                </td>
-                <td>
-                    <ul>
-                        @foreach (var ingredient in item.RecipeIngredients)
-                        {
-                            <li>
-                                <div>
-                                    @ingredient.Ingredient
-                                </div>
-                            </li>
-                        }
-                    </ul>
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.RecipeId">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.RecipeId">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.RecipeId">Delete</a>
-                </td>
+                <th>
+                    @Html.DisplayNameFor(model => model.Title)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Description)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DateCreated)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DurationInMins)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Calories)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ServingSize)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.IsPublished)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.MainMediaUrl)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.User)
+                </th>
+                <th>
+                    Steps
+                </th>
+                <th>
+                    Ingredients
+                </th>
             </tr>
-        }
-    </tbody>
-</table>
-@*
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Title)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Description)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DateCreated)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DurationInMins)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Calories)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ServingSize)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IsPublished)
+                    </td>
+                    <td>
+                        <img src=@item.MainMediaUrl alt="a description of the image" width="100px">
+                        @* @Html.DisplayFor(modelItem => item.MainMediaUrl)
+                    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.User.Email)
+    </td>
+    <td>
+        <ul>
+            @foreach (var step in item.RecipeSteps)
+            {
+                <li>
+                    <div>
+                        @step.StepNumber
+                    </div>
+                    <div>
+                        <img src=@step.MediaFileUrl alt="a description of the image" width="100px">
+                    </div>
+                    <div>
+                        @step.TextInstructions
+                    </div>
 
+                </li>
+            }
+        </ul>
+    </td>
+    <td>
+        <ul>
+            @foreach (var ingredient in item.RecipeIngredients)
+            {
+                <li>
+                    <div>
+                        @ingredient.Ingredient
+                    </div>
+                </li>
+            }
+        </ul>
+    </td>
+    <td>
+        <a asp-action="Edit" asp-route-id="@item.RecipeId">Edit</a> |
+        <a asp-action="Details" asp-route-id="@item.RecipeId">Details</a> |
+        <a asp-action="Delete" asp-route-id="@item.RecipeId">Delete</a>
+    </td>
+                </tr>
+            }
+        </tbody>
+    </table>*@
+
+<link href="~/css/RecipeDetail.css" rel="stylesheet" type="text/css" />
+<script src='https://kit.fontawesome.com/a076d05399.js'></script>
+<div class="list_recipe_grid-container">
+    <div class="trendingpost">
+        <i style='font-size:64px' class='fas'>&#xf406;</i>
+        @*@Html.DisplayFor(model => model.User.FirstName)*@
+
+    </div>
+    <div class="heading">
+        <div>
+            <h2>Your Subcribed Feed</h2>
+            <a asp-action="Create">Create New</a>
+        </div>    
+    </div>
+    
     @foreach (var item in Model)
     {
-    <h2> @Html.DisplayFor(modelItem => item.Title)</h2>
-    <table>
-        <tr>
-            <td>
-                <img src=@item.MainMediaUrl alt="a description of the image" width="400px">
-            </td>
-            <td>
-                <h3>Ingredients</h3>
-                <p> for @Html.DisplayFor(modelItem => item.ServingSize) serving</p>
-                <ul>
-                    @foreach (var ingredient in item.RecipeIngredients)
-                    {
-                        <li>
-                            <div>
-                                @ingredient.Ingredient
-                            </div>
-                        </li>
-                    }
-                </ul>
-                <p> Calories: @Html.DisplayFor(modelItem => item.Calories)</p>
-                <p>  @Html.DisplayFor(modelItem => item.DurationInMins) minutes</p>
-                <p> Alergen Tag</p>
-                <a>Add to try Later</a>
-            </td>
-        </tr>
-    </table>
-    <h3>Method</h3>
-    <ul>
-        @foreach (var step in item.RecipeSteps)
-        {
-            <li>
-                 <div>
-                    @step.StepNumber
-                </div>
-                <div>
-                    <img src=@step.MediaFileUrl alt="a description of the image" width="400px">
-                </div>
-                <div>
-                    @step.TextInstructions
-                </div>
+        <div class="recipes">
+            <table>
+                <tr>
+                    <td>
+                        <i style='font-size:32px' class='fas'>&#xf406;</i>
+                        @Html.DisplayFor(modelitem => item.User.FirstName)</td>
+                    
+                
+                    <td>@Html.DisplayFor(modelItem => item.Title)</td>   
+               
+                </tr>
+                <tr>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@item.RecipeId">
+                            <img src=@item.MainMediaUrl alt="a description of the image">
+                        </a>
+                     </td>
+        
+                    <td>
+                    <h3>Ingredients</h3>
+                    <p> for @item.ServingSize serving</p>
+                        <ul>
+                            @foreach (var ingredient in item.RecipeIngredients)
+                                   {
+                                    <li>
+                                    <div>
+                                    @ingredient.Ingredient @ingredient.Quantity @ingredient.UnitOfMeasurement
+                                    </div>
+                                    </li>
+                                    }
+                        </ul>
+                        <div>Calories: @item.Calories)</div>
+                        <div>
+                        <i style='font-size:24px' class='fas'>&#xf017;</i>
+                        @item.DurationInMins minutes
+                        </div>
 
-            </li>
-        }
-    </ul>
-    <a asp-action="Edit" asp-route-id="@item.RecipeId">Edit</a>
-    <a asp-action="Details" asp-route-id="@item.RecipeId">Details</a>
-    <a asp-action="Delete" asp-route-id="@item.RecipeId">Delete</a>
-        }*@
+
+
+            @foreach (var allergenTag in item.RecipeTags)
+            {
+                if (allergenTag.IsAllergenTag == true)
+                {
+                    <div>
+
+                        <i style='font-size:24px' class='fas'>&#xf071;</i>
+                        Warning may contains the traces of @allergenTag.Tag.Warning
+                    </div>
+
+                }
+            }
+            <div>
+                <a href="###"><i style='font-size:24px' class='fas'>&#xf067;</i> Add to try Later</a>
+            </div>
+            </td>
+        </div>
+        
+        @*<a asp-action="Edit" asp-route-id="@item.RecipeId">Edit</a>
+        <a asp-action="Details" asp-route-id="@item.RecipeId">Details</a>
+        <a asp-action="Delete" asp-route-id="@item.RecipeId">Delete</a>*@
+    }
+</div>

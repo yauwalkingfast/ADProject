@@ -1,0 +1,88 @@
+﻿@model IEnumerable<ADProject.Models.Recipe>
+
+@{
+    ViewData["Title"] = "Index1";
+}
+<h1>My Recipes</h1>
+@*this page is designed for user's MY Recipes page that shows the list of the user's posted recipe*@
+
+<link href="~/css/RecipeDetail.css" rel="stylesheet" type="text/css" />
+<script src='https://kit.fontawesome.com/a076d05399.js'></script>
+<div class="grid-container">
+    <div class="user">
+        <i style='font-size:64px' class='fas'>&#xf406;</i>
+        @*@Html.DisplayFor(model => model.User.FirstName)*@
+
+    </div>
+    <div class="menu">
+
+        <a asp-action="Index">MyRecipes</a>
+        <a asp-action="Index">Completed</a>
+        <a asp-action="Index">Posts</a>
+        <a asp-action="Index">TryLater</a>
+        <a asp-action="Index">Tribes</a>
+
+    </div>
+    <div class="searchbar">
+        <form id="search-form" action="/Home/Index" method="post">
+            <input type="text" placeholder="Search.." name="search">
+            <button type="submit"><i class="fa fa-search"></i></button>
+        </form>
+        <a asp-action="Create">Create New</a>
+    </div>
+    @foreach (var item in Model)
+    {
+        <div class="recipes">
+            <table>
+                <tr>
+                    <td>
+                        <h2> @Html.DisplayFor(modelItem => item.Title)</h2>
+                        <a asp-action="Details" asp-route-id="@item.RecipeId">
+                            <img src=@item.MainMediaUrl alt="a description of the image">
+                        </a>
+                    </td>
+
+                    <td>
+                        <h3>Ingredients</h3>
+                        <p> for @item.ServingSize serving</p>
+                        <ul>
+                            @foreach (var ingredient in item.RecipeIngredients)
+                            {
+                                <li>
+                                    <div>
+                                        @ingredient.Ingredient @ingredient.Quantity @ingredient.UnitOfMeasurement
+                                    </div>
+                                </li>
+                            }
+                        </ul>
+                        <div>Calories: @item.Calories)</div>
+                        <div>
+                            <i style='font-size:24px' class='fas'>&#xf017;</i>
+                            @item.DurationInMins minutes
+                        </div>
+
+
+
+                        @foreach (var allergenTag in item.RecipeTags)
+                        {
+                            if (allergenTag.IsAllergenTag == true)
+                            {
+                                <div>
+
+                                    <i style='font-size:24px' class='fas'>&#xf071;</i>
+                                    Warning may contains the traces of @allergenTag.Tag.Warning
+                                </div>
+
+                            }
+                        }
+                        <div>
+                            <a href="###"><i style='font-size:24px' class='fas'>&#xf067;</i> Add to try Later</a>
+                        </div>
+                    </td>
+        </div>
+
+        @*<a asp-action="Edit" asp-route-id="@item.RecipeId">Edit</a>
+            <a asp-action="Details" asp-route-id="@item.RecipeId">Details</a>
+            <a asp-action="Delete" asp-route-id="@item.RecipeId">Delete</a>*@
+    }
+</div>
