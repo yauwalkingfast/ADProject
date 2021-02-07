@@ -8,17 +8,19 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ADProject.Models
 {
-    [Keyless]
     [Table("UserAllergen")]
-    
     public partial class UserAllergen
     {
+        [Key]
+        public int UserAllergenId { get; set; }
         public int UserId { get; set; }
         public int TagId { get; set; }
 
         [ForeignKey(nameof(TagId))]
+        [InverseProperty("UserAllergens")]
         public virtual Tag Tag { get; set; }
         [ForeignKey(nameof(UserId))]
+        [InverseProperty("UserAllergens")]
         public virtual User User { get; set; }
     }
 }
