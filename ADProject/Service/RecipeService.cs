@@ -125,6 +125,30 @@ namespace ADProject.Service
                 .ToListAsync();
         }
 
+        public async Task<List<Recipe>> GetAllRecipesBasic()
+        {
+            List<Recipe> rList = await _context.Recipes
+                .Include(r => r.User)
+                .Include(r => r.Comments)
+                .Include(r => r.LikesDislikes)
+                .Include(r => r.RecipeTags)
+                .ThenInclude(rtag => rtag.Tag)
+                .ToListAsync();
+
+            foreach (Recipe r in rList)
+            {
+                User n = new User
+                {
+                    UserId = r.User.UserId,
+                    Username = r.User.Username
+                };
+
+                r.User = n;
+            }
+
+            return rList;
+        }
+
         public async Task<Recipe> GetRecipeById(int? id)
         {
             return await _context.Recipes

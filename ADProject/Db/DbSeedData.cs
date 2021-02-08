@@ -187,6 +187,23 @@ namespace ADProject.DbSeeder
             });
 
             db.SaveChanges();
+
+            db.Recipes.Add(new Recipe
+            {
+                UserId = user.UserId,
+                Title = "Mala Squid",
+                Description = "Hot and spicy",
+                DateCreated = new DateTime(2010, 10, 1, 8, 30, 52),
+                DurationInMins = 30,
+                Calories = 600,
+                IsPublished = true,
+                MainMediaUrl = "https://singaporebeauty.com/wp-content/uploads/2017/10/dm-chicken-squid-close-up.jpg",
+                //RecipeIngredients = recipeIngredient,
+                //RecipeSteps = recipeSteps,
+                //RecipeTags = recipeTag
+            });
+
+            db.SaveChanges();
         }
 
         protected void AddGroups()

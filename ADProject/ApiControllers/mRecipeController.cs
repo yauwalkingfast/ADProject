@@ -51,6 +51,21 @@ namespace ADProject.ApiControllers
             return recipe;
         }
 
+        [HttpGet]
+        [Route("getAllRecipes")]
+        public async Task<ActionResult<List<Recipe>>> GetAllRecipes()
+        {
+            List<Recipe> recipeList = await _recipesService.GetAllRecipesBasic();
+            if (recipeList == null)
+            {
+                return NotFound();
+            }
+
+            return recipeList;
+        }
+
+
+
         [HttpPost]
         //[Route("post")]
         public async Task<ActionResult<Recipe>> CreateRecipe([FromBody] Recipe recipe)
