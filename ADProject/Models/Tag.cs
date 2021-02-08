@@ -35,6 +35,8 @@ namespace ADProject.Models
         [InverseProperty(nameof(GroupTag.Tag))]
         public virtual ICollection<GroupTag> GroupTags { get; set; }
         [InverseProperty(nameof(RecipeTag.Tag))]
+
+        [JsonIgnore]
         public virtual ICollection<RecipeTag> RecipeTags { get; set; }
         [InverseProperty(nameof(UserAllergen.Tag))]
         public virtual ICollection<UserAllergen> UserAllergens { get; set; }

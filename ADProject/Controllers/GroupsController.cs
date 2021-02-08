@@ -53,22 +53,41 @@ namespace ADProject.Controllers
             return View();
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> AddGroupTag([Bind("GroupTags")] Group group)
+        {
+            group.GroupTags.Add(new GroupTag());
+            return PartialView("AddGroupTags", group);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> RemoveGroupTag(Group group)
+        {
+            group.GroupTags.RemoveAt(group.GroupTags.Count - 1);
+            return PartialView("AddGroupTags", group);
+        }
+
         // POST: Groups/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("GroupId,GroupName,GroupPicture,Description,DateCreated,IsPublished")] Group group)
+        public async Task<IActionResult> Create([Bind("GroupId,GroupName,GroupPicture,Description,DateCreated,IsPublished,GroupTags")] Group group)
         {
             if (ModelState.IsValid)
             {
                 var groupPicture = group.GroupPicture;
                 var groupPhoto = UploadPicture(groupPicture);
-                if(groupPhoto.Equals("error"))
+                if (groupPhoto.Equals("error"))
                 {
                     return View(group);
                 }
-                group.GroupPhoto = groupPhoto;
+                if (groupPhoto.Equals("notset"))
+                {
+                    group.GroupPhoto = groupPhoto;
+                }
                 await _groupService.AddGroup(group);
                 return RedirectToAction(nameof(Index));
             }
@@ -78,6 +97,11 @@ namespace ADProject.Controllers
         // It might be better to put this into a service
         private string UploadPicture(IFormFile file)
         {
+            if (file == null)
+            {
+                return "notset";
+            }
+
             try
             {
                 string fileName = Guid.NewGuid().ToString() + ".jpg";
@@ -164,7 +188,10 @@ namespace ADProject.Controllers
                 {
                     return View(group);
                 }
-                group.GroupPhoto = groupPhoto;
+                if (groupPhoto.Equals("notset")) 
+                {
+                    group.GroupPhoto = groupPhoto;
+                }
                 if (await _groupService.EditGroup(id, group))
                 {
                     return RedirectToAction(nameof(Index));

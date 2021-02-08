@@ -10,7 +10,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form enctype="multipart/form-data" asp-action="Edit">
+        <form enctype="multipart/form-data" asp-action="Edit" id="group-edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="GroupId" />
             <div class="form-group">
@@ -34,6 +34,15 @@
                 <input asp-for="DateCreated" class="form-control" />
                 <span asp-validation-for="DateCreated" class="text-danger"></span>
             </div>
+            <div class="form-group" id="group-tags-container">
+                @Html.EditorFor(model => model.GroupTags)
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <input class="btn btn-primary" type="button" id="btnAdd" value="Add Tag" />
+                    <input class="btn btn-danger" type="button" id="btnRemove" value="Remove Tag" />
+                </div>
+            </div>
             <div class="form-group form-check">
                 <label class="form-check-label">
                     <input class="form-check-input" asp-for="IsPublished" /> @Html.DisplayNameFor(model => model.IsPublished)
@@ -52,4 +61,29 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script type="text/javascript">
+        $("#btnAdd").on("click", function () {
+            $.ajax({
+                async: true,
+                data: $("#group-edit").serialize(),
+                type: "POST",
+                url: "/Groups/AddGroupTag",
+                success: function (partialView) {
+                    $("#group-tags-container").html(partialView);
+                }
+            });
+        });
+
+        $("#btnRemove").on("click", function () {
+            $.ajax({
+                async: true,
+                data: $("#group-edit").serialize(),
+                type: "POST",
+                url: "/Groups/RemoveGroupTag",
+                success: function (partialView) {
+                    $("#group-tags-container").html(partialView);
+                }
+            });
+        });
+    </script>
 }
