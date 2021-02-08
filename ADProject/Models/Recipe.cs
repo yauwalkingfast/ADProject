@@ -3,25 +3,23 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 
 #nullable disable
 
 namespace ADProject.Models
 {
-    [JsonObject]
     [Table("Recipe")]
     public partial class Recipe
     {
         public Recipe()
         {
-            
-
             Comments = new List<Comment>();
             LikesDislikes = new List<LikesDislike>();
             RecipeIngredients = new List<RecipeIngredient>();
             RecipeSteps = new List<RecipeStep>();
             RecipeTags = new List<RecipeTag>();
+            RecipeGroups = new List<RecipeGroup>();
+            SavedRecipes = new List<SavedRecipe>();
         }
 
         [Key]
@@ -44,12 +42,12 @@ namespace ADProject.Models
         public int? ServingSize { get; set; }
         [Column("isPublished")]
         public bool? IsPublished { get; set; }
-       [Column("mainMediaUrl")]
-       [StringLength(200)]
+        [Column("mainMediaUrl")]
+        [StringLength(200)]
 
-       // [DataType(DataType.Upload)]
-       // [Display(Name = "Upload File")]
-       // [Required(ErrorMessage = "Please choose file to upload.")]
+        // [DataType(DataType.Upload)]
+        // [Display(Name = "Upload File")]
+        // [Required(ErrorMessage = "Please choose file to upload.")]
         public string MainMediaUrl { get; set; }
 
         [ForeignKey(nameof(UserId))]
@@ -59,17 +57,22 @@ namespace ADProject.Models
         public virtual IEnumerable<Comment> Comments { get; set; }
         [InverseProperty(nameof(LikesDislike.Recipe))]
         public virtual IEnumerable<LikesDislike> LikesDislikes { get; set; }
+        [InverseProperty(nameof(RecipeGroup.Recipe))]
+        public virtual IEnumerable<RecipeGroup> RecipeGroups { get; set; }
         [InverseProperty(nameof(RecipeIngredient.Recipe))]
         public virtual IEnumerable<RecipeIngredient> RecipeIngredients { get; set; }
         [InverseProperty(nameof(RecipeStep.Recipe))]
         public virtual IEnumerable<RecipeStep> RecipeSteps { get; set; }
-
         [InverseProperty(nameof(RecipeTag.Recipe))]
         public virtual IEnumerable<RecipeTag> RecipeTags { get; set; }
-
+       
         public static implicit operator List<object>(Recipe v)
         {
             throw new NotImplementedException();
         }
+
+
+        [InverseProperty(nameof(SavedRecipe.Recipe))]
+        public virtual IEnumerable<SavedRecipe> SavedRecipes { get; set; }
     }
 }

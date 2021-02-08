@@ -141,7 +141,7 @@
 <table class="image_ingredients">
     <tr>
         <td>
-            <img src=@Model.MainMediaUrl alt="a description of the image">
+            <img src=@Url.Content("~/" + Model.MainMediaUrl) alt="a description of the image">
         </td>
         <td>
             <h3>Ingredients</h3>
@@ -191,7 +191,7 @@
                 STEP : @step.StepNumber
             
             <dd>
-                <img src=@step.MediaFileUrl alt="a description of the image">
+                <img src=@Url.Content("~/" + step.MediaFileUrl) alt="a description of the image">
             </dd>
             <dd>
                 @step.TextInstructions

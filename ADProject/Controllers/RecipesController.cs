@@ -90,13 +90,6 @@ namespace ADProject.Controllers
             return BadRequest();
         }
 
-
-
-
-
-
-
-
         // GET: Recipes/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -137,7 +130,6 @@ namespace ADProject.Controllers
             }
 
             return NotFound();
-            ;
         }
 
         // GET: Recipes/Delete/5
@@ -234,45 +226,6 @@ namespace ADProject.Controllers
             string json = JsonConvert.SerializeObject(tags, Formatting.Indented);
             return Json(new { tags = json });
         }
-        //[HttpPost]
-        // public IActionResult FileUpload(List<IFormFile> postedFiles)
-        //    string wwwPath = this.Environment.WebRootPath;
-        //    string contentPath = this.Environment.ContentRootPath;
-
-        //    string path = Path.Combine(this.Environment.WebRootPath, "Uploads");
-        //    if (!Directory.Exists(path))
-        //    {
-        //        Directory.CreateDirectory(path);
-        //    }
-
-        //    List<string> uploadedFiles = new List<string>();
-        //    foreach (IFormFile postedFile in postedFiles)
-        //    {
-        //        string fileName = Path.GetFileName(postedFile.FileName);
-        //        using (FileStream stream = new FileStream(Path.Combine(path, fileName), FileMode.Create))
-        //        {
-        //            postedFile.CopyTo(stream);
-        //            uploadedFiles.Add(fileName);
-        //            ViewBag.Message += string.Format("<b>{0}</b> uploaded.<br />", fileName);
-        //        }
-        //    }
-
-        //    return View();
-        //}
-        /*[HttpPost]
-        public async Task<IActionResult> FileUpload(IFormFile FormFile)
-        {
-            var filename = ContentDispositionHeaderValue.Parse(FormFile.ContentDisposition).FileName.Trim('"');
-            var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Uploads", FormFile.FileName);
-            using (System.IO.Stream stream = new FileStream(path, FileMode.Create))
-            {
-                await FormFile.CopyToAsync(stream);
-            }
-            return RedirectToAction("Index", "Recipes");
-        }*/
-
-
-
 
         /*        [HttpPost]
                 public IActionResult FileUpload(List<IFormFile> postedFiles)
@@ -308,6 +261,9 @@ namespace ADProject.Controllers
             {
                 file.FileName = Guid.NewGuid().ToString() + ".jpg";
                 string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", file.FileName);
+
+                /*                string path = Path.Combine(Directory.GetCurrentDirectory(), "RecipesImage", file.FileName);
+                */
                 using (Stream stream = new FileStream(path, FileMode.Create))
                 {
                     file.FormFile.CopyTo(stream);
@@ -315,6 +271,8 @@ namespace ADProject.Controllers
 
                 string imageUrl = "images/" + file.FileName;
 
+/*                string imageUrl = "RecipesImage/" + file.FileName;
+*/                
                 return Json(new { fileUrl = imageUrl });
             }
             catch
