@@ -41,7 +41,7 @@ namespace ADProject.Models
         [InverseProperty(nameof(RecipeGroup.Group))]
         public virtual IEnumerable<RecipeGroup> RecipeGroups { get; set; }
         [InverseProperty(nameof(UsersGroup.Group))]
-        public virtual IEnumerable<UsersGroup> UsersGroups { get; set; }
+        public virtual List<UsersGroup> UsersGroups { get; set; }
 
         [NotMapped]
         public IFormFile GroupPicture { get; set; }
@@ -50,6 +50,12 @@ namespace ADProject.Models
         public int NumberOfTags
         {
             get => GroupTags.Count;
+        }
+
+        [NotMapped]
+        public int NumberOfUsers
+        {
+            get => UsersGroups.Count;
         }
     }
 }

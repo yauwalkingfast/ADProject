@@ -21,6 +21,32 @@ namespace ADProject.DbSeeder
             AddRecipes();
             AddTags();
             AddGroups();
+            AddUsers();
+        }
+
+        protected void AddUsers()
+        {
+            db.Users.Add(new User
+            {
+                FirstName = "Jackie",
+                LastName = "Chan",
+                Username = "jc",
+                Password = "12345",
+                Email = "jackie@email.com",
+                IsAdmin = true
+            });
+
+            db.Users.Add(new User
+            {
+                FirstName = "Chun Sing",
+                LastName = "Chan",
+                Username = "ccs",
+                Password = "12345",
+                Email = "ccs@email.com",
+                IsAdmin = true
+            });
+
+            db.SaveChanges();
         }
 
         protected void AddTags()

@@ -36,6 +36,15 @@
                     <input class="btn btn-danger" type="button" id="btnRemove" value="Remove Tag" />
                 </div>
             </div>
+            <div class="form-group" id="users-container">
+                @Html.EditorFor(model => model.UsersGroups)
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <input class="btn btn-primary" type="button" id="btnAddUser" value="Add User" />
+                    <input class="btn btn-danger" type="button" id="btnRemoveUser" value="Remove User" />
+                </div>
+            </div>
             <div class="form-group form-check">
                 <label class="form-check-label">
                     <input class="form-check-input" asp-for="IsPublished" /> @Html.DisplayNameFor(model => model.IsPublished)
@@ -75,6 +84,30 @@
                 url: "/Groups/RemoveGroupTag",
                 success: function (partialView) {
                     $("#group-tags-container").html(partialView);
+                }
+            });
+        });
+
+        $("#btnAddUser").on("click", function () {
+            $.ajax({
+                async: true,
+                data: $("#group-form").serialize(),
+                type: "POST",
+                url: "/Groups/AddUser",
+                success: function (partialView) {
+                    $("#users-container").html(partialView);
+                }
+            });
+        });
+
+        $("#btnRemoveUser").on("click", function () {
+            $.ajax({
+                async: true,
+                data: $("#group-form").serialize(),
+                type: "POST",
+                url: "/Groups/RemoveUser",
+                success: function (partialView) {
+                    $("#users-container").html(partialView);
                 }
             });
         });

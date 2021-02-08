@@ -69,6 +69,29 @@ namespace ADProject.Controllers
             return PartialView("AddGroupTags", group);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> AddUser([Bind("UsersGroups")] Group group)
+        {
+            group.UsersGroups.Add(new UsersGroup());
+            return PartialView("AddUsers", group);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> RemoveUser(Group group)
+        {
+            group.UsersGroups.RemoveAt(group.UsersGroups.Count - 1);
+            return PartialView("AddUsers", group);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UserAutocomplete()
+        {
+            var names = _context.Users.Select(u => u.Username).ToList();
+            return Json(names);
+        }
+
         // POST: Groups/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
