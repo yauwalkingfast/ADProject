@@ -14,9 +14,9 @@ namespace ADProject.Models
     {
         public Group()
         {
-            GroupTags = new HashSet<GroupTag>();
-            RecipeGroups = new HashSet<RecipeGroup>();
-            UsersGroups = new HashSet<UsersGroup>();
+            GroupTags = new List<GroupTag>();
+            RecipeGroups = new List<RecipeGroup>();
+            UsersGroups = new List<UsersGroup>();
         }
 
         [Key]
@@ -37,13 +37,25 @@ namespace ADProject.Models
         public bool IsPublished { get; set; }
 
         [InverseProperty(nameof(GroupTag.Group))]
-        public virtual ICollection<GroupTag> GroupTags { get; set; }
+        public virtual List<GroupTag> GroupTags { get; set; }
         [InverseProperty(nameof(RecipeGroup.Group))]
-        public virtual ICollection<RecipeGroup> RecipeGroups { get; set; }
+        public virtual IEnumerable<RecipeGroup> RecipeGroups { get; set; }
         [InverseProperty(nameof(UsersGroup.Group))]
-        public virtual ICollection<UsersGroup> UsersGroups { get; set; }
+        public virtual List<UsersGroup> UsersGroups { get; set; }
 
         [NotMapped]
         public IFormFile GroupPicture { get; set; }
+
+        [NotMapped]
+        public int NumberOfTags
+        {
+            get => GroupTags.Count;
+        }
+
+        [NotMapped]
+        public int NumberOfUsers
+        {
+            get => UsersGroups.Count;
+        }
     }
 }
