@@ -25,6 +25,8 @@ namespace ADProject.Service
         Task<Recipe> GetRecipeById(int? id);
         Task<bool> EditRecipe(int id, Recipe recipe);
 
+        Task<List<Recipe>> GetAllRecipesSearch(string search);
+
 
     }
 }

@@ -64,6 +64,19 @@ namespace ADProject.ApiControllers
             return recipeList;
         }
 
+        [HttpGet]
+        [Route("search/{search}")]
+        public async Task<ActionResult<List<Recipe>>> SearchRecipes(string search)
+        {
+            List<Recipe> recipeList = await _recipesService.GetAllRecipesSearch(search);
+            if (recipeList == null)
+            {
+                return NotFound();
+            }
+
+            return recipeList;
+        }
+
 
 
         [HttpPost]
