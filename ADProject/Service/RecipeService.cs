@@ -152,5 +152,33 @@ namespace ADProject.Service
             }
             return recipeTag;
         }
+
+        public async Task<List<Recipe>> GetAllRecipesByUserId(int? id)
+        {
+            return await _context.Recipes
+                
+                .Include(r => r.RecipeSteps)
+                .Include(r => r.RecipeIngredients)
+                .Include(r => r.Comments)
+                .Include(r => r.LikesDislikes)
+                .Include(r => r.RecipeTags)
+                .ThenInclude(rtag => rtag.Tag)
+                .Where(r => r.UserId == id)
+                .ToListAsync();
+        }
+        
+        public async Task<List<Recipe>> SearchMyRecipe(string search, int? id)
+        {
+            return await _context.Recipes
+                .Include(r => r.RecipeSteps)
+                .Include(r => r.RecipeIngredients)
+                .Include(r => r.Comments)
+                .Include(r => r.LikesDislikes)
+                .Include(r => r.RecipeTags)
+                .ThenInclude(rtag => rtag.Tag)
+                .Where(r => r.UserId == id)
+                .Where(r=>r.Title.Contains(search)||r.Description.Contains(search))
+                .ToListAsync();
+        }
     }
 }

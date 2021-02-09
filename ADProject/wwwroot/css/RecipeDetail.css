@@ -86,12 +86,13 @@ color: black;
         'trendingpost trendingpost recipes recipes recipes recipes';
     grid-column-gap: 10px;
     grid-row-gap: 10px;
-    grid-template-columns: 150px auto;
+    grid-template-columns: 50px auto;
     
     padding: 10px;
 }
 .trendingpost{
-grid-area:trendingpost;
+    grid-area:trendingpost;
+    border:solid;
 }
 .heading{
     grid-area:heading;

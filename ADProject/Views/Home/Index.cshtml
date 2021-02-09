@@ -1,8 +1,113 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model IEnumerable<ADProject.Models.Recipe>
+@*@model ADProject.Models.User*@
+@{
+    ViewData["Title"] = "Index";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<h1>My Recipes</h1>
+@*this page is designed for user's MY Recipes page that shows the list of the user's posted recipe*@
+
+<link href="~/css/RecipeDetail.css" rel="stylesheet" type="text/css" />
+<script src='https://kit.fontawesome.com/a076d05399.js'></script>
+<div class="grid-container">
+
+
+    <div class="user">
+        <i style='font-size:64px' class='fas'>&#xf406;</i>
+        @*@Html.DisplayFor(model => Recipe.User.FirstName)*@
+
+    </div>
+    <div class="menu">
+
+        <a asp-action="Index">MyRecipes</a>
+        <a asp-action="Index">Completed</a>
+        <a asp-action="Index">Posts</a>
+        <a asp-action="Index">TryLater</a>
+        <a asp-action="Index">Tribes</a>
+
+    </div>
+    <div class="searchbar">
+        <form id="search-form" action="/Home/Index" method="post">
+            <input type="text" placeholder="Search.." name="search">
+            <button type="submit"><i class="fa fa-search"></i></button>
+        </form>
+        <a asp-controller="Recipes" asp-action="Create">Create New</a>
+    </div>
+    @*@foreach(var recipe in Model.Recipes)*@
+    @foreach (var item in Model)
+    {
+        int i = 0;
+        <div class="recipes">
+            <table>
+                <tr>
+                    <td>
+                        <h2> @Html.DisplayFor(modelItem => item.Title)</h2> 
+                        <div>
+                            Tags :
+                            @foreach (var tag in item.RecipeTags)
+                            {
+                                if (tag.IsAllergenTag == false)
+                                {
+                                    @tag.Tag.TagName
+                                    <text>, </text>
+
+                                }
+
+                            }
+                        </div>
+                        <a asp-controller="Recipes" asp-action="Details" asp-route-id="@item.RecipeId">
+                            <img src=@item.MainMediaUrl alt="a description of the image">
+                        </a>
+                    </td>
+
+                    <td>
+                        <h3>Ingredients</h3>
+                        <p> for @item.ServingSize serving</p>
+                        <ul>
+                            @foreach (var ingredient in item.RecipeIngredients)
+                            {
+
+                                if (i <= 3)
+                                {
+                                    <li>
+                                        <div>
+                                            @ingredient.Ingredient @ingredient.Quantity @ingredient.UnitOfMeasurement
+                                        </div>
+                                    </li>
+                                    i++;
+                                }
+                                else { break; }
+                            }
+                            <div><a asp-controller="Recipes" asp-action="Details" asp-route-id="@item.RecipeId">See All</a></div>
+                        </ul>
+                        <div>Calories: @item.Calories)</div>
+                        <div>
+                            <i style='font-size:24px' class='fas'>&#xf017;</i>
+                            @item.DurationInMins minutes
+                        </div>
+
+
+
+                        @foreach (var allergenTag in item.RecipeTags)
+                        {
+                            if (allergenTag.IsAllergenTag == true)
+                            {
+                                <div>
+
+                                    <i style='font-size:24px' class='fas'>&#xf071;</i>
+                                    Warning may contains the traces of @allergenTag.Tag.Warning
+                                </div>
+
+                            }
+                        }
+                        <div>
+                            <a href="###"><i style='font-size:24px' class='fas'>&#xf067;</i> Add to try Later</a>
+                        </div>
+                    </td>
+        </div>
+
+        @*<a asp-action="Edit" asp-route-id="@item.RecipeId">Edit</a>
+            <a asp-action="Details" asp-route-id="@item.RecipeId">Details</a>
+            <a asp-action="Delete" asp-route-id="@item.RecipeId">Delete</a>*@
+    }
 </div>

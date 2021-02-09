@@ -1,4 +1,5 @@
 ﻿using ADProject.Models;
+using ADProject.Service;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -11,17 +12,33 @@ namespace ADProject.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
+        private readonly ADProjContext _context;
+        private readonly IUserService _userService;
+        private readonly IRecipeService _recipeService;
+        public HomeController(ADProjContext context, IUserService userService, IRecipeService recipeService)
         {
-            _logger = logger;
+            _context = context;
+            _recipeService = recipeService;
+            _userService = userService;
         }
-
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            int id = 1;
+            return View(await _recipeService.GetAllRecipesByUserId(id));
         }
+        [HttpPost]
+        public async Task<IActionResult> Index([FromForm]String search)
+        {//i need current user who is logged in for now i have hardcoded the id
+            int id = 1;
+            if (!String.IsNullOrEmpty(search))
+            {
+                return View( await _recipeService.SearchMyRecipe(search, id));
+            }
+            else
+            //return View(await _userService.GetUserById(id));
+            return View(await _recipeService.GetAllRecipesByUserId(id));
+        }
+       
 
         public IActionResult Privacy()
         {

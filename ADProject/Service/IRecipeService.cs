@@ -22,7 +22,7 @@ namespace ADProject.Service
         Task<List<Recipe>> GetAllRecipes();
         Task<Recipe> GetRecipeById(int? id);
         Task<bool> EditRecipe(int id, Recipe recipe);
-
-
+        Task<List<Recipe>> GetAllRecipesByUserId(int? id);
+        Task<List<Recipe>> SearchMyRecipe(String search, int? id);
     }
 }
