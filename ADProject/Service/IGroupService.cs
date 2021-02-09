@@ -17,5 +17,9 @@ namespace ADProject.Service
         Task<bool> EditGroup(int id, Group group);
 
         Task<bool> DeleteGroup(int id);
+
+        Task<Group> ADGetGroupById(int? id);
+
+        Task<List<Group>> GetAllGroupsSearch(string search);
     }
 }
