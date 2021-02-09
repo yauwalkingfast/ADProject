@@ -537,6 +537,17 @@
 
         submitHandler = (event) => {
             event.preventDefault();
+
+            if(this.state.MainMediaUrl.trim() === "") {
+                alert("Main Recipe image is required!");
+                return false;
+            }
+
+            if(this.state.Title.trim() === "") {
+                alert("Recipe title is required!");
+                return false;
+            }
+
             const toSubmit = this.generateJson();
             console.log(toSubmit);
             this.postRecipe(toSubmit);
