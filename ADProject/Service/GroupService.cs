@@ -100,9 +100,9 @@ namespace ADProject.Service
 
             for(int i = 0; i < usersGroup.Count; i++)
             {
-                if(usersGroup[i].User.Username != null)
+                if(usersGroup[i].User.UserName != null)
                 {
-                    var existUser = await _context.Users.FirstOrDefaultAsync(u => u.Username.ToLower() == usersGroup[i].User.Username.ToLower().Trim());
+                    var existUser = await _context.Users.FirstOrDefaultAsync(u => u.UserName.ToLower() == usersGroup[i].User.UserName.ToLower().Trim());
                     if (existUser != null)
                     {
                         foundUsers.Add(new UsersGroup
