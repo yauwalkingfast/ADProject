@@ -357,6 +357,17 @@
                                 </div>
                             </div>
 
+                            <div className="row mt-3">
+                                <div className="col-sm">
+                                    <div className="form-group form-check">
+                                        <label className="form-check-label font-weight-bold">
+                                            <input type="checkbox" className="form-check-input" name="IsPublished" checked={this.state.IsPublished === true} onChange={this.handleChange} /> 
+                                            {" "}Make Public
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div className="row mt-3">  
                                 <div className="col-sm-2 offset-sm-10">
                                     <input type="submit" value="Edit" className="btn btn-primary" />
@@ -692,10 +703,15 @@
         }
 
         handleChange = (event) => {
-            const { name, value } = event.target;
+            const target = event.target;
+            const value = target.type === 'checkbox' ? target.checked : target.value;
+            const name = target.name;
+
             this.setState({
                 [name]: value
             });
+
+            console.log(this.state.IsPublished);
         }
 
         addIngredient = () => {
