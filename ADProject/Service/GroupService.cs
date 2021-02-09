@@ -93,6 +93,54 @@ namespace ADProject.Service
                 .FirstOrDefaultAsync(g => g.GroupId == id);
         }
 
+
+        public async Task<Group> ADGetGroupById(int? id)
+        {
+            Group group =  await _context.Groups
+                .Include(g => g.GroupTags)
+                .ThenInclude(gt => gt.Tag)
+                .Include(g => g.RecipeGroups)
+                .ThenInclude(rg => rg.Recipe)
+                .ThenInclude(r => r.User)
+                .FirstOrDefaultAsync(g => g.GroupId == id);
+
+            foreach (RecipeGroup r in group.RecipeGroups)
+            {
+                ApplicationUser n = new ApplicationUser
+                {
+                    UserName = r.Recipe.User.UserName
+                };
+
+                r.Recipe.User = n;
+
+            }
+
+            return group;
+        }
+
+        public async Task<List<Group>> GetAllGroupsSearch(string search)
+        {
+            List<Group> gList = await _context.Groups
+                .Include(r => r.GroupTags)
+                .ThenInclude(rtag => rtag.Tag)
+                .Where(r => r.GroupName.Contains(search)
+                            || r.Description.Contains(search)
+                            || r.GroupTags.Any(y => y.Tag.TagName.Contains(search)))
+                .ToListAsync();
+
+            /*foreach (Recipe r in rList)
+            {
+                User n = new User
+                {
+                    UserId = r.User.UserId,
+                    Username = r.User.Username
+                };
+
+                r.User = n;
+            }*/
+
+            return gList;
+
         // Check if the username exist in database
         private async Task<List<UsersGroup>> CheckUsernameExist(List<UsersGroup> usersGroup)
         {

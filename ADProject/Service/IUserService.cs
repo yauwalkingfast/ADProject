@@ -15,5 +15,7 @@ namespace ADProject.Service
         Task<List<UsersGroup>> GetUserGroupByUserId(int? id);
 
         Task<List<UserAllergen>> getUserAllergens(int id);
+
+        Task<bool> JoinGroup(UsersGroup ug);
     }
 }

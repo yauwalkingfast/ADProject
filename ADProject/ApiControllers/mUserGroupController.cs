@@ -38,20 +38,28 @@ namespace ADProject.ApiControllers
             {
                 return NotFound();
             }
-            /*UsersGroup u1 = new UsersGroup();
-            u1.GroupId = 1;
-            u1.UserId = 1;
-            u1.IsMod = false;
 
-            User user = _context.Users.FirstOrDefault();
-            u1.User = user;
-
-            List<UsersGroup> l = new List<UsersGroup>();
-            l.Add(u1);*/
-
-            
 
             return usergroup;
         }
+
+        [HttpPost]
+        //[Route("post")]
+        public async Task<ActionResult<UsersGroup>> JoinGroup([FromBody] UsersGroup ug)
+        {
+            bool joined = await _usersService.JoinGroup(ug);
+
+            if (joined)
+            {
+                return ug;
+            }
+            else
+            {
+                return NotFound();
+            }
+
+        }
+
+
     }
 }
