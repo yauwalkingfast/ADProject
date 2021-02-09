@@ -16,9 +16,9 @@ namespace ADProject.Service
             _context = context;
         }
 
-        public async Task<User> GetUserById(int? id)
+        public async Task<ApplicationUser> GetUserById(int? id)
         {
-            User user = await _context.Users
+            ApplicationUser user = await _context.Users
                 .Include(r => r.Recipes)
                 .Include(r => r.LikesDislikes)
                 .Include(r => r.Comments)

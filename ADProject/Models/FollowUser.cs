@@ -18,10 +18,11 @@ namespace ADProject.Models
         public int FollowedUserId { get; set; }
 
         [ForeignKey(nameof(FollowedUserId))]
-        [InverseProperty(nameof(User.FollowUserFollowedUsers))]
-        public virtual User FollowedUser { get; set; }
+        [InverseProperty(nameof(ApplicationUser.FollowUserFollowedUsers))]
+        public virtual ApplicationUser FollowedUser { get; set; }
         [ForeignKey(nameof(FollowingUserId))]
-        [InverseProperty(nameof(User.FollowUserFollowingUsers))]
-        public virtual User FollowingUser { get; set; }
+        [InverseProperty(nameof(ApplicationUser.FollowUserFollowingUsers))]
+        public virtual ApplicationUser FollowingUser { get; set; }
+        
     }
 }

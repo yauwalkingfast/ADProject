@@ -8,7 +8,7 @@ namespace ADProject.Service
 {
     public interface IUserService
     {
-        Task<User> GetUserById(int? id);
+        Task<ApplicationUser> GetUserById(int? id);
 
         Task<List<UsersGroup>> GetUserGroupByGroupId(int? id);
 

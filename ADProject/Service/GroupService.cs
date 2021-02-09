@@ -18,6 +18,8 @@ namespace ADProject.Service
 
         public async Task<bool> AddGroup(Group group)
         {
+            group.UsersGroups = await this.CheckUsernameExist(group.UsersGroups.ToList());
+            group.GroupTags = await this.CheckTagsDatabase(group.GroupTags.ToList());
             _context.Add(group);
             var saveResult = await _context.SaveChangesAsync();
             return saveResult >= 1;
@@ -52,11 +54,11 @@ namespace ADProject.Service
                 dbGroup.GroupName = group.GroupName;
                 dbGroup.GroupPhoto = group.GroupPhoto;
                 dbGroup.Description = group.Description;
-                dbGroup.DateCreated = group.DateCreated;
                 dbGroup.IsPublished = group.IsPublished;
-                dbGroup.GroupTags = group.GroupTags;
                 dbGroup.RecipeGroups = group.RecipeGroups;
-                dbGroup.UsersGroups = group.UsersGroups;
+
+                dbGroup.GroupTags = await this.CheckTagsDatabase(group.GroupTags);
+                dbGroup.UsersGroups = await this.CheckUsernameExist(group.UsersGroups);
 
                 await _context.SaveChangesAsync();
                 return true;
@@ -91,6 +93,7 @@ namespace ADProject.Service
                 .FirstOrDefaultAsync(g => g.GroupId == id);
         }
 
+
         public async Task<Group> ADGetGroupById(int? id)
         {
             Group group =  await _context.Groups
@@ -103,10 +106,9 @@ namespace ADProject.Service
 
             foreach (RecipeGroup r in group.RecipeGroups)
             {
-                User n = new User
+                ApplicationUser n = new ApplicationUser
                 {
-                    UserId = r.Recipe.User.UserId,
-                    Username = r.Recipe.User.Username
+                    UserName = r.Recipe.User.UserName
                 };
 
                 r.Recipe.User = n;
@@ -138,6 +140,53 @@ namespace ADProject.Service
             }*/
 
             return gList;
+
+        // Check if the username exist in database
+        private async Task<List<UsersGroup>> CheckUsernameExist(List<UsersGroup> usersGroup)
+        {
+            List<UsersGroup> foundUsers = new List<UsersGroup>();
+
+            for(int i = 0; i < usersGroup.Count; i++)
+            {
+                if(usersGroup[i].User.UserName != null)
+                {
+                    var existUser = await _context.Users.FirstOrDefaultAsync(u => u.UserName.ToLower() == usersGroup[i].User.UserName.ToLower().Trim());
+                    if (existUser != null)
+                    {
+                        foundUsers.Add(new UsersGroup
+                        {
+                            User = existUser,
+                            UserId = existUser.UserId,
+                            IsMod = false
+                        });
+                    }
+                }
+            }
+
+            return foundUsers;
+        }
+
+        // Check if the tag exist in database
+        private async Task<List<GroupTag>> CheckTagsDatabase(List<GroupTag> groupTags)
+        {
+            for (int i = 0; i < groupTags.Count(); i++)
+            {
+                if (groupTags[i].Tag.TagName != null)
+                {
+                    var existTag = await _context.Tags.FirstOrDefaultAsync(t => t.TagName.ToLower() == groupTags[i].Tag.TagName.ToLower().Trim());
+                    if (existTag != null)
+                    {
+                        groupTags[i].TagId = existTag.TagId;
+                        groupTags[i].Tag = existTag;
+                    }
+                    else
+                    {
+                        groupTags[i].Tag.Warning = groupTags[i].Tag.TagName;
+                    }
+                }
+            }
+
+            return groupTags.FindAll(gt => gt.Tag.TagName != null);
         }
     }
 }

@@ -22,8 +22,10 @@ namespace ADProject.Migrations
 
             modelBuilder.Entity("ADProject.Models.ApplicationRole", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -49,8 +51,10 @@ namespace ADProject.Migrations
 
             modelBuilder.Entity("ADProject.Models.ApplicationUser", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
@@ -61,10 +65,28 @@ namespace ADProject.Migrations
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(256)");
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("FirstName")
+                        .HasMaxLength(30)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(30)")
+                        .HasColumnName("firstName");
+
+                    b.Property<bool?>("IsAdmin")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValueSql("((0))");
+
+                    b.Property<string>("LastName")
+                        .HasMaxLength(30)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(30)")
+                        .HasColumnName("lastName");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -131,7 +153,8 @@ namespace ADProject.Migrations
                         .HasColumnName("dateposted");
 
                     b.Property<int>("RecipeId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("recipeId");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -147,6 +170,11 @@ namespace ADProject.Migrations
 
             modelBuilder.Entity("ADProject.Models.FollowUser", b =>
                 {
+                    b.Property<int>("FollowUsersId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
                     b.Property<int>("FollowedUserId")
                         .HasColumnType("int")
                         .HasColumnName("followedUserId");
@@ -154,6 +182,8 @@ namespace ADProject.Migrations
                     b.Property<int>("FollowingUserId")
                         .HasColumnType("int")
                         .HasColumnName("followingUserId");
+
+                    b.HasKey("FollowUsersId");
 
                     b.HasIndex("FollowedUserId");
 
@@ -205,11 +235,18 @@ namespace ADProject.Migrations
 
             modelBuilder.Entity("ADProject.Models.GroupTag", b =>
                 {
+                    b.Property<int>("GroupTagsId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
                     b.Property<int>("GroupId")
                         .HasColumnType("int");
 
                     b.Property<int>("TagId")
                         .HasColumnType("int");
+
+                    b.HasKey("GroupTagsId");
 
                     b.HasIndex("GroupId");
 
@@ -310,11 +347,18 @@ namespace ADProject.Migrations
 
             modelBuilder.Entity("ADProject.Models.RecipeGroup", b =>
                 {
+                    b.Property<int>("RecipeGroupId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
                     b.Property<int>("GroupId")
                         .HasColumnType("int");
 
                     b.Property<int>("RecipeId")
                         .HasColumnType("int");
+
+                    b.HasKey("RecipeGroupId");
 
                     b.HasIndex("GroupId");
 
@@ -332,9 +376,9 @@ namespace ADProject.Migrations
 
                     b.Property<string>("Ingredient")
                         .IsRequired()
-                        .HasMaxLength(20)
+                        .HasMaxLength(100)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(20)")
+                        .HasColumnType("varchar(100)")
                         .HasColumnName("ingredient");
 
                     b.Property<double>("Quantity")
@@ -392,6 +436,12 @@ namespace ADProject.Migrations
 
             modelBuilder.Entity("ADProject.Models.RecipeTag", b =>
                 {
+                    b.Property<int>("RecipeTagId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("RecipeTagID")
+                        .UseIdentityColumn();
+
                     b.Property<bool>("IsAllergenTag")
                         .HasColumnType("bit")
                         .HasColumnName("isAllergenTag");
@@ -402,6 +452,8 @@ namespace ADProject.Migrations
                     b.Property<int>("TagId")
                         .HasColumnType("int");
 
+                    b.HasKey("RecipeTagId");
+
                     b.HasIndex("RecipeId");
 
                     b.HasIndex("TagId");
@@ -411,11 +463,18 @@ namespace ADProject.Migrations
 
             modelBuilder.Entity("ADProject.Models.SavedRecipe", b =>
                 {
+                    b.Property<int>("SavedRecipesId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
                     b.Property<int>("RecipeId")
                         .HasColumnType("int");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
+
+                    b.HasKey("SavedRecipesId");
 
                     b.HasIndex("RecipeId");
 
@@ -440,78 +499,30 @@ namespace ADProject.Migrations
 
                     b.Property<string>("Warning")
                         .IsRequired()
-                        .ValueGeneratedOnAdd()
                         .HasMaxLength(200)
                         .IsUnicode(false)
                         .HasColumnType("varchar(200)")
-                        .HasColumnName("warning")
-                        .HasDefaultValueSql("((0))");
+                        .HasColumnName("warning");
 
                     b.HasKey("TagId");
 
                     b.ToTable("Tag");
                 });
 
-            modelBuilder.Entity("ADProject.Models.User", b =>
+            modelBuilder.Entity("ADProject.Models.UserAllergen", b =>
                 {
-                    b.Property<int>("UserId")
+                    b.Property<int>("UserAllergenId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(30)")
-                        .HasColumnName("email");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(30)")
-                        .HasColumnName("firstName");
-
-                    b.Property<bool?>("IsAdmin")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasColumnName("isAdmin")
-                        .HasDefaultValueSql("((0))");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(30)")
-                        .HasColumnName("lastName");
-
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(30)")
-                        .HasColumnName("password");
-
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(30)")
-                        .HasColumnName("username");
-
-                    b.HasKey("UserId");
-
-                    b.ToTable("User");
-                });
-
-            modelBuilder.Entity("ADProject.Models.UserAllergen", b =>
-                {
                     b.Property<int>("TagId")
                         .HasColumnType("int");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
+
+                    b.HasKey("UserAllergenId");
 
                     b.HasIndex("TagId");
 
@@ -522,6 +533,11 @@ namespace ADProject.Migrations
 
             modelBuilder.Entity("ADProject.Models.UsersGroup", b =>
                 {
+                    b.Property<int>("UsersGroupId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
                     b.Property<int>("GroupId")
                         .HasColumnType("int");
 
@@ -531,6 +547,8 @@ namespace ADProject.Migrations
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
+                    b.HasKey("UsersGroupId");
+
                     b.HasIndex("GroupId");
 
                     b.HasIndex("UserId");
@@ -538,7 +556,7 @@ namespace ADProject.Migrations
                     b.ToTable("UsersGroup");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -551,9 +569,8 @@ namespace ADProject.Migrations
                     b.Property<string>("ClaimValue")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("RoleId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -562,7 +579,7 @@ namespace ADProject.Migrations
                     b.ToTable("AspNetRoleClaims");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -575,9 +592,8 @@ namespace ADProject.Migrations
                     b.Property<string>("ClaimValue")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -586,7 +602,7 @@ namespace ADProject.Migrations
                     b.ToTable("AspNetUserClaims");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
                 {
                     b.Property<string>("LoginProvider")
                         .HasColumnType("nvarchar(450)");
@@ -597,9 +613,8 @@ namespace ADProject.Migrations
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
                     b.HasKey("LoginProvider", "ProviderKey");
 
@@ -608,13 +623,13 @@ namespace ADProject.Migrations
                     b.ToTable("AspNetUserLogins");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
                 {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("RoleId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
 
                     b.HasKey("UserId", "RoleId");
 
@@ -623,10 +638,10 @@ namespace ADProject.Migrations
                     b.ToTable("AspNetUserRoles");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
                 {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
                     b.Property<string>("LoginProvider")
                         .HasColumnType("nvarchar(450)");
@@ -647,10 +662,10 @@ namespace ADProject.Migrations
                     b.HasOne("ADProject.Models.Recipe", "Recipe")
                         .WithMany("Comments")
                         .HasForeignKey("RecipeId")
-                        .HasConstraintName("FK_Comments_RecipeId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ADProject.Models.User", "User")
+                    b.HasOne("ADProject.Models.ApplicationUser", "User")
                         .WithMany("Comments")
                         .HasForeignKey("UserId")
                         .HasConstraintName("FK_Comments_UserId")
@@ -663,14 +678,14 @@ namespace ADProject.Migrations
 
             modelBuilder.Entity("ADProject.Models.FollowUser", b =>
                 {
-                    b.HasOne("ADProject.Models.User", "FollowedUser")
-                        .WithMany()
+                    b.HasOne("ADProject.Models.ApplicationUser", "FollowedUser")
+                        .WithMany("FollowUserFollowedUsers")
                         .HasForeignKey("FollowedUserId")
                         .HasConstraintName("FK_FollowUsers_followedUserId")
                         .IsRequired();
 
-                    b.HasOne("ADProject.Models.User", "FollowingUser")
-                        .WithMany()
+                    b.HasOne("ADProject.Models.ApplicationUser", "FollowingUser")
+                        .WithMany("FollowUserFollowingUsers")
                         .HasForeignKey("FollowingUserId")
                         .HasConstraintName("FK_FollowUsers_followingUserId")
                         .IsRequired();
@@ -683,13 +698,13 @@ namespace ADProject.Migrations
             modelBuilder.Entity("ADProject.Models.GroupTag", b =>
                 {
                     b.HasOne("ADProject.Models.Group", "Group")
-                        .WithMany()
+                        .WithMany("GroupTags")
                         .HasForeignKey("GroupId")
                         .HasConstraintName("FK_GroupTags_GroupId")
                         .IsRequired();
 
                     b.HasOne("ADProject.Models.Tag", "Tag")
-                        .WithMany()
+                        .WithMany("GroupTags")
                         .HasForeignKey("TagId")
                         .HasConstraintName("FK_GroupTags_TagId")
                         .IsRequired();
@@ -707,7 +722,7 @@ namespace ADProject.Migrations
                         .HasConstraintName("FK_LikesDislikes_RecipeId")
                         .IsRequired();
 
-                    b.HasOne("ADProject.Models.User", "User")
+                    b.HasOne("ADProject.Models.ApplicationUser", "User")
                         .WithMany("LikesDislikes")
                         .HasForeignKey("UserId")
                         .HasConstraintName("FK_LikesDislikes_UserId")
@@ -720,7 +735,7 @@ namespace ADProject.Migrations
 
             modelBuilder.Entity("ADProject.Models.Recipe", b =>
                 {
-                    b.HasOne("ADProject.Models.User", "User")
+                    b.HasOne("ADProject.Models.ApplicationUser", "User")
                         .WithMany("Recipes")
                         .HasForeignKey("UserId")
                         .HasConstraintName("FK_Recipe_UserId")
@@ -732,13 +747,13 @@ namespace ADProject.Migrations
             modelBuilder.Entity("ADProject.Models.RecipeGroup", b =>
                 {
                     b.HasOne("ADProject.Models.Group", "Group")
-                        .WithMany()
+                        .WithMany("RecipeGroups")
                         .HasForeignKey("GroupId")
                         .HasConstraintName("FK_RecipeGroup_GroupId")
                         .IsRequired();
 
                     b.HasOne("ADProject.Models.Recipe", "Recipe")
-                        .WithMany()
+                        .WithMany("RecipeGroups")
                         .HasForeignKey("RecipeId")
                         .HasConstraintName("FK_RecipeGroup_RecipeId")
                         .IsRequired();
@@ -753,7 +768,7 @@ namespace ADProject.Migrations
                     b.HasOne("ADProject.Models.Recipe", "Recipe")
                         .WithMany("RecipeIngredients")
                         .HasForeignKey("RecipeId")
-                        .HasConstraintName("FK_RecipeIngredients_RecipeId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Recipe");
@@ -764,7 +779,7 @@ namespace ADProject.Migrations
                     b.HasOne("ADProject.Models.Recipe", "Recipe")
                         .WithMany("RecipeSteps")
                         .HasForeignKey("RecipeId")
-                        .HasConstraintName("FK_RecipeSteps_RecipeId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Recipe");
@@ -773,15 +788,15 @@ namespace ADProject.Migrations
             modelBuilder.Entity("ADProject.Models.RecipeTag", b =>
                 {
                     b.HasOne("ADProject.Models.Recipe", "Recipe")
-                        .WithMany()
+                        .WithMany("RecipeTags")
                         .HasForeignKey("RecipeId")
-                        .HasConstraintName("FK_RecipeTags_RecipeId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("ADProject.Models.Tag", "Tag")
-                        .WithMany()
+                        .WithMany("RecipeTags")
                         .HasForeignKey("TagId")
-                        .HasConstraintName("FK_RecipeTags_TagId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Recipe");
@@ -792,13 +807,13 @@ namespace ADProject.Migrations
             modelBuilder.Entity("ADProject.Models.SavedRecipe", b =>
                 {
                     b.HasOne("ADProject.Models.Recipe", "Recipe")
-                        .WithMany()
+                        .WithMany("SavedRecipes")
                         .HasForeignKey("RecipeId")
                         .HasConstraintName("FK_SavedRecipes_RecipeId")
                         .IsRequired();
 
-                    b.HasOne("ADProject.Models.User", "User")
-                        .WithMany()
+                    b.HasOne("ADProject.Models.ApplicationUser", "User")
+                        .WithMany("SavedRecipes")
                         .HasForeignKey("UserId")
                         .HasConstraintName("FK_SavedRecipes_UserId")
                         .IsRequired();
@@ -811,13 +826,13 @@ namespace ADProject.Migrations
             modelBuilder.Entity("ADProject.Models.UserAllergen", b =>
                 {
                     b.HasOne("ADProject.Models.Tag", "Tag")
-                        .WithMany()
+                        .WithMany("UserAllergens")
                         .HasForeignKey("TagId")
                         .HasConstraintName("FK_UserAllergen_TagId")
                         .IsRequired();
 
-                    b.HasOne("ADProject.Models.User", "User")
-                        .WithMany()
+                    b.HasOne("ADProject.Models.ApplicationUser", "User")
+                        .WithMany("UserAllergens")
                         .HasForeignKey("UserId")
                         .HasConstraintName("FK_UserAllergen_UserId")
                         .IsRequired();
@@ -830,13 +845,13 @@ namespace ADProject.Migrations
             modelBuilder.Entity("ADProject.Models.UsersGroup", b =>
                 {
                     b.HasOne("ADProject.Models.Group", "Group")
-                        .WithMany()
+                        .WithMany("UsersGroups")
                         .HasForeignKey("GroupId")
                         .HasConstraintName("FK_UsersGroup_GroupId")
                         .IsRequired();
 
-                    b.HasOne("ADProject.Models.User", "User")
-                        .WithMany()
+                    b.HasOne("ADProject.Models.ApplicationUser", "User")
+                        .WithMany("UsersGroups")
                         .HasForeignKey("UserId")
                         .HasConstraintName("FK_UsersGroup_UserId")
                         .IsRequired();
@@ -846,7 +861,7 @@ namespace ADProject.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
                     b.HasOne("ADProject.Models.ApplicationRole", null)
                         .WithMany()
@@ -855,7 +870,7 @@ namespace ADProject.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
                 {
                     b.HasOne("ADProject.Models.ApplicationUser", null)
                         .WithMany()
@@ -864,7 +879,7 @@ namespace ADProject.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
                 {
                     b.HasOne("ADProject.Models.ApplicationUser", null)
                         .WithMany()
@@ -873,7 +888,7 @@ namespace ADProject.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
                 {
                     b.HasOne("ADProject.Models.ApplicationRole", null)
                         .WithMany()
@@ -888,13 +903,41 @@ namespace ADProject.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
                 {
                     b.HasOne("ADProject.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("ADProject.Models.ApplicationUser", b =>
+                {
+                    b.Navigation("Comments");
+
+                    b.Navigation("FollowUserFollowedUsers");
+
+                    b.Navigation("FollowUserFollowingUsers");
+
+                    b.Navigation("LikesDislikes");
+
+                    b.Navigation("Recipes");
+
+                    b.Navigation("SavedRecipes");
+
+                    b.Navigation("UserAllergens");
+
+                    b.Navigation("UsersGroups");
+                });
+
+            modelBuilder.Entity("ADProject.Models.Group", b =>
+                {
+                    b.Navigation("GroupTags");
+
+                    b.Navigation("RecipeGroups");
+
+                    b.Navigation("UsersGroups");
                 });
 
             modelBuilder.Entity("ADProject.Models.Recipe", b =>
@@ -903,18 +946,24 @@ namespace ADProject.Migrations
 
                     b.Navigation("LikesDislikes");
 
+                    b.Navigation("RecipeGroups");
+
                     b.Navigation("RecipeIngredients");
 
                     b.Navigation("RecipeSteps");
+
+                    b.Navigation("RecipeTags");
+
+                    b.Navigation("SavedRecipes");
                 });
 
-            modelBuilder.Entity("ADProject.Models.User", b =>
+            modelBuilder.Entity("ADProject.Models.Tag", b =>
                 {
-                    b.Navigation("Comments");
+                    b.Navigation("GroupTags");
 
-                    b.Navigation("LikesDislikes");
+                    b.Navigation("RecipeTags");
 
-                    b.Navigation("Recipes");
+                    b.Navigation("UserAllergens");
                 });
 #pragma warning restore 612, 618
         }
