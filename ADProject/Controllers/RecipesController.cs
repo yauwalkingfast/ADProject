@@ -68,6 +68,13 @@ namespace ADProject.Controllers
             return View();
         }
 
+        [HttpPost]
+        public async Task<IActionResult> GroupNameAutocomplete()
+        {
+            var groupnames = await _context.Groups.Select(g => g.GroupName).ToListAsync();
+            return Json(groupnames);
+        }
+
         // POST: Recipes/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -75,7 +82,7 @@ namespace ADProject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([FromBody] Recipe recipe)
         {
-            User user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == recipe.UserId);
+            ApplicationUser user = await _context.Users.FirstOrDefaultAsync();
             recipe.User = user;
             DateTime now = DateTime.Now;
             recipe.DateCreated = now;

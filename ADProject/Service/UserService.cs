@@ -16,9 +16,9 @@ namespace ADProject.Service
             _context = context;
         }
 
-        public async Task<User> GetUserById(int? id)
+        public async Task<ApplicationUser> GetUserById(int? id)
         {
-            User user = await _context.Users
+            ApplicationUser user = await _context.Users
                 .Include(r => r.Recipes)
                 .Include(r => r.LikesDislikes)
                 .Include(r => r.Comments)
@@ -42,6 +42,15 @@ namespace ADProject.Service
                 .Include(r => r.User)
                 .Include(r => r.Group)
                 .Where(r => r.GroupId == id)
+                .ToListAsync();
+        }
+
+        public async Task<List<UserAllergen>> getUserAllergens(int id)
+        {
+            return await _context.UserAllergens
+                .Include(x => x.Tag)
+                .Include(x => x.User)
+                .Where(x => x.UserId == id)
                 .ToListAsync();
         }
     }

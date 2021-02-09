@@ -8,10 +8,12 @@ namespace ADProject.Service
 {
     public interface IUserService
     {
-        Task<User> GetUserById(int? id);
+        Task<ApplicationUser> GetUserById(int? id);
 
         Task<List<UsersGroup>> GetUserGroupByGroupId(int? id);
 
         Task<List<UsersGroup>> GetUserGroupByUserId(int? id);
+
+        Task<List<UserAllergen>> getUserAllergens(int id);
     }
 }

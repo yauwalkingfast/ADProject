@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 #nullable disable
 
 namespace ADProject.Models
 {
+    [JsonObject]
     [Table("RecipeGroup")]
     public partial class RecipeGroup
     {
@@ -19,8 +21,11 @@ namespace ADProject.Models
         [ForeignKey(nameof(GroupId))]
         [InverseProperty("RecipeGroups")]
         public virtual Group Group { get; set; }
+
+        [JsonIgnore]
         [ForeignKey(nameof(RecipeId))]
         [InverseProperty("RecipeGroups")]
         public virtual Recipe Recipe { get; set; }
+        
     }
 }

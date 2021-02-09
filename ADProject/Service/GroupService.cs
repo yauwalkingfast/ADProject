@@ -18,6 +18,8 @@ namespace ADProject.Service
 
         public async Task<bool> AddGroup(Group group)
         {
+            group.UsersGroups = await this.CheckUsernameExist(group.UsersGroups.ToList());
+            group.GroupTags = await this.CheckTagsDatabase(group.GroupTags.ToList());
             _context.Add(group);
             var saveResult = await _context.SaveChangesAsync();
             return saveResult >= 1;
@@ -25,7 +27,8 @@ namespace ADProject.Service
 
         public async Task<bool> DeleteGroup(int id)
         {
-            var group = await _context.Groups.FirstOrDefaultAsync(g => g.GroupId == id);
+            var group = await _context.Groups
+                .FirstOrDefaultAsync(g => g.GroupId == id);
             _context.Groups.Remove(group);
             var saveResult = await _context.SaveChangesAsync();
             return saveResult >= 1;
@@ -35,8 +38,28 @@ namespace ADProject.Service
         {
             try
             {
-                // This may not work is we have nested foreign keys
-                _context.Update(group);
+                var dbGroup = await _context.Groups
+                    .Include(g => g.GroupTags)
+                    .ThenInclude(gt => gt.Tag)
+                    .Include(g => g.RecipeGroups)
+                    .ThenInclude(rg => rg.Recipe)
+                    .Include(g => g.UsersGroups)
+                    .ThenInclude(ug => ug.User)
+                    .FirstOrDefaultAsync(g => g.GroupId == id);
+
+                _context.GroupTags.RemoveRange(dbGroup.GroupTags);
+                _context.RecipeGroups.RemoveRange(dbGroup.RecipeGroups);
+                _context.UsersGroups.RemoveRange(dbGroup.UsersGroups);
+
+                dbGroup.GroupName = group.GroupName;
+                dbGroup.GroupPhoto = group.GroupPhoto;
+                dbGroup.Description = group.Description;
+                dbGroup.IsPublished = group.IsPublished;
+                dbGroup.RecipeGroups = group.RecipeGroups;
+
+                dbGroup.GroupTags = await this.CheckTagsDatabase(group.GroupTags);
+                dbGroup.UsersGroups = await this.CheckUsernameExist(group.UsersGroups);
+
                 await _context.SaveChangesAsync();
                 return true;
             }
@@ -48,13 +71,74 @@ namespace ADProject.Service
 
         public async Task<List<Group>> GetAllGroups()
         {
-            return await _context.Groups.ToListAsync();
+            return await _context.Groups
+                .Include(g => g.GroupTags)
+                .ThenInclude(gt => gt.Tag)
+                .Include(g => g.RecipeGroups)
+                .ThenInclude(rg => rg.Recipe)
+                .Include(g => g.UsersGroups)
+                .ThenInclude(ug => ug.User)
+                .ToListAsync();
         }
 
         public async Task<Group> GetGroupById(int? id)
         {
             return await _context.Groups
+                .Include(g => g.GroupTags)
+                .ThenInclude(gt => gt.Tag)
+                .Include(g => g.RecipeGroups)
+                .ThenInclude(rg => rg.Recipe)
+                .Include(g => g.UsersGroups)
+                .ThenInclude(ug => ug.User)
                 .FirstOrDefaultAsync(g => g.GroupId == id);
+        }
+
+        // Check if the username exist in database
+        private async Task<List<UsersGroup>> CheckUsernameExist(List<UsersGroup> usersGroup)
+        {
+            List<UsersGroup> foundUsers = new List<UsersGroup>();
+
+            for(int i = 0; i < usersGroup.Count; i++)
+            {
+                if(usersGroup[i].User.UserName != null)
+                {
+                    var existUser = await _context.Users.FirstOrDefaultAsync(u => u.UserName.ToLower() == usersGroup[i].User.UserName.ToLower().Trim());
+                    if (existUser != null)
+                    {
+                        foundUsers.Add(new UsersGroup
+                        {
+                            User = existUser,
+                            UserId = existUser.UserId,
+                            IsMod = false
+                        });
+                    }
+                }
+            }
+
+            return foundUsers;
+        }
+
+        // Check if the tag exist in database
+        private async Task<List<GroupTag>> CheckTagsDatabase(List<GroupTag> groupTags)
+        {
+            for (int i = 0; i < groupTags.Count(); i++)
+            {
+                if (groupTags[i].Tag.TagName != null)
+                {
+                    var existTag = await _context.Tags.FirstOrDefaultAsync(t => t.TagName.ToLower() == groupTags[i].Tag.TagName.ToLower().Trim());
+                    if (existTag != null)
+                    {
+                        groupTags[i].TagId = existTag.TagId;
+                        groupTags[i].Tag = existTag;
+                    }
+                    else
+                    {
+                        groupTags[i].Tag.Warning = groupTags[i].Tag.TagName;
+                    }
+                }
+            }
+
+            return groupTags.FindAll(gt => gt.Tag.TagName != null);
         }
     }
 }

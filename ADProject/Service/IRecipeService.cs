@@ -20,8 +20,12 @@ namespace ADProject.Service
         void AddRecipeNonAsync(Recipe recipe);
 
         Task<List<Recipe>> GetAllRecipes();
+
+        Task<List<Recipe>> GetAllRecipesBasic();
         Task<Recipe> GetRecipeById(int? id);
         Task<bool> EditRecipe(int id, Recipe recipe);
+
+        Task<List<Recipe>> GetAllRecipesSearch(string search);
 
 
     }
