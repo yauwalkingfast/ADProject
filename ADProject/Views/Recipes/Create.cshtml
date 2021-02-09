@@ -391,7 +391,7 @@
                                         return(
                                             <div className="row" key={index}>
                                                 <div className="form-group col-sm-6">
-                                                    <input type="text" className="form-control" placeholder="Group" onChange={() => this.handleGroupChange(event, index)} value={element.Group.GroupName} />
+                                                    <input type="text" id={`group-autocomplete-${index}`} className="form-control auto-complete-groupname" placeholder="Group" onChange={() => this.handleGroupChange(event, index)} value={element.Group.GroupName} />
                                                 </div>
                                                 <div className="col-sm-1">
                                                     <button type="button" className="icon-button" onClick={() => this.removeGroup(index)}>
@@ -503,8 +503,34 @@
             };
         }
 
+        componentDidMount() {
+            this.addAutocompleteGroupName();
+        }
+
+        addAutocompleteGroupName = () => {
+            const _handleGroupChange = this.handleGroupChange;
+
+            $(document).ready(function () {
+                $.ajax({
+                    async: true,
+                    url: "/Recipes/GroupNameAutocomplete",
+                    type: "POST",
+                    success: function ({ $values }) {
+                        $(".auto-complete-groupname").autocomplete({
+                            source: $values,
+                            select: function(event, ui) {
+                                const groupname = ui.item.value;
+                                const updatedIndex = event.target.id.split("-")[2];
+                                const toUpdate = { target: { value: groupname } };
+                                _handleGroupChange(toUpdate, updatedIndex);
+                            }
+                        })
+                    },
+                });
+            });
+        }
+
         onStepUrlChange = (event, index) => {
-            console.log(event.target.files[0].name);
             this.setState(state => {
                 const RecipeSteps = state.RecipeSteps;
                 RecipeSteps[index].MediaSelectedFile = event.target.files[0];
@@ -530,12 +556,10 @@
 
             try {
                 const { data: { fileUrl } } = await axios.post("/Recipes/FileUpload", formData);
-                console.log(fileUrl);
 
                 this.setState(state => {
                     const RecipeSteps = state.RecipeSteps;
                     RecipeSteps[index].MediaFileUrl = fileUrl.trim();
-                    console.log(RecipeSteps);
                     return {
                         RecipeSteps
                     }
@@ -560,7 +584,6 @@
 
             try {
                 const { data: { fileUrl } } = await axios.post("/Recipes/FileUpload", formData);
-                console.log(fileUrl);
 
                 this.setState({
                     MainMediaUrl: fileUrl.trim()
@@ -571,7 +594,6 @@
         }
 
         onMainMediaUrlChange = (event) => {
-            console.log(event.target.files[0].name)
             this.setState({
                 MainSelectedFile: event.target.files[0]
             })
@@ -580,7 +602,6 @@
         generateAllergenTags = (event) => {
             event.preventDefault();
             const ingredient = [...this.state.RecipeIngredients];
-            console.log(ingredient);
             this.fetchAllergenTags(ingredient, this.setAllergenTags);
         }
 
@@ -598,7 +619,6 @@
             }
 
             const toSubmit = this.generateJson();
-            console.log(toSubmit);
             this.postRecipe(toSubmit);
         }
 
@@ -672,7 +692,6 @@
                     // Get tags from flask ML
                     if (this.status === 200) {
                         const { tags } = JSON.parse(this.response);
-                        console.log(tags);
                         callback(tags);
                     } else {
                         alert("Error generate tags");
@@ -694,7 +713,6 @@
                     RecipeTags
                 }
             })
-            console.log(this.state.RecipeTags);
         }
 
         removeAllergenTag = (index) => {
@@ -842,6 +860,8 @@
                     RecipeGroups,
                 }
             });
+
+            this.addAutocompleteGroupName();
         }
 
         removeGroup = (index) => {
