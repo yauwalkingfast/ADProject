@@ -15,7 +15,9 @@ namespace ADProject.Models
     {
         public Tag()
         {
+            GroupTags = new HashSet<GroupTag>();
             RecipeTags = new HashSet<RecipeTag>();
+            UserAllergens = new HashSet<UserAllergen>();
         }
 
         [Key]
@@ -30,7 +32,13 @@ namespace ADProject.Models
         public string Warning { get; set; }
 
         [JsonIgnore]
+        [InverseProperty(nameof(GroupTag.Tag))]
+        public virtual ICollection<GroupTag> GroupTags { get; set; }
         [InverseProperty(nameof(RecipeTag.Tag))]
+
+        [JsonIgnore]
         public virtual ICollection<RecipeTag> RecipeTags { get; set; }
+        [InverseProperty(nameof(UserAllergen.Tag))]
+        public virtual ICollection<UserAllergen> UserAllergens { get; set; }
     }
 }

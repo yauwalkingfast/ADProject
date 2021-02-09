@@ -8,16 +8,19 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ADProject.Models
 {
-    [Keyless]
     [Table("RecipeGroup")]
     public partial class RecipeGroup
     {
+        [Key]
+        public int RecipeGroupId { get; set; }
         public int GroupId { get; set; }
         public int RecipeId { get; set; }
 
         [ForeignKey(nameof(GroupId))]
+        [InverseProperty("RecipeGroups")]
         public virtual Group Group { get; set; }
         [ForeignKey(nameof(RecipeId))]
+        [InverseProperty("RecipeGroups")]
         public virtual Recipe Recipe { get; set; }
     }
 }

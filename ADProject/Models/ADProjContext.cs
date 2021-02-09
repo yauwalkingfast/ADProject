@@ -40,7 +40,7 @@ namespace ADProject.Models
             if (!optionsBuilder.IsConfigured)
             {
 //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Data Source=(LocalDb)\\MSSQLLocalDb;Initial Catalog=ADProj;Integrated Security=True");
+                optionsBuilder.UseSqlServer("Data Source=(LocalDb)\\MSSQLLocalDB;Initial Catalog=ADProj;Integrated Security=True");
             }
         }
 
@@ -49,8 +49,6 @@ namespace ADProject.Models
             base.OnModelCreating(modelBuilder); //This is actually a bug fix so please don't remove this -- Wilson
             modelBuilder.HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");
 
-            
-
             modelBuilder.Entity<Comment>(entity =>
             {
                 entity.HasOne(d => d.Recipe)
@@ -58,9 +56,8 @@ namespace ADProject.Models
                     //.OnDelete(DeleteBehavior.ClientSetNull)
                     //.HasConstraintName("FK_RecipeIngredients_RecipeId");
                     .HasForeignKey(d => d.RecipeId);
-                    /*.OnDelete(DeleteBehavior.ClientSetNull)
-                      .HasConstraintName("FK_RecipeIngredients_RecipeId")*/
-               
+                /*.OnDelete(DeleteBehavior.ClientSetNull)
+                  .HasConstraintName("FK_RecipeIngredients_RecipeId")*/
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Comments)
@@ -72,13 +69,13 @@ namespace ADProject.Models
             modelBuilder.Entity<FollowUser>(entity =>
             {
                 entity.HasOne(d => d.FollowedUser)
-                    .WithMany()
+                    .WithMany(p => p.FollowUserFollowedUsers)
                     .HasForeignKey(d => d.FollowedUserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_FollowUsers_followedUserId");
 
                 entity.HasOne(d => d.FollowingUser)
-                    .WithMany()
+                    .WithMany(p => p.FollowUserFollowingUsers)
                     .HasForeignKey(d => d.FollowingUserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_FollowUsers_followingUserId");
@@ -98,13 +95,13 @@ namespace ADProject.Models
             modelBuilder.Entity<GroupTag>(entity =>
             {
                 entity.HasOne(d => d.Group)
-                    .WithMany()
+                    .WithMany(p => p.GroupTags)
                     .HasForeignKey(d => d.GroupId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_GroupTags_GroupId");
 
                 entity.HasOne(d => d.Tag)
-                    .WithMany()
+                    .WithMany(p => p.GroupTags)
                     .HasForeignKey(d => d.TagId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_GroupTags_TagId");
@@ -151,13 +148,13 @@ namespace ADProject.Models
             modelBuilder.Entity<RecipeGroup>(entity =>
             {
                 entity.HasOne(d => d.Group)
-                    .WithMany()
+                    .WithMany(p => p.RecipeGroups)
                     .HasForeignKey(d => d.GroupId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_RecipeGroup_GroupId");
 
                 entity.HasOne(d => d.Recipe)
-                    .WithMany()
+                    .WithMany(p => p.RecipeGroups)
                     .HasForeignKey(d => d.RecipeId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_RecipeGroup_RecipeId");
@@ -171,9 +168,9 @@ namespace ADProject.Models
 
                 entity.HasOne(d => d.Recipe)
                     .WithMany(p => p.RecipeIngredients)
-                    .HasForeignKey(d => d.RecipeId)
-/*                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_RecipeIngredients_RecipeId")*/;
+                    .HasForeignKey(d => d.RecipeId);
+                    /*.OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_RecipeIngredients_RecipeId");*/
             });
 
             modelBuilder.Entity<RecipeStep>(entity =>
@@ -185,39 +182,35 @@ namespace ADProject.Models
                 entity.HasOne(d => d.Recipe)
                     .WithMany(p => p.RecipeSteps)
                     .HasForeignKey(d => d.RecipeId);
-                    //.OnDelete(DeleteBehavior.ClientSetNull)
-                    //.HasConstraintName("FK_RecipeSteps_RecipeId");
-                
                     /*.OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_RecipeSteps_RecipeId")*/
-                    
+                    .HasConstraintName("FK_RecipeSteps_RecipeId");*/
             });
 
             modelBuilder.Entity<RecipeTag>(entity =>
             {
                 entity.HasOne(d => d.Recipe)
                     .WithMany(p => p.RecipeTags)
-                    .HasForeignKey(d => d.RecipeId)
-/*                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_RecipeTags_RecipeId")*/;
+                    .HasForeignKey(d => d.RecipeId);
+                /* .OnDelete(DeleteBehavior.ClientSetNull)
+                 .HasConstraintName("FK_RecipeTags_RecipeId");*/
 
                 entity.HasOne(d => d.Tag)
                     .WithMany(p => p.RecipeTags)
-                    .HasForeignKey(d => d.TagId)
-/*                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_RecipeTags_TagId")*/;
+                    .HasForeignKey(d => d.TagId);
+                    /*.OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_RecipeTags_TagId");*/
             });
 
             modelBuilder.Entity<SavedRecipe>(entity =>
             {
                 entity.HasOne(d => d.Recipe)
-                    .WithMany()
+                    .WithMany(p => p.SavedRecipes)
                     .HasForeignKey(d => d.RecipeId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_SavedRecipes_RecipeId");
 
                 entity.HasOne(d => d.User)
-                    .WithMany()
+                    .WithMany(p => p.SavedRecipes)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_SavedRecipes_UserId");
@@ -227,9 +220,7 @@ namespace ADProject.Models
             {
                 entity.Property(e => e.TagName).IsUnicode(false);
 
-                entity.Property(e => e.Warning)
-                    .IsUnicode(false)
-                    .HasDefaultValueSql("((0))");
+                entity.Property(e => e.Warning).IsUnicode(false);
             });
 
             modelBuilder.Entity<User>(entity =>
@@ -250,13 +241,13 @@ namespace ADProject.Models
             modelBuilder.Entity<UserAllergen>(entity =>
             {
                 entity.HasOne(d => d.Tag)
-                    .WithMany()
+                    .WithMany(p => p.UserAllergens)
                     .HasForeignKey(d => d.TagId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_UserAllergen_TagId");
 
                 entity.HasOne(d => d.User)
-                    .WithMany()
+                    .WithMany(p => p.UserAllergens)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_UserAllergen_UserId");
@@ -265,13 +256,13 @@ namespace ADProject.Models
             modelBuilder.Entity<UsersGroup>(entity =>
             {
                 entity.HasOne(d => d.Group)
-                    .WithMany()
+                    .WithMany(p => p.UsersGroups)
                     .HasForeignKey(d => d.GroupId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_UsersGroup_GroupId");
 
                 entity.HasOne(d => d.User)
-                    .WithMany()
+                    .WithMany(p => p.UsersGroups)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_UsersGroup_UserId");

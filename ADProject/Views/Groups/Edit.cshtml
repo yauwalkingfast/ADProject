@@ -10,7 +10,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form enctype="multipart/form-data" asp-action="Edit" id="group-edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="GroupId" />
             <div class="form-group">
@@ -18,10 +18,11 @@
                 <input asp-for="GroupName" class="form-control" />
                 <span asp-validation-for="GroupName" class="text-danger"></span>
             </div>
+            <img src=@Url.Content("~/" + Model.GroupPhoto) alt="group photo" style="width: 100px; height: 100px;" />
             <div class="form-group">
-                <label asp-for="GroupPhoto" class="control-label"></label>
-                <input asp-for="GroupPhoto" class="form-control" />
-                <span asp-validation-for="GroupPhoto" class="text-danger"></span>
+                <label asp-for="GroupPicture" class="control-label"></label>
+                <input asp-for="GroupPicture" type="file" class="form-control" />
+                <span asp-validation-for="GroupPicture" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Description" class="control-label"></label>
@@ -32,6 +33,15 @@
                 <label asp-for="DateCreated" class="control-label"></label>
                 <input asp-for="DateCreated" class="form-control" />
                 <span asp-validation-for="DateCreated" class="text-danger"></span>
+            </div>
+            <div class="form-group" id="group-tags-container">
+                @Html.EditorFor(model => model.GroupTags)
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <input class="btn btn-primary" type="button" id="btnAdd" value="Add Tag" />
+                    <input class="btn btn-danger" type="button" id="btnRemove" value="Remove Tag" />
+                </div>
             </div>
             <div class="form-group form-check">
                 <label class="form-check-label">
@@ -51,4 +61,29 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script type="text/javascript">
+        $("#btnAdd").on("click", function () {
+            $.ajax({
+                async: true,
+                data: $("#group-edit").serialize(),
+                type: "POST",
+                url: "/Groups/AddGroupTag",
+                success: function (partialView) {
+                    $("#group-tags-container").html(partialView);
+                }
+            });
+        });
+
+        $("#btnRemove").on("click", function () {
+            $.ajax({
+                async: true,
+                data: $("#group-edit").serialize(),
+                type: "POST",
+                url: "/Groups/RemoveGroupTag",
+                success: function (partialView) {
+                    $("#group-tags-container").html(partialView);
+                }
+            });
+        });
+    </script>
 }

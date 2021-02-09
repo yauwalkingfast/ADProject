@@ -44,5 +44,14 @@ namespace ADProject.Service
                 .Where(r => r.GroupId == id)
                 .ToListAsync();
         }
+
+        public async Task<List<UserAllergen>> getUserAllergens(int id)
+        {
+            return await _context.UserAllergens
+                .Include(x => x.Tag)
+                .Include(x => x.User)
+                .Where(x => x.UserId == id)
+                .ToListAsync();
+        }
     }
 }

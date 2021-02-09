@@ -51,8 +51,6 @@ namespace ADProject.Service
             _context.Recipes.Remove(recipe); 
             var saveResult = await _context.SaveChangesAsync();
             return saveResult == 1;
-
-
         }
 
 
@@ -126,6 +124,59 @@ namespace ADProject.Service
                 .ThenInclude(rtag => rtag.Tag)
                 .ToListAsync();
         }
+
+        public async Task<List<Recipe>> GetAllRecipesBasic()
+        {
+            List<Recipe> rList = await _context.Recipes
+                .Include(r => r.User)
+                .Include(r => r.Comments)
+                .Include(r => r.LikesDislikes)
+                .Include(r => r.RecipeTags)
+                .ThenInclude(rtag => rtag.Tag)
+                .ToListAsync();
+
+            foreach (Recipe r in rList)
+            {
+                User n = new User
+                {
+                    UserId = r.User.UserId,
+                    Username = r.User.Username
+                };
+
+                r.User = n;
+            }
+
+            return rList;
+        }
+
+        public async Task<List<Recipe>> GetAllRecipesSearch(string search)
+        {
+            List<Recipe> rList = await _context.Recipes
+                .Include(r => r.User)
+                .Include(r => r.Comments)
+                .Include(r => r.LikesDislikes)
+                .Include(r => r.RecipeTags)
+                .ThenInclude(rtag => rtag.Tag)
+                .Where(r => r.Title.Contains(search)
+                            || r.Description.Contains(search)
+                            || r.RecipeIngredients.Any(y => y.Ingredient.Contains(search))
+                            || r.RecipeTags.Any(y => y.Tag.TagName.Contains(search)))
+                .ToListAsync();
+
+            foreach (Recipe r in rList)
+            {
+                User n = new User
+                {
+                    UserId = r.User.UserId,
+                    Username = r.User.Username
+                };
+
+                r.User = n;
+            }
+
+            return rList;
+        }
+
 
         public async Task<Recipe> GetRecipeById(int? id)
         {
