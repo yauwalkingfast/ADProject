@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ADProject.Models.User>
+﻿@model IEnumerable<ADProject.Models.ApplicationUser>
 
 @{
     ViewData["Title"] = "Index";
@@ -19,10 +19,10 @@
                 @Html.DisplayNameFor(model => model.LastName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Username)
+                @Html.DisplayNameFor(model => model.UserName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Password)
+                @Html.DisplayNameFor(model => model.PasswordHash)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Email)
@@ -43,10 +43,10 @@
                 @Html.DisplayFor(modelItem => item.LastName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Username)
+                @Html.DisplayFor(modelItem => item.UserName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Password)
+                @Html.DisplayFor(modelItem => item.PasswordHash)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Email)

@@ -137,10 +137,10 @@ namespace ADProject.Service
 
             foreach (Recipe r in rList)
             {
-                User n = new User
+                ApplicationUser n = new ApplicationUser
                 {
-                    UserId = r.User.UserId,
-                    Username = r.User.Username
+                    
+                    UserName = r.User.UserName
                 };
 
                 r.User = n;
@@ -165,10 +165,10 @@ namespace ADProject.Service
 
             foreach (Recipe r in rList)
             {
-                User n = new User
+                ApplicationUser n = new ApplicationUser
                 {
-                    UserId = r.User.UserId,
-                    Username = r.User.Username
+                    
+                    UserName = r.User.UserName
                 };
 
                 r.User = n;

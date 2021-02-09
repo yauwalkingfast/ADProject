@@ -11,9 +11,8 @@ namespace ADProject.Models
 {
     [JsonObject]
     [Table("User")]
-    public partial class User
-    {
-        public User()
+    public partial class UserOld { 
+        public UserOld()
         {
             Comments = new List<Comment>();
             FollowUserFollowedUsers = new List<FollowUser>();

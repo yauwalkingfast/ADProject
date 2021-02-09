@@ -22,5 +22,6 @@ namespace ADProject.Models
         [ForeignKey(nameof(RecipeId))]
         [InverseProperty("RecipeGroups")]
         public virtual Recipe Recipe { get; set; }
+        
     }
 }

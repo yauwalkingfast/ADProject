@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace ADProject.Models
 {
-    public partial class ADProjContext : IdentityDbContext<ApplicationUser, ApplicationRole, string>
+    public partial class ADProjContext : IdentityDbContext<ApplicationUser, ApplicationRole, int>
     {
         public ADProjContext()
         {
@@ -31,7 +31,7 @@ namespace ADProject.Models
         public virtual DbSet<RecipeTag> RecipeTags { get; set; }
         public virtual DbSet<SavedRecipe> SavedRecipes { get; set; }
         public virtual DbSet<Tag> Tags { get; set; }
-        public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<ApplicationUser> Users { get; set; }
         public virtual DbSet<UserAllergen> UserAllergens { get; set; }
         public virtual DbSet<UsersGroup> UsersGroups { get; set; }
 
@@ -143,6 +143,7 @@ namespace ADProject.Models
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Recipe_UserId");
+
             });
 
             modelBuilder.Entity<RecipeGroup>(entity =>
@@ -223,7 +224,7 @@ namespace ADProject.Models
                 entity.Property(e => e.Warning).IsUnicode(false);
             });
 
-            modelBuilder.Entity<User>(entity =>
+            modelBuilder.Entity<ApplicationUser>(entity =>
             {
                 entity.Property(e => e.Email).IsUnicode(false);
 
@@ -233,9 +234,7 @@ namespace ADProject.Models
 
                 entity.Property(e => e.LastName).IsUnicode(false);
 
-                entity.Property(e => e.Password).IsUnicode(false);
-
-                entity.Property(e => e.Username).IsUnicode(false);
+                
             });
 
             modelBuilder.Entity<UserAllergen>(entity =>

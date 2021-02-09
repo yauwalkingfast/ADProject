@@ -21,6 +21,6 @@ namespace ADProject.Models
         public virtual Tag Tag { get; set; }
         [ForeignKey(nameof(UserId))]
         [InverseProperty("UserAllergens")]
-        public virtual User User { get; set; }
+        public virtual ApplicationUser User { get; set; }
     }
 }

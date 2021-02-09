@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ADProject.Migrations
 {
-    public partial class MigrationOne : Migration
+    public partial class Init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -11,7 +11,8 @@ namespace ADProject.Migrations
                 name: "AspNetRoles",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true)
@@ -25,10 +26,14 @@ namespace ADProject.Migrations
                 name: "AspNetUsers",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    firstName = table.Column<string>(type: "varchar(30)", unicode: false, maxLength: 30, nullable: true),
+                    lastName = table.Column<string>(type: "varchar(30)", unicode: false, maxLength: 30, nullable: true),
+                    IsAdmin = table.Column<bool>(type: "bit", nullable: true, defaultValueSql: "((0))"),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    Email = table.Column<string>(type: "varchar(256)", unicode: false, maxLength: 256, nullable: true),
                     NormalizedEmail = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
                     PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -70,29 +75,11 @@ namespace ADProject.Migrations
                     TagId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     tagName = table.Column<string>(type: "varchar(30)", unicode: false, maxLength: 30, nullable: false),
-                    warning = table.Column<string>(type: "varchar(200)", unicode: false, maxLength: 200, nullable: false, defaultValueSql: "((0))")
+                    warning = table.Column<string>(type: "varchar(200)", unicode: false, maxLength: 200, nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Tag", x => x.TagId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "User",
-                columns: table => new
-                {
-                    UserId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    firstName = table.Column<string>(type: "varchar(30)", unicode: false, maxLength: 30, nullable: false),
-                    lastName = table.Column<string>(type: "varchar(30)", unicode: false, maxLength: 30, nullable: false),
-                    username = table.Column<string>(type: "varchar(30)", unicode: false, maxLength: 30, nullable: false),
-                    password = table.Column<string>(type: "varchar(30)", unicode: false, maxLength: 30, nullable: false),
-                    email = table.Column<string>(type: "varchar(30)", unicode: false, maxLength: 30, nullable: false),
-                    isAdmin = table.Column<bool>(type: "bit", nullable: true, defaultValueSql: "((0))")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_User", x => x.UserId);
                 });
 
             migrationBuilder.CreateTable(
@@ -101,7 +88,7 @@ namespace ADProject.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    RoleId = table.Column<int>(type: "int", nullable: false),
                     ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
@@ -122,7 +109,7 @@ namespace ADProject.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false),
                     ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
@@ -144,7 +131,7 @@ namespace ADProject.Migrations
                     LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ProviderKey = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ProviderDisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    UserId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -161,8 +148,8 @@ namespace ADProject.Migrations
                 name: "AspNetUserRoles",
                 columns: table => new
                 {
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    RoleId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -185,7 +172,7 @@ namespace ADProject.Migrations
                 name: "AspNetUserTokens",
                 columns: table => new
                 {
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false),
                     LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Value = table.Column<string>(type: "nvarchar(max)", nullable: true)
@@ -202,48 +189,28 @@ namespace ADProject.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "GroupTags",
-                columns: table => new
-                {
-                    TagId = table.Column<int>(type: "int", nullable: false),
-                    GroupId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.ForeignKey(
-                        name: "FK_GroupTags_GroupId",
-                        column: x => x.GroupId,
-                        principalTable: "Group",
-                        principalColumn: "GroupId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_GroupTags_TagId",
-                        column: x => x.TagId,
-                        principalTable: "Tag",
-                        principalColumn: "TagId",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "FollowUsers",
                 columns: table => new
                 {
+                    FollowUsersId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     followingUserId = table.Column<int>(type: "int", nullable: false),
                     followedUserId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
+                    table.PrimaryKey("PK_FollowUsers", x => x.FollowUsersId);
                     table.ForeignKey(
                         name: "FK_FollowUsers_followedUserId",
                         column: x => x.followedUserId,
-                        principalTable: "User",
-                        principalColumn: "UserId",
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_FollowUsers_followingUserId",
                         column: x => x.followingUserId,
-                        principalTable: "User",
-                        principalColumn: "UserId",
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -269,31 +236,8 @@ namespace ADProject.Migrations
                     table.ForeignKey(
                         name: "FK_Recipe_UserId",
                         column: x => x.UserId,
-                        principalTable: "User",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "UserAllergen",
-                columns: table => new
-                {
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    TagId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.ForeignKey(
-                        name: "FK_UserAllergen_TagId",
-                        column: x => x.TagId,
-                        principalTable: "Tag",
-                        principalColumn: "TagId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_UserAllergen_UserId",
-                        column: x => x.UserId,
-                        principalTable: "User",
-                        principalColumn: "UserId",
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -301,12 +245,15 @@ namespace ADProject.Migrations
                 name: "UsersGroup",
                 columns: table => new
                 {
+                    UsersGroupId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     GroupId = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: false),
                     IsMod = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
+                    table.PrimaryKey("PK_UsersGroup", x => x.UsersGroupId);
                     table.ForeignKey(
                         name: "FK_UsersGroup_GroupId",
                         column: x => x.GroupId,
@@ -316,8 +263,60 @@ namespace ADProject.Migrations
                     table.ForeignKey(
                         name: "FK_UsersGroup_UserId",
                         column: x => x.UserId,
-                        principalTable: "User",
-                        principalColumn: "UserId",
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "GroupTags",
+                columns: table => new
+                {
+                    GroupTagsId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    TagId = table.Column<int>(type: "int", nullable: false),
+                    GroupId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GroupTags", x => x.GroupTagsId);
+                    table.ForeignKey(
+                        name: "FK_GroupTags_GroupId",
+                        column: x => x.GroupId,
+                        principalTable: "Group",
+                        principalColumn: "GroupId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_GroupTags_TagId",
+                        column: x => x.TagId,
+                        principalTable: "Tag",
+                        principalColumn: "TagId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserAllergen",
+                columns: table => new
+                {
+                    UserAllergenId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    TagId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserAllergen", x => x.UserAllergenId);
+                    table.ForeignKey(
+                        name: "FK_UserAllergen_TagId",
+                        column: x => x.TagId,
+                        principalTable: "Tag",
+                        principalColumn: "TagId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_UserAllergen_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -328,7 +327,7 @@ namespace ADProject.Migrations
                     commentsId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<int>(type: "int", nullable: false),
-                    RecipeId = table.Column<int>(type: "int", nullable: false),
+                    recipeId = table.Column<int>(type: "int", nullable: false),
                     dateposted = table.Column<DateTime>(type: "datetime", nullable: false),
                     comment = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false)
                 },
@@ -336,16 +335,16 @@ namespace ADProject.Migrations
                 {
                     table.PrimaryKey("PK_Comments", x => x.commentsId);
                     table.ForeignKey(
-                        name: "FK_Comments_RecipeId",
-                        column: x => x.RecipeId,
+                        name: "FK_Comments_Recipe_recipeId",
+                        column: x => x.recipeId,
                         principalTable: "Recipe",
                         principalColumn: "RecipeId",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Comments_UserId",
                         column: x => x.UserId,
-                        principalTable: "User",
-                        principalColumn: "UserId",
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -371,8 +370,8 @@ namespace ADProject.Migrations
                     table.ForeignKey(
                         name: "FK_LikesDislikes_UserId",
                         column: x => x.UserId,
-                        principalTable: "User",
-                        principalColumn: "UserId",
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -380,11 +379,14 @@ namespace ADProject.Migrations
                 name: "RecipeGroup",
                 columns: table => new
                 {
+                    RecipeGroupId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     GroupId = table.Column<int>(type: "int", nullable: false),
                     RecipeId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
+                    table.PrimaryKey("PK_RecipeGroup", x => x.RecipeGroupId);
                     table.ForeignKey(
                         name: "FK_RecipeGroup_GroupId",
                         column: x => x.GroupId,
@@ -406,7 +408,7 @@ namespace ADProject.Migrations
                     RecipeIngredientsId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     RecipeId = table.Column<int>(type: "int", nullable: false),
-                    ingredient = table.Column<string>(type: "varchar(20)", unicode: false, maxLength: 20, nullable: false),
+                    ingredient = table.Column<string>(type: "varchar(100)", unicode: false, maxLength: 100, nullable: false),
                     quantity = table.Column<double>(type: "float", nullable: false),
                     unitOfMeasurement = table.Column<string>(type: "varchar(20)", unicode: false, maxLength: 20, nullable: true)
                 },
@@ -414,11 +416,11 @@ namespace ADProject.Migrations
                 {
                     table.PrimaryKey("PK_RecipeIngredients", x => x.RecipeIngredientsId);
                     table.ForeignKey(
-                        name: "FK_RecipeIngredients_RecipeId",
+                        name: "FK_RecipeIngredients_Recipe_RecipeId",
                         column: x => x.RecipeId,
                         principalTable: "Recipe",
                         principalColumn: "RecipeId",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -436,46 +438,52 @@ namespace ADProject.Migrations
                 {
                     table.PrimaryKey("PK_RecipeSteps", x => x.RecipeStepsId);
                     table.ForeignKey(
-                        name: "FK_RecipeSteps_RecipeId",
+                        name: "FK_RecipeSteps_Recipe_RecipeId",
                         column: x => x.RecipeId,
                         principalTable: "Recipe",
                         principalColumn: "RecipeId",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
                 name: "RecipeTags",
                 columns: table => new
                 {
+                    RecipeTagID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     RecipeId = table.Column<int>(type: "int", nullable: false),
                     TagId = table.Column<int>(type: "int", nullable: false),
                     isAllergenTag = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
+                    table.PrimaryKey("PK_RecipeTags", x => x.RecipeTagID);
                     table.ForeignKey(
-                        name: "FK_RecipeTags_RecipeId",
+                        name: "FK_RecipeTags_Recipe_RecipeId",
                         column: x => x.RecipeId,
                         principalTable: "Recipe",
                         principalColumn: "RecipeId",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_RecipeTags_TagId",
+                        name: "FK_RecipeTags_Tag_TagId",
                         column: x => x.TagId,
                         principalTable: "Tag",
                         principalColumn: "TagId",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
                 name: "SavedRecipes",
                 columns: table => new
                 {
+                    SavedRecipesId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<int>(type: "int", nullable: false),
                     RecipeId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
+                    table.PrimaryKey("PK_SavedRecipes", x => x.SavedRecipesId);
                     table.ForeignKey(
                         name: "FK_SavedRecipes_RecipeId",
                         column: x => x.RecipeId,
@@ -485,8 +493,8 @@ namespace ADProject.Migrations
                     table.ForeignKey(
                         name: "FK_SavedRecipes_UserId",
                         column: x => x.UserId,
-                        principalTable: "User",
-                        principalColumn: "UserId",
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -530,9 +538,9 @@ namespace ADProject.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Comments_RecipeId",
+                name: "IX_Comments_recipeId",
                 table: "Comments",
-                column: "RecipeId");
+                column: "recipeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Comments_UserId",
@@ -689,9 +697,6 @@ namespace ADProject.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
-
-            migrationBuilder.DropTable(
                 name: "Recipe");
 
             migrationBuilder.DropTable(
@@ -701,7 +706,7 @@ namespace ADProject.Migrations
                 name: "Group");
 
             migrationBuilder.DropTable(
-                name: "User");
+                name: "AspNetUsers");
         }
     }
 }
