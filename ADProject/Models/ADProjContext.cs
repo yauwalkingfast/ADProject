@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace ADProject.Models
 {
-    public partial class ADProjContext : IdentityDbContext<ApplicationUser, ApplicationRole, string>
+    public partial class ADProjContext : IdentityDbContext<ApplicationUser, ApplicationRole, int>
     {
         public ADProjContext()
         {
@@ -31,7 +31,7 @@ namespace ADProject.Models
         public virtual DbSet<RecipeTag> RecipeTags { get; set; }
         public virtual DbSet<SavedRecipe> SavedRecipes { get; set; }
         public virtual DbSet<Tag> Tags { get; set; }
-        public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<ApplicationUser> Users { get; set; }
         public virtual DbSet<UserAllergen> UserAllergens { get; set; }
         public virtual DbSet<UsersGroup> UsersGroups { get; set; }
 
@@ -96,9 +96,9 @@ namespace ADProject.Models
             {
                 entity.HasOne(d => d.Group)
                     .WithMany(p => p.GroupTags)
-                    .HasForeignKey(d => d.GroupId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_GroupTags_GroupId");
+                    .HasForeignKey(d => d.GroupId);
+/*                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_GroupTags_GroupId");*/
 
                 entity.HasOne(d => d.Tag)
                     .WithMany(p => p.GroupTags)
@@ -143,6 +143,7 @@ namespace ADProject.Models
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Recipe_UserId");
+
             });
 
             modelBuilder.Entity<RecipeGroup>(entity =>
@@ -150,14 +151,14 @@ namespace ADProject.Models
                 entity.HasOne(d => d.Group)
                     .WithMany(p => p.RecipeGroups)
                     .HasForeignKey(d => d.GroupId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_RecipeGroup_GroupId");
+/*                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_RecipeGroup_GroupId")*/;
 
                 entity.HasOne(d => d.Recipe)
                     .WithMany(p => p.RecipeGroups)
                     .HasForeignKey(d => d.RecipeId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_RecipeGroup_RecipeId");
+/*                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_RecipeGroup_RecipeId")*/;
             });
 
             modelBuilder.Entity<RecipeIngredient>(entity =>
@@ -223,7 +224,7 @@ namespace ADProject.Models
                 entity.Property(e => e.Warning).IsUnicode(false);
             });
 
-            modelBuilder.Entity<User>(entity =>
+            modelBuilder.Entity<ApplicationUser>(entity =>
             {
                 entity.Property(e => e.Email).IsUnicode(false);
 
@@ -233,9 +234,7 @@ namespace ADProject.Models
 
                 entity.Property(e => e.LastName).IsUnicode(false);
 
-                entity.Property(e => e.Password).IsUnicode(false);
-
-                entity.Property(e => e.Username).IsUnicode(false);
+                
             });
 
             modelBuilder.Entity<UserAllergen>(entity =>
@@ -258,14 +257,14 @@ namespace ADProject.Models
                 entity.HasOne(d => d.Group)
                     .WithMany(p => p.UsersGroups)
                     .HasForeignKey(d => d.GroupId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_UsersGroup_GroupId");
+/*                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_UsersGroup_GroupId")*/;
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.UsersGroups)
                     .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_UsersGroup_UserId");
+/*                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_UsersGroup_UserId")*/;
             });
 
             OnModelCreatingPartial(modelBuilder);

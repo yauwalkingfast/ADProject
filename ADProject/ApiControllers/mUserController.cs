@@ -25,7 +25,7 @@ namespace ADProject.ApiControllers
 
         [HttpGet]
         [Route("{id}")]
-        public async Task<ActionResult<User>> GetUserById(int id)
+        public async Task<ActionResult<ApplicationUser>> GetUserById(int id)
         {
             var user = await _usersService.GetUserById(id);
 

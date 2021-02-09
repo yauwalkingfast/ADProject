@@ -22,11 +22,6 @@
                 <input asp-for="GroupPicture" type="file" class="form-control" />
                 <span asp-validation-for="GroupPicture" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="DateCreated" class="control-label"></label>
-                <input asp-for="DateCreated" class="form-control" />
-                <span asp-validation-for="DateCreated" class="text-danger"></span>
-            </div>
             <div class="form-group" id="group-tags-container">
                 @Html.EditorFor(model => model.GroupTags)
             </div>

@@ -43,7 +43,7 @@ namespace ADProject
 
              services.AddDatabaseDeveloperPageExceptionFilter();
 
-            /*services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            /*services.AddDefaultIdentity<IdentityUser<int>>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ADProjContext>();*/
 
             //This configures identity to work with the database, uses applicationrole class to manage perms.
