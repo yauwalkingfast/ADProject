@@ -196,7 +196,7 @@ namespace ADProject.Service
         {
             for (int i = 0; i < recipeTag.Count(); i++)
             {
-                var existTag = await _context.Tags.FirstOrDefaultAsync(t => t.TagName.ToLower() == recipeTag[i].Tag.TagName.ToLower());
+                var existTag = await _context.Tags.FirstOrDefaultAsync(t => t.TagName.ToLower() == recipeTag[i].Tag.TagName.ToLower().Trim());
                 if (existTag != null)
                 {
                     recipeTag[i].TagId = existTag.TagId;

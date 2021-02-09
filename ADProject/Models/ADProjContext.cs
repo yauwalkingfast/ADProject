@@ -96,9 +96,9 @@ namespace ADProject.Models
             {
                 entity.HasOne(d => d.Group)
                     .WithMany(p => p.GroupTags)
-                    .HasForeignKey(d => d.GroupId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_GroupTags_GroupId");
+                    .HasForeignKey(d => d.GroupId);
+/*                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_GroupTags_GroupId");*/
 
                 entity.HasOne(d => d.Tag)
                     .WithMany(p => p.GroupTags)
@@ -258,14 +258,14 @@ namespace ADProject.Models
                 entity.HasOne(d => d.Group)
                     .WithMany(p => p.UsersGroups)
                     .HasForeignKey(d => d.GroupId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_UsersGroup_GroupId");
+/*                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_UsersGroup_GroupId")*/;
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.UsersGroups)
                     .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_UsersGroup_UserId");
+/*                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_UsersGroup_UserId")*/;
             });
 
             OnModelCreatingPartial(modelBuilder);

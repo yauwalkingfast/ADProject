@@ -4,8 +4,8 @@
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="col-md-4">
         <div class="form-group ui-widget">
-            <label asp-for="User.Username" class="control-label"></label>
-            <input id="auto-complete" asp-for="User.Username" class="form-control" />
+            <label class="control-label">Username</label>
+            <input class="auto-complete form-control" asp-for="User.Username" />
             <span asp-validation-for="User.Username" class="text-danger"></span>
         </div>
     </div>
@@ -19,7 +19,7 @@
             type: "POST",
             success: function ({ $values }) {
                 console.log($values)
-                $("#auto-complete").autocomplete({
+                $(".auto-complete").autocomplete({
                     source: $values
                 })
             },
