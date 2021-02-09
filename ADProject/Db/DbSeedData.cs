@@ -253,7 +253,24 @@ namespace ADProject.DbSeeder
                 Description = "For all hololive fans",
                 DateCreated = new DateTime(2008, 5, 1, 8, 30, 52),
                 IsPublished = true
+            });
 
+            db.Groups.Add(new Group
+            {
+                GroupName = "Esther's fan club",
+                GroupPhoto = "somephoto",
+                Description = "Yuen Kwan is her no.1 fan",
+                DateCreated = new DateTime(2018, 5, 1, 8, 30, 52),
+                IsPublished = true
+            });
+
+            db.Groups.Add(new Group
+            {
+                GroupName = "test",
+                GroupPhoto = "somephoto",
+                Description = "test",
+                DateCreated = new DateTime(2018, 5, 1, 8, 30, 52),
+                IsPublished = true
             });
 
             db.SaveChanges();

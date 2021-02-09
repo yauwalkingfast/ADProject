@@ -88,7 +88,7 @@ namespace ADProject.Controllers
         [HttpPost]
         public async Task<IActionResult> UserAutocomplete()
         {
-            var names = _context.Users.Select(u => u.Username).ToList();
+            var names = await _context.Users.Select(u => u.Username).ToListAsync();
             return Json(names);
         }
 
@@ -97,24 +97,29 @@ namespace ADProject.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("GroupId,GroupName,GroupPicture,Description,DateCreated,IsPublished,GroupTags")] Group group)
+        public async Task<IActionResult> Create([Bind("GroupId,GroupName,GroupPicture,Description,DateCreated,IsPublished,GroupTags,UsersGroups")] Group group)
         {
-            if (ModelState.IsValid)
+            if (group.GroupName.Trim() == "" && !ModelState.IsValid)
             {
-                var groupPicture = group.GroupPicture;
-                var groupPhoto = UploadPicture(groupPicture);
-                if (groupPhoto.Equals("error"))
-                {
-                    return View(group);
-                }
-                if (groupPhoto.Equals("notset"))
-                {
-                    group.GroupPhoto = groupPhoto;
-                }
-                await _groupService.AddGroup(group);
-                return RedirectToAction(nameof(Index));
+                return View(group);
             }
-            return View(group);
+
+            DateTime now = DateTime.Now;
+            group.DateCreated = now;
+
+            var groupPicture = group.GroupPicture;
+            var groupPhoto = UploadPicture(groupPicture);
+            if (groupPhoto.Equals("error"))
+            {
+                return View(group);
+            } 
+            else if (groupPhoto.Equals("notset"))
+            {
+                group.GroupPhoto = groupPhoto;
+            }
+
+            await _groupService.AddGroup(group);
+            return RedirectToAction(nameof(Index));
         }
 
         // It might be better to put this into a service
@@ -196,30 +201,34 @@ namespace ADProject.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("GroupId,GroupName,GroupPicture,Description,DateCreated,IsPublished")] Group group)
+        public async Task<IActionResult> Edit(int id, [Bind("GroupId,GroupName,GroupPicture,Description,DateCreated,IsPublished, GroupTags, UsersGroups")] Group group)
         {
             if (id != group.GroupId)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if(group.GroupName.Trim() == "" && !ModelState.IsValid)
             {
-                var groupPicture = group.GroupPicture;
-                var groupPhoto = UploadPicture(groupPicture);
-                if (groupPhoto.Equals("error"))
-                {
-                    return View(group);
-                }
-                if (groupPhoto.Equals("notset")) 
-                {
-                    group.GroupPhoto = groupPhoto;
-                }
-                if (await _groupService.EditGroup(id, group))
-                {
-                    return RedirectToAction(nameof(Index));
-                }
+                return View(group);
             }
+
+            var groupPicture = group.GroupPicture;
+            var groupPhoto = UploadPicture(groupPicture);
+            if (groupPhoto.Equals("error"))
+            {
+                return View(group);
+            }
+            else if (groupPhoto.Equals("notset")) 
+            {
+                group.GroupPhoto = groupPhoto;
+            }
+
+            if (await _groupService.EditGroup(id, group))
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
             return View(group);
         }
 
