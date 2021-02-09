@@ -141,6 +141,7 @@ namespace ADProject.Service
 
             return gList;
 
+        }
         // Check if the username exist in database
         private async Task<List<UsersGroup>> CheckUsernameExist(List<UsersGroup> usersGroup)
         {

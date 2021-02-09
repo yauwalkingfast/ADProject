@@ -305,7 +305,7 @@ namespace ADProject.DbSeeder
 
             db.SaveChanges();
 
-            User user = db.Users.FirstOrDefault();
+            ApplicationUser user = db.Users.FirstOrDefault();
             Group group = db.Groups.FirstOrDefault();
             Group group2 = db.Groups.Where(x => x.GroupId == 2).FirstOrDefault();
 
