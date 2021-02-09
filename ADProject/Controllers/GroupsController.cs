@@ -88,7 +88,7 @@ namespace ADProject.Controllers
         [HttpPost]
         public async Task<IActionResult> UserAutocomplete()
         {
-            var names = await _context.Users.Select(u => u.Username).ToListAsync();
+            var names = await _context.Users.Select(u => u.UserName).ToListAsync();
             return Json(names);
         }
 

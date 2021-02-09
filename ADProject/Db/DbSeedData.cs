@@ -26,22 +26,22 @@ namespace ADProject.DbSeeder
 
         protected void AddUsers()
         {
-            db.Users.Add(new User
+            db.Users.Add(new ApplicationUser
             {
                 FirstName = "Jackie",
                 LastName = "Chan",
-                Username = "jc",
-                Password = "12345",
+                UserName = "jc",
+                PasswordHash = "12345",
                 Email = "jackie@email.com",
                 IsAdmin = true
             });
 
-            db.Users.Add(new User
+            db.Users.Add(new ApplicationUser
             {
                 FirstName = "Chun Sing",
                 LastName = "Chan",
-                Username = "ccs",
-                Password = "12345",
+                UserName = "ccs",
+                PasswordHash = "12345",
                 Email = "ccs@email.com",
                 IsAdmin = true
             });
@@ -73,19 +73,19 @@ namespace ADProject.DbSeeder
 
         protected void AddRecipes()
         {
-            db.Users.Add(new User
+            db.Users.Add(new ApplicationUser
             {
                 FirstName = "Wilson",
                 LastName = "Chan",
-                Username = "wc",
-                Password = "12345",
+                UserName = "wc",
+                PasswordHash = "12345",
                 Email = "wilson@email.com",
                 IsAdmin = true
             });
 
             db.SaveChanges();
 
-            User user = db.Users.FirstOrDefault();
+            ApplicationUser user = db.Users.FirstOrDefault();
 
             List<RecipeIngredient> recipeIngredient = new List<RecipeIngredient>();
             
@@ -199,7 +199,7 @@ namespace ADProject.DbSeeder
             });
             db.Recipes.Add(new Recipe
             {
-                UserId = user.UserId,
+                UserId = user.Id,
                 Title = "Chocolate Cake",
                 Description = "Sweets and Tasty chocolate cake",
                 DateCreated = new DateTime(2008, 5, 1, 8, 30, 52),
@@ -216,7 +216,7 @@ namespace ADProject.DbSeeder
 
             db.Recipes.Add(new Recipe
             {
-                UserId = user.UserId,
+                UserId = user.Id,
                 Title = "Mala Squid",
                 Description = "Hot and spicy",
                 DateCreated = new DateTime(2010, 10, 1, 8, 30, 52),
@@ -234,12 +234,12 @@ namespace ADProject.DbSeeder
 
         protected void AddGroups()
         {
-            db.Users.Add(new User
+            db.Users.Add(new ApplicationUser
             {
                 FirstName = "Tingkai",
                 LastName = "Chua",
-                Username = "ctk",
-                Password = "12435",
+                UserName = "ctk",
+                PasswordHash = "12435",
                 Email = "ctk@email.com",
                 IsAdmin = true
             });

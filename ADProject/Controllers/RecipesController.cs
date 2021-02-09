@@ -82,7 +82,7 @@ namespace ADProject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([FromBody] Recipe recipe)
         {
-            User user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == recipe.UserId);
+            ApplicationUser user = await _context.Users.FirstOrDefaultAsync();
             recipe.User = user;
             DateTime now = DateTime.Now;
             recipe.DateCreated = now;
