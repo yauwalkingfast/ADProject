@@ -264,6 +264,15 @@ namespace ADProject.DbSeeder
                 IsPublished = true
             });
 
+            db.Groups.Add(new Group
+            {
+                GroupName = "test",
+                GroupPhoto = "somephoto",
+                Description = "test",
+                DateCreated = new DateTime(2018, 5, 1, 8, 30, 52),
+                IsPublished = true
+            });
+
             db.SaveChanges();
 
             /*User user = db.Users.FirstOrDefault();

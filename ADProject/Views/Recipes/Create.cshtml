@@ -367,7 +367,7 @@
                                     </button>
                                 </div>
                             </div>
-                            
+
                             <div className="row mt-3">
                                 <div className="col-sm">
                                     <div className="form-group form-check">
@@ -376,6 +376,39 @@
                                             {" "}Make Public
                                         </label>
                                     </div>
+                                </div>
+                            </div>
+
+                            <div className="row">
+                                <div className="col-sm">
+                                    <label className="control-label font-weight-bold">Share in Groups</label>
+                                </div>
+                            </div>
+
+                            <div className="row">
+                                <div className="col-sm">
+                                    {this.state.RecipeGroups.map((element, index) => {
+                                        return(
+                                            <div className="row" key={index}>
+                                                <div className="form-group col-sm-6">
+                                                    <input type="text" className="form-control" placeholder="Group" onChange={() => this.handleGroupChange(event, index)} value={element.Group.GroupName} />
+                                                </div>
+                                                <div className="col-sm-1">
+                                                    <button type="button" className="icon-button" onClick={() => this.removeGroup(index)}>
+                                                        <i class="fa fa-times" aria-hidden="true"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        )
+                                    })}
+                                </div>
+                            </div>
+
+                            <div className="row ">
+                                <div className="col-sm">
+                                    <button className="icon-button" type="button" onClick={this.addGroup}>
+                                        <i class="fa fa-plus" aria-hidden="true">Add Group</i>
+                                    </button>
                                 </div>
                             </div>
 
@@ -462,6 +495,11 @@
                         Warning: ""
                     }
                 }],
+                RecipeGroups: [{
+                    Group: {
+                        GroupName: ""
+                    }
+                }]
             };
         }
 
@@ -581,13 +619,17 @@
             var RecipeTags = this.state.RecipeTags
                 .filter(allergenTag => allergenTag.Tag.Warning.trim() !== "");
 
+            var RecipeGroups = this.state.RecipeGroups
+                .filter(recipeGroup => recipeGroup.Group.GroupName.trim() !== "");
+
             var state = {...this.state};
             delete state.MainSelectedFile;
             const toSubmit = {
                 ...state,
                 RecipeSteps,
                 RecipeIngredients,
-                RecipeTags
+                RecipeTags,
+                RecipeGroups
             }
             return toSubmit;
         }
@@ -747,8 +789,6 @@
             this.setState({
                 [name]: value
             });
-
-            console.log(this.state.IsPublished);
         }
 
         addIngredient = () => {
@@ -787,6 +827,42 @@
                 }
                 return {
                     RecipeIngredients
+                };
+            })
+        }
+
+        addGroup = () => {
+            this.setState(state => {
+                const RecipeGroups = [...state.RecipeGroups, {
+                    Group: {
+                        GroupName: ""
+                    }
+                }];
+                return {
+                    RecipeGroups,
+                }
+            });
+        }
+
+        removeGroup = (index) => {
+            this.setState(state => {
+                const RecipeGroups = state.RecipeGroups;
+                RecipeGroups.splice(index, 1);
+                return {
+                    RecipeGroups,
+                }
+            });
+        }
+
+        handleGroupChange = (event, index) => {
+            const GroupName = event.target.value;
+            this.setState(state => {
+                const RecipeGroups = state.RecipeGroups;
+                const oldGroup = RecipeGroups[index]
+                oldGroup.Group.GroupName = GroupName
+                RecipeGroups[index] = oldGroup;
+                return {
+                    RecipeGroups
                 };
             })
         }
