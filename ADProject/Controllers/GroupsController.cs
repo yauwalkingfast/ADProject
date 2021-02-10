@@ -9,6 +9,7 @@ using ADProject.Models;
 using ADProject.Service;
 using Microsoft.AspNetCore.Http;
 using System.IO;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ADProject.Controllers
 {
@@ -16,11 +17,13 @@ namespace ADProject.Controllers
     {
         private readonly ADProjContext _context;
         private readonly IGroupService _groupService;
+        private readonly IUserService _userService;
 
-        public GroupsController(ADProjContext context, IGroupService groupService)
+        public GroupsController(ADProjContext context, IGroupService groupService, IUserService userService)
         {
             _context = context;
             _groupService = groupService;
+            _userService = userService;
         }
 
         // GET: Groups
@@ -48,12 +51,14 @@ namespace ADProject.Controllers
         }
 
         // GET: Groups/Create
+        [Authorize]
         public IActionResult Create()
         {
             return View();
         }
 
         [HttpPost]
+        [Authorize]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> AddGroupTag([Bind("GroupTags")] Group group)
         {
@@ -62,6 +67,7 @@ namespace ADProject.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> RemoveGroupTag(Group group)
         {
@@ -70,6 +76,7 @@ namespace ADProject.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> AddUser([Bind("UsersGroups")] Group group)
         {
@@ -78,6 +85,7 @@ namespace ADProject.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> RemoveUser(Group group)
         {
@@ -86,6 +94,7 @@ namespace ADProject.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> UserAutocomplete()
         {
             var names = await _context.Users.Select(u => u.UserName).ToListAsync();
@@ -96,6 +105,7 @@ namespace ADProject.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("GroupId,GroupName,GroupPicture,Description,DateCreated,IsPublished,GroupTags,UsersGroups")] Group group)
         {
@@ -109,20 +119,30 @@ namespace ADProject.Controllers
 
             var groupPicture = group.GroupPicture;
             var groupPhoto = UploadPicture(groupPicture);
+            //group.GroupPhoto = groupPhoto;
             if (groupPhoto.Equals("error"))
             {
                 return View(group);
             } 
-            else if (groupPhoto.Equals("notset"))
+            else if (!groupPhoto.Equals("notset"))
             {
                 group.GroupPhoto = groupPhoto;
             }
 
+            ApplicationUser superUser = await _userService.GetUserByUsername(User.Identity.Name);
+            group.UsersGroups.Add(new UsersGroup
+            {
+                UserId = superUser.Id,
+                IsMod = true,
+                User = superUser
+            });
+            
             await _groupService.AddGroup(group);
             return RedirectToAction(nameof(Index));
         }
 
         // It might be better to put this into a service
+        [Authorize]
         private string UploadPicture(IFormFile file)
         {
             if (file == null)
@@ -149,6 +169,7 @@ namespace ADProject.Controllers
         }
 
         // GET: Groups/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -157,10 +178,17 @@ namespace ADProject.Controllers
             }
 
             var group = await _groupService.GetGroupById(id);
+
             if (group == null)
             {
                 return NotFound();
             }
+
+            if(!await _groupService.IsGroupAdmin(id, User.Identity.Name))
+            {
+                return RedirectToAction("Details", new { id = id });
+            }
+
             return View(group);
         }
 
@@ -200,6 +228,7 @@ namespace ADProject.Controllers
                 }*/
 
         [HttpPost]
+        [Authorize]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("GroupId,GroupName,GroupPicture,Description,DateCreated,IsPublished, GroupTags, UsersGroups")] Group group)
         {
@@ -208,7 +237,12 @@ namespace ADProject.Controllers
                 return NotFound();
             }
 
-            if(group.GroupName.Trim() == "" && !ModelState.IsValid)
+            if (!await _groupService.IsGroupAdmin(id, User.Identity.Name))
+            {
+                return RedirectToAction("Details", new { id = id });
+            }
+
+            if (group.GroupName.Trim() == "" && !ModelState.IsValid)
             {
                 return View(group);
             }
@@ -220,6 +254,11 @@ namespace ADProject.Controllers
                 return View(group);
             }
             else if (groupPhoto.Equals("notset")) 
+            {
+                group.GroupPhoto = "";
+            } 
+
+            else
             {
                 group.GroupPhoto = groupPhoto;
             }
@@ -233,6 +272,7 @@ namespace ADProject.Controllers
         }
 
         // GET: Groups/Delete/5
+        [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -246,14 +286,25 @@ namespace ADProject.Controllers
                 return NotFound();
             }
 
+            if (!await _groupService.IsGroupAdmin(id, User.Identity.Name))
+            {
+                return RedirectToAction("Details", new { id = id });
+            }
+
             return View(@group);
         }
 
         // POST: Groups/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            if (!await _groupService.IsGroupAdmin(id, User.Identity.Name))
+            {
+                return RedirectToAction("Details", new { id = id });
+            }
+
             var successful = await _groupService.DeleteGroup(id);
             if (successful)
             {

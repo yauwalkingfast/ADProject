@@ -1,4 +1,5 @@
-﻿using ADProject.Models;
+﻿using ADProject.JsonObjects;
+using ADProject.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,5 +18,12 @@ namespace ADProject.Service
         Task<List<UserAllergen>> getUserAllergens(int id);
 
         Task<bool> JoinGroup(UsersGroup ug);
+
+
+        Task<ApplicationUser> GetUserByUsername(string username);
+        
+        //Android
+        Task<bool> SaveRecipe(SaveUserRecipe saveUserRecipe);
+
     }
 }

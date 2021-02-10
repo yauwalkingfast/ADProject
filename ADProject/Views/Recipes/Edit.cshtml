@@ -197,10 +197,10 @@
                                                         if(tag.IsAllergenTag) {
                                                             return (
                                                                 <div className="row mb-1" key={index}>
-                                                                    <div className="col-sm-10">
+                                                                    <div className="col-10">
                                                                         <input type="text" className="form-control" onChange={() => this.handleAllergenTagChange(event, index)} value={tag.Tag.Warning} />
                                                                     </div>
-                                                                    <div className="col-sm-2">
+                                                                    <div className="col-2">
                                                                         <button type="button" className="icon-button" onClick={() => this.removeAllergenTag(index)}>
                                                                             <i class="fa fa-times" aria-hidden="true"></i>
                                                                         </button>
@@ -232,10 +232,10 @@
                                                 if(!tag.IsAllergenTag) {
                                                     return (
                                                         <div className="row mb-1" key={index}>
-                                                            <div className="col-sm-10">
+                                                            <div className="col-10">
                                                                 <input type="text" className="form-control" onChange={() => this.handleTagChange(event, index)} value={tag.Tag.TagName} />
                                                             </div>
-                                                            <div className="col-sm-2">
+                                                            <div className="col-2">
                                                                 <button type="button" className="icon-button" onClick={() => this.removeTag(index)}>
                                                                     <i class="fa fa-times" aria-hidden="true"></i>
                                                                 </button>
@@ -263,16 +263,16 @@
                                     {this.state.RecipeIngredients.map((element, index) => {
                                         return(
                                             <div className="row" key={index}>
-                                                <div className="form-group col-sm-6">
+                                                <div className="form-group col-6">
                                                     <input type="text" className="form-control" placeholder="Ingredient" id={`ingredient-name-${index}`} name="ingredient-name" onChange={() => this.handleIngredientChange(index)} value={element.Ingredient} />
                                                 </div>
-                                                <div className="form-group col-sm-2">
+                                                <div className="form-group col-2">
                                                     <input type="number" className="form-control" placeholder="Quantity" id={`ingredient-qty-${index}`} name="ingredient-qty" onChange={() => this.handleIngredientChange(index)} value={element.Quantity} />
                                                 </div>
-                                                <div className="form-group col-sm-3">
+                                                <div className="form-group col-3">
                                                     <input type="text" className="form-control" placeholder="Unit" id={`ingredient-unit-${index}`} name="ingredient-unit" onChange={() => this.handleIngredientChange(index)} value={element.UnitOfMeasurement} />
                                                 </div>
-                                                <div className="col-sm-1">
+                                                <div className="col-1">
                                                     <button type="button" className="icon-button" onClick={() => this.removeIngredient(index)}>
                                                         <i class="fa fa-times" aria-hidden="true"></i>
                                                     </button>
@@ -338,8 +338,14 @@
                                                         <textarea type="text" placeholder="Step Instructions" className="form-control" name="step-instruction" onChange={() => this.handleStepChange(event, index)}  value={element.TextInstructions}></textarea>
                                                     </div>
                                                     <div className="col-sm-1">
-                                                        <button type="button" className="icon-button" onClick={() => this.removeStep(index)}>
+                                                        <button type="button" className="icon-button mb-5" onClick={() => this.removeStep(index)}>
                                                             <i class="fa fa-times" aria-hidden="true"></i>
+                                                        </button>
+                                                        <button type="button" className="icon-button" onClick={() => this.moveStepUp(index)}>
+                                                            <i className="fa fa-arrow-up"></i>
+                                                        </button>
+                                                        <button type="button" className="icon-button" onClick={() => this.moveStepDown(index)}>
+                                                            <i className="fa fa-arrow-down"></i>
                                                         </button>
                                                     </div>
                                                 </div>
@@ -379,10 +385,10 @@
                                     {this.state.RecipeGroups.map((element, index) => {
                                         return(
                                             <div className="row" key={index}>
-                                                <div className="form-group col-sm-6">
+                                                <div className="form-group col-6">
                                                     <input type="text" id={`group-autocomplete-${index}`} className="form-control auto-complete-groupname" placeholder="Group" onChange={() => this.handleGroupChange(event, index)} value={element.Group.GroupName} />
                                                 </div>
-                                                <div className="col-sm-1">
+                                                <div className="col-1">
                                                     <button type="button" className="icon-button" onClick={() => this.removeGroup(index)}>
                                                         <i class="fa fa-times" aria-hidden="true"></i>
                                                     </button>
@@ -465,6 +471,38 @@
             })
 
             this.addAutocompleteGroupName();
+        }
+
+        moveStepUp = (index) => {
+            if(index === 0) {
+                return;
+            }
+            this.setState(state => {
+                var RecipeSteps = state.RecipeSteps;
+                var temp = RecipeSteps[index];
+                RecipeSteps[index] = RecipeSteps[index - 1];
+                RecipeSteps[index - 1] = temp;
+
+                return {
+                    RecipeSteps
+                }
+            });
+        }
+
+        moveStepDown = (index) => {
+            if(index === this.state.RecipeSteps.length - 1) {
+                return;
+            }
+            this.setState(state => {
+                var RecipeSteps = state.RecipeSteps;
+                var temp = RecipeSteps[index];
+                RecipeSteps[index] = RecipeSteps[index + 1];
+                RecipeSteps[index + 1] = temp;
+
+                return {
+                    RecipeSteps
+                }
+            });
         }
 
         addAutocompleteGroupName = () => {
@@ -605,6 +643,9 @@
                 RecipeTags,
                 RecipeGroups
             }
+
+            console.log(toSubmit);
+            
             return toSubmit;
         }
 

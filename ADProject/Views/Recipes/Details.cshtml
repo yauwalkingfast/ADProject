@@ -128,10 +128,13 @@
             Tags :
             @foreach (var tag in Model.RecipeTags)
             {
-                if (tag.IsAllergenTag == false )
+                if (tag.IsAllergenTag == false)
                 {
-                        @tag.Tag.TagName 
+                    @tag.Tag.TagName
+                    <text>, </text>
+
                 }
+
             }
         </td>
     </tr>
