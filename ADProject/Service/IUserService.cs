@@ -1,4 +1,5 @@
-﻿using ADProject.Models;
+﻿using ADProject.JsonObjects;
+using ADProject.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,5 +16,7 @@ namespace ADProject.Service
         Task<List<UsersGroup>> GetUserGroupByUserId(int? id);
 
         Task<List<UserAllergen>> getUserAllergens(int id);
+
+        Task<bool> SaveRecipe(SaveUserRecipe saveUserRecipe);
     }
 }
