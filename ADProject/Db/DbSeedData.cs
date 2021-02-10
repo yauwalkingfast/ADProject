@@ -569,7 +569,7 @@ namespace ADProject.DbSeeder
 
             db.RecipeGroups.Add(new RecipeGroup
             {
-                GroupId = 4,
+                GroupId = 3,
                 RecipeId = 1
             });
 

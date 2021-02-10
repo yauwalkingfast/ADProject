@@ -30,6 +30,26 @@ namespace ADProject.Service
 
             return user;
         }
+        
+        /* public async Task<ApplicationUser> GetUserById(int? id)
+        {
+            ApplicationUser user = await _context.Users
+                .Include(r => r.Recipes)
+                .ThenInclude(r=>r.RecipeIngredients)
+                .Include(r => r.Recipes)
+                .ThenInclude(r=>r.RecipeSteps)
+                .Include(r=>r.Recipes)
+                .ThenInclude(r=>r.RecipeTags)
+                .ThenInclude(r=>r.Tag)
+                .Include(r => r.LikesDislikes)
+                .Include(r => r.Comments)
+                .Include(r => r.SavedRecipes)
+                .Include(r => r.UsersGroups)
+                .ThenInclude(rG => rG.Group)
+                .FirstOrDefaultAsync(r => r.Id == id);
+
+            return user;
+        } */
 
         public async Task<ApplicationUser> GetUserByUsername(string username)
         {
@@ -40,7 +60,7 @@ namespace ADProject.Service
                 .Include(r => r.UsersGroups)
                 .ThenInclude(rG => rG.Group)
                 .FirstOrDefaultAsync(r => r.UserName == username);
-
+                
             return user;
         }
 

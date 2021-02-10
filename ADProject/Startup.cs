@@ -2,6 +2,7 @@ using ADProject.Data;
 using ADProject.DbSeeder;
 using ADProject.Models;
 using ADProject.Service;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -36,6 +37,14 @@ namespace ADProject
             /*            services.AddDbContext<ADProjContext>(options =>
                             options.UseSqlServer(
                                 Configuration.GetConnectionString("DefaultConnection")));*/
+
+            services.AddAuthentication()
+                .AddGoogle(options =>
+                {
+                    options.ClientId = "285372488193-u1s12juncblkh0n3en9fk26q8ei6r2sa.apps.googleusercontent.com";
+                    options.ClientSecret = "CN0pBpWFi9oxLVKEclKockDV";
+                });
+                
 
             services.AddDbContext<ADProjContext>(options =>
                 options.UseSqlServer(Environment.GetEnvironmentVariable("DB_CONNECTION_STRING", EnvironmentVariableTarget.User)));
