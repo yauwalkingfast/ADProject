@@ -51,7 +51,7 @@ namespace ADProject.Service
             
             _context.Recipes.Remove(recipe); 
             var saveResult = await _context.SaveChangesAsync();
-            return saveResult == 1;
+            return saveResult >= 1;
         }
 
 
@@ -185,7 +185,7 @@ namespace ADProject.Service
 
         public async Task<Recipe> GetRecipeById(int? id)
         {
-            return await _context.Recipes
+            var recipe = await _context.Recipes
                 .Include(r => r.User)
                 .Include(r => r.RecipeSteps)
                 .Include(r => r.RecipeIngredients)
@@ -196,6 +196,10 @@ namespace ADProject.Service
                 .Include(r => r.RecipeGroups)
                 .ThenInclude(rgroup => rgroup.Group)
                 .FirstOrDefaultAsync(r => r.RecipeId == id);
+
+            recipe.RecipeSteps.Sort((x,y) => x.StepNumber.CompareTo(y.StepNumber));
+
+            return recipe;
         }
         
         // Check if the group exist
@@ -231,6 +235,37 @@ namespace ADProject.Service
                 }
             }
             return recipeTag;
+        }
+
+        public async Task<List<Recipe>> GetAllRecipesByUserId(int? id)
+        {
+            return await _context.Recipes
+                
+                .Include(r => r.RecipeSteps)
+                .Include(r => r.RecipeIngredients)
+                .Include(r => r.Comments)
+                .Include(r => r.LikesDislikes)
+                .Include(r => r.RecipeTags)
+                .ThenInclude(rtag => rtag.Tag)
+                .Where(r => r.UserId == id)
+                .ToListAsync();
+        }
+        
+        public async Task<List<Recipe>> SearchMyRecipe(string search, int? id)
+        {
+            return await _context.Recipes
+                .Include(r => r.RecipeSteps)
+                .Include(r => r.RecipeIngredients)
+                .Include(r => r.Comments)
+                .Include(r => r.LikesDislikes)
+                .Include(r => r.RecipeTags)
+                .ThenInclude(rtag => rtag.Tag)
+                .Where(r => r.UserId == id)
+                .Where(r=>r.Title.Contains(search)||
+                          r.Description.Contains(search) || 
+                          r.RecipeIngredients.Any(y => y.Ingredient.Contains(search))|| 
+                          r.RecipeTags.Any(y => y.Tag.TagName.Contains(search)))
+                .ToListAsync();
         }
     }
 }

@@ -52,7 +52,13 @@ namespace ADProject.Service
                 _context.UsersGroups.RemoveRange(dbGroup.UsersGroups);
 
                 dbGroup.GroupName = group.GroupName;
-                dbGroup.GroupPhoto = group.GroupPhoto;
+
+                if(group.GroupPhoto != "")
+
+                {
+                    dbGroup.GroupPhoto = group.GroupPhoto;
+                }
+
                 dbGroup.Description = group.Description;
                 dbGroup.IsPublished = group.IsPublished;
                 dbGroup.RecipeGroups = group.RecipeGroups;
@@ -190,6 +196,7 @@ namespace ADProject.Service
             return groupTags.FindAll(gt => gt.Tag.TagName != null);
         }
 
+
         public async Task<Group> AddGroupAD(Group group)
         {
             //group.UsersGroups = await this.CheckUsernameExist(group.UsersGroups.ToList());
@@ -239,6 +246,35 @@ namespace ADProject.Service
 
             var saveResult = await _context.SaveChangesAsync();
             return saveResult >= 1;
+        }
+
+
+        public async Task<bool> IsGroupAdmin(int? groupId, string username)
+        {
+            if(groupId == null)
+            {
+                return false;
+            }
+
+            var group = await _context.Groups
+                .Include(g => g.UsersGroups)
+                .ThenInclude(ug => ug.User)
+                .FirstOrDefaultAsync(g => g.GroupId == groupId);
+
+            if(group == null)
+            {
+                return false;
+            }
+
+            foreach(var ug in group.UsersGroups)
+            {
+                if (ug.User.UserName.Equals(username) && ug.User.IsAdmin == true)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
     }

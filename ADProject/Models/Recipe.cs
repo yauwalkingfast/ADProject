@@ -62,7 +62,7 @@ namespace ADProject.Models
         [InverseProperty(nameof(RecipeIngredient.Recipe))]
         public virtual IEnumerable<RecipeIngredient> RecipeIngredients { get; set; }
         [InverseProperty(nameof(RecipeStep.Recipe))]
-        public virtual IEnumerable<RecipeStep> RecipeSteps { get; set; }
+        public virtual List<RecipeStep> RecipeSteps { get; set; }
         [InverseProperty(nameof(RecipeTag.Recipe))]
         public virtual IEnumerable<RecipeTag> RecipeTags { get; set; }
        
