@@ -38,10 +38,11 @@ namespace ADProject
                                 Configuration.GetConnectionString("DefaultConnection")));*/
 
             services.AddDbContext<ADProjContext>(options =>
-                options.UseSqlServer(Environment.GetEnvironmentVariable("DB_CONNECTION_STRING", EnvironmentVariableTarget.User))); 
+                options.UseSqlServer(Environment.GetEnvironmentVariable("DB_CONNECTION_STRING", EnvironmentVariableTarget.User)));
 
+            services.AddRazorPages();
 
-             services.AddDatabaseDeveloperPageExceptionFilter();
+            services.AddDatabaseDeveloperPageExceptionFilter();
 
             /*services.AddDefaultIdentity<IdentityUser<int>>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ADProjContext>();*/
@@ -49,7 +50,10 @@ namespace ADProject
             //This configures identity to work with the database, uses applicationrole class to manage perms.
             //Point ASPNETCOREIDENTITY to the context.
 
-            services.AddIdentity<ApplicationUser, ApplicationRole>()
+            services.AddIdentity<ApplicationUser, ApplicationRole>(options => {
+                options.SignIn.RequireConfirmedAccount = false;
+                options.User.RequireUniqueEmail = true;
+            })
                 .AddDefaultUI()
                 .AddRoles<ApplicationRole>()
                 .AddRoleManager <RoleManager<ApplicationRole>>()

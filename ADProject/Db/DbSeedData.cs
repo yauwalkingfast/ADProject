@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using BC = BCrypt.Net.BCrypt;
 
 namespace ADProject.DbSeeder
 {
@@ -31,7 +32,9 @@ namespace ADProject.DbSeeder
                 FirstName = "Jackie",
                 LastName = "Chan",
                 UserName = "jc",
-                PasswordHash = "12345",
+                NormalizedUserName = "jc".ToUpper(),
+                NormalizedEmail = "jackie@email.com".ToUpper(),
+                PasswordHash = BC.HashPassword("12345"),
                 Email = "jackie@email.com",
                 IsAdmin = true
             });
@@ -41,7 +44,9 @@ namespace ADProject.DbSeeder
                 FirstName = "Chun Sing",
                 LastName = "Chan",
                 UserName = "ccs",
-                PasswordHash = "12345",
+                NormalizedUserName = "ccs".ToUpper(),
+                NormalizedEmail = "ccs@email.com".ToUpper(),
+                PasswordHash = BC.HashPassword("12345"),
                 Email = "ccs@email.com",
                 IsAdmin = true
             });
@@ -78,8 +83,10 @@ namespace ADProject.DbSeeder
                 FirstName = "Wilson",
                 LastName = "Chan",
                 UserName = "wc",
-                PasswordHash = "12345",
+                NormalizedUserName = "wc".ToUpper(),
+                PasswordHash = BC.HashPassword("12345"),
                 Email = "wilson@email.com",
+                NormalizedEmail = "wilson@email.com".ToUpper(),
                 IsAdmin = true
             });
 
@@ -239,7 +246,9 @@ namespace ADProject.DbSeeder
                 FirstName = "Tingkai",
                 LastName = "Chua",
                 UserName = "ctk",
-                PasswordHash = "12435",
+                NormalizedEmail = "ctk@email.com".ToUpper(),
+                NormalizedUserName = "ctk".ToUpper(),
+                PasswordHash = BC.HashPassword("12345"),
                 Email = "ctk@email.com",
                 IsAdmin = true
             });
