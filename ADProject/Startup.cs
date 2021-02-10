@@ -96,7 +96,7 @@ namespace ADProject
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ADProjContext db)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ADProjContext db, UserManager<ApplicationUser> um)
         {
             if (env.IsDevelopment())
             {
@@ -114,7 +114,7 @@ namespace ADProject
 
             db.Database.EnsureDeleted();
             db.Database.EnsureCreated();
-            new DbSeedData(db).Init();
+            new DbSeedData(db, um).Init();
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

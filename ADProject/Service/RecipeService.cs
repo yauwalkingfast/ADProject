@@ -51,7 +51,7 @@ namespace ADProject.Service
             
             _context.Recipes.Remove(recipe); 
             var saveResult = await _context.SaveChangesAsync();
-            return saveResult == 1;
+            return saveResult >= 1;
         }
 
 
