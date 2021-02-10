@@ -26,7 +26,7 @@ namespace ADProject.Service
                 .Include(r => r.SavedRecipes)
                 .Include(r => r.UsersGroups)
                 .ThenInclude(rG => rG.Group)
-                .FirstOrDefaultAsync(r => r.UserId == id);
+                .FirstOrDefaultAsync(r => r.Id == id);
 
             return user;
         }
