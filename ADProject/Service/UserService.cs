@@ -28,7 +28,8 @@ namespace ADProject.Service
                 .ThenInclude(r=>r.Tag)
                 .Include(r => r.LikesDislikes)
                 .Include(r => r.Comments)
-               
+                .Include(r => r.UsersGroups)
+                .ThenInclude(rG => rG.Group)
                 .FirstOrDefaultAsync(r => r.UserId == id);
 
             return user;
@@ -59,6 +60,13 @@ namespace ADProject.Service
                 .Include(x => x.User)
                 .Where(x => x.UserId == id)
                 .ToListAsync();
+        }
+
+        public async Task<bool> JoinGroup(UsersGroup ug)
+        {
+            _context.Add(ug);
+            var saveResult = await _context.SaveChangesAsync();
+            return saveResult >= 1;
         }
     }
 }
