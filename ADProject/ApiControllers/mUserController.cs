@@ -1,4 +1,5 @@
-﻿using ADProject.Models;
+﻿using ADProject.JsonObjects;
+using ADProject.Models;
 using ADProject.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -43,6 +44,15 @@ namespace ADProject.ApiControllers
         public async Task<List<UserAllergen>> getUserAllergen(int id)
         {
             return await _usersService.getUserAllergens(id);
+        }
+
+        [HttpPost]
+        [Route("saveuserrecipelist")]
+        public async Task<booleanJson> SaveRecipe([FromBody] SaveUserRecipe saveUserRecipe)
+        {
+            booleanJson isSaved = new booleanJson();
+            isSaved.flag = await _usersService.SaveRecipe(saveUserRecipe);
+            return isSaved;
         }
 
     }

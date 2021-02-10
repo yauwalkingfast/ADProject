@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
+using ADProject.JsonObjects;
 
 namespace ADProject.Service
 {
@@ -22,6 +23,7 @@ namespace ADProject.Service
                 .Include(r => r.Recipes)
                 .Include(r => r.LikesDislikes)
                 .Include(r => r.Comments)
+                .Include(r => r.SavedRecipes)
                 .Include(r => r.UsersGroups)
                 .ThenInclude(rG => rG.Group)
                 .FirstOrDefaultAsync(r => r.UserId == id);
@@ -61,6 +63,35 @@ namespace ADProject.Service
             _context.Add(ug);
             var saveResult = await _context.SaveChangesAsync();
             return saveResult >= 1;
+        }
+
+        public async Task<bool> SaveRecipe(SaveUserRecipe saveUserRecipe)
+        {
+            int userId = saveUserRecipe.userId;
+            int recipeId = saveUserRecipe.recipeId;
+
+            // Check if record exist
+            SavedRecipe savedRecipe = await _context.SavedRecipes
+                .Where(x => x.UserId == userId)
+                .FirstOrDefaultAsync(x => x.RecipeId == recipeId);
+
+            if (savedRecipe == null)
+            {
+                SavedRecipe saveRecipe = new SavedRecipe();
+                saveRecipe.UserId = userId;
+                saveRecipe.RecipeId = recipeId;
+
+                _context.SavedRecipes.Add(saveRecipe);
+                var saveResult = await _context.SaveChangesAsync();
+                return saveResult == 1;
+            }
+            else
+            {
+                _context.SavedRecipes.Remove(savedRecipe);
+                var saveResult = await _context.SaveChangesAsync();
+                return saveResult == 1;
+            }
+            
         }
     }
 }
