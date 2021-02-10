@@ -21,6 +21,20 @@ namespace ADProject.Service
         {
             ApplicationUser user = await _context.Users
                 .Include(r => r.Recipes)
+                .Include(r => r.LikesDislikes)
+                .Include(r => r.Comments)
+                .Include(r => r.SavedRecipes)
+                .Include(r => r.UsersGroups)
+                .ThenInclude(rG => rG.Group)
+                .FirstOrDefaultAsync(r => r.Id == id);
+
+            return user;
+        }
+        
+        /* public async Task<ApplicationUser> GetUserById(int? id)
+        {
+            ApplicationUser user = await _context.Users
+                .Include(r => r.Recipes)
                 .ThenInclude(r=>r.RecipeIngredients)
                 .Include(r => r.Recipes)
                 .ThenInclude(r=>r.RecipeSteps)
@@ -35,7 +49,7 @@ namespace ADProject.Service
                 .FirstOrDefaultAsync(r => r.Id == id);
 
             return user;
-        }
+        } */
 
         public async Task<ApplicationUser> GetUserByUsername(string username)
         {
@@ -46,7 +60,7 @@ namespace ADProject.Service
                 .Include(r => r.UsersGroups)
                 .ThenInclude(rG => rG.Group)
                 .FirstOrDefaultAsync(r => r.UserName == username);
-
+                
             return user;
         }
 
