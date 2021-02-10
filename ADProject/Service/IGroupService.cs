@@ -21,5 +21,7 @@ namespace ADProject.Service
         Task<Group> ADGetGroupById(int? id);
 
         Task<List<Group>> GetAllGroupsSearch(string search);
+
+        Task<bool> IsGroupAdmin(int? groupId, string username);
     }
 }

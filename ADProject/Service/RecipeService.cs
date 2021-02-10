@@ -51,7 +51,7 @@ namespace ADProject.Service
             
             _context.Recipes.Remove(recipe); 
             var saveResult = await _context.SaveChangesAsync();
-            return saveResult == 1;
+            return saveResult >= 1;
         }
 
 
@@ -185,7 +185,7 @@ namespace ADProject.Service
 
         public async Task<Recipe> GetRecipeById(int? id)
         {
-            return await _context.Recipes
+            var recipe = await _context.Recipes
                 .Include(r => r.User)
                 .Include(r => r.RecipeSteps)
                 .Include(r => r.RecipeIngredients)
@@ -196,6 +196,10 @@ namespace ADProject.Service
                 .Include(r => r.RecipeGroups)
                 .ThenInclude(rgroup => rgroup.Group)
                 .FirstOrDefaultAsync(r => r.RecipeId == id);
+
+            recipe.RecipeSteps.Sort((x,y) => x.StepNumber.CompareTo(y.StepNumber));
+
+            return recipe;
         }
         
         // Check if the group exist
