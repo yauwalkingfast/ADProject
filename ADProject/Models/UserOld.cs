@@ -69,7 +69,7 @@ namespace ADProject.Models
         [JsonIgnore]
         [InverseProperty(nameof(Recipe.User))]
 
-        [JsonIgnore]
+        
         public virtual IEnumerable<Recipe> Recipes { get; set; }
         [InverseProperty(nameof(SavedRecipe.User))]
         public virtual IEnumerable<SavedRecipe> SavedRecipes { get; set; }

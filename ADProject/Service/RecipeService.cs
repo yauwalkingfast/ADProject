@@ -257,7 +257,10 @@ namespace ADProject.Service
                 .Include(r => r.RecipeTags)
                 .ThenInclude(rtag => rtag.Tag)
                 .Where(r => r.UserId == id)
-                .Where(r=>r.Title.Contains(search)||r.Description.Contains(search))
+                .Where(r=>r.Title.Contains(search)||
+                          r.Description.Contains(search) || 
+                          r.RecipeIngredients.Any(y => y.Ingredient.Contains(search))|| 
+                          r.RecipeTags.Any(y => y.Tag.TagName.Contains(search)))
                 .ToListAsync();
         }
     }

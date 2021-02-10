@@ -4,50 +4,63 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
-
-<h4>Group</h4>
+<h1 class="create_heading">Create a Tribe</h1>
+<link href="~/css/GroupStyle.css" rel="stylesheet" type="text/css" />
+@*<h4>Group</h4>*@
 <hr />
-<div class="row">
-    <div class="col-md-4">
+<div class="row-md-3">
+    <div class="col-md-3">
         <form enctype="multipart/form-data" asp-action="Create" id="group-form">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="GroupName" class="control-label"></label>
-                <input asp-for="GroupName" class="form-control" />
-                <span asp-validation-for="GroupName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="GroupPicture" class="control-label"></label>
-                <input asp-for="GroupPicture" type="file" class="form-control" />
-                <span asp-validation-for="GroupPicture" class="text-danger"></span>
-            </div>
-            <div class="form-group" id="group-tags-container">
-                @Html.EditorFor(model => model.GroupTags)
-            </div>
-            <div class="row">
-                <div class="col-md-4">
-                    <input class="btn btn-primary" type="button" id="btnAdd" value="Add Tag" />
-                    <input class="btn btn-danger" type="button" id="btnRemove" value="Remove Tag" />
+                    <label asp-for="GroupPicture" class="control-label"></label>
+                    <input asp-for="GroupPicture" type="file" class="form-control"/>
+                    <span asp-validation-for="GroupPicture" class="text-danger"></span>
                 </div>
-            </div>
-            <div class="form-group" id="users-container">
-                @Html.EditorFor(model => model.UsersGroups)
-            </div>
-            <div class="row">
-                <div class="col-md-4">
-                    <input class="btn btn-primary" type="button" id="btnAddUser" value="Add User" />
-                    <input class="btn btn-danger" type="button" id="btnRemoveUser" value="Remove User" />
+                        
+                    
+                <div class="form-group">
+                    <label asp-for="GroupName" class="control-label"></label>
+                    <input asp-for="GroupName" class="form-control" />
+                    <span asp-validation-for="GroupName" class="text-danger"></span>
                 </div>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsPublished" /> @Html.DisplayNameFor(model => model.IsPublished)
-                </label>
-            </div>
+                        
+                    
+                        
+                <div class="form-group" id="group-tags-container">
+                    @Html.EditorFor(model => model.GroupTags)
+                </div>
+                        
+                
+                <div class="row">
+                    <div class="col-md-4">
+                        <input class="btn btn-primary" type="button" id="btnAdd" value="Add Tag" />
+                        <input class="btn btn-danger" type="button" id="btnRemove" value="Remove Tag" />
+                    </div>
+                </div>
+                    
+                
+                <div class="form-group" id="users-container">
+                    @Html.EditorFor(model => model.UsersGroups)
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <input class="btn btn-primary" type="button" id="btnAddUser" value="Add User" />
+                        <input class="btn btn-danger" type="button" id="btnRemoveUser" value="Remove User" />
+                    </div>
+                </div>
+                    
+            
+                <div class="form-group form-check">
+                    <label class="form-check-label">
+                        <input class="form-check-input" asp-for="IsPublished" /> @Html.DisplayNameFor(model => model.IsPublished)
+                    </label>
+                </div>
+                
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
+                
         </form>
     </div>
 </div>
@@ -109,107 +122,3 @@
     </script>
 }
 
-@*@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
-@functions{
-    public string GetAntiXsrfRequestToken()
-    {
-        return Xsrf.GetAndStoreTokens(Context).RequestToken;
-    }
-}
-
-<input type="hidden" id="RequestVerificationToken"
-       name="RequestVerificationToken" value="@GetAntiXsrfRequestToken()">
-
-<!-- React JS -->
-<script crossorigin src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
-<script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
-<script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
-
-<!-- axios -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js" integrity="sha512-bZS47S7sPOxkjU/4Bt0zrhEtWx0y0CRkhEp8IckzK+ltifIIE9EMIMTuT/mEzoIMewUINruDBIR/jJnbguonqQ==" crossorigin="anonymous"></script>
-
-<!-- Font Awesome -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-<script type="text/babel">
-    class Create extends React.Component {
-        render() {
-            return (
-                <div className="px-2">
-                    <h2 className="create-form-header">Create New Tribe</h2>
-                    <hr />
-                    <div className="row justify-content-center">
-                        <form enctype="multipart/form-data" onSubmit={this.submitHandler}>
-
-                            <div className="row">
-                                <div className="col-sm">
-                                    <div className="form-group">
-                                        <label className="control-label font-weight-bold">Tribe Name</label>
-                                        <input type="text" className="form-control" name="GroupName" value={this.state.GroupName} onChange={this.handleChange} />
-                                    </div>
-                                    <div className="form-group">
-                                        <label className="control-label font-weight-bold">Cover Image</label>
-                                        {this.state.GroupPhoto ? (
-                                            <div className="row">
-                                                <div className="col-sm">
-                                                    <div className="row">
-                                                        <div className="col-sm">
-                                                            <img src={`@Url.Content("~/${this.state.GroupPhoto}")`} className="img-fluid main-image mb-2" alt="GroupPhoto" />
-                                                        </div>
-                                                    </div>
-                                                    <div className="row">
-                                                        <div className="col-sm">
-                                                            <input type="file" onChange={this.onGroupPhotoChange} />
-                                                        </div>
-                                                    </div>
-                                                    <div className="row">
-                                                        <div className="col-sm">
-                                                            <button className="btn btn-secondary mt-4" value="upload" onClick={this.onGroupPhotoUpload}>
-                                                                Change
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        ) : (
-                                            <div className="files">
-                                                <input type="file" className="form-control" onChange={this.onGroupPhotoChange} />
-                                                <button className="btn btn-secondary mt-4" value="upload" onClick={this.onGroupPhotoUpload}>
-                                                    Upload
-                                                </button>
-                                            </div>
-                                        )}
-                                    </div>
-    <div className="row">
-                                <div className="col-sm">
-                                    <label className="control-label font-weight-bold">Ingredients</label>
-                                </div>
-                            </div>
-
-                            <div className="row">
-                                <div className="col-sm">
-                                    {this.state.RecipeIngredients.map((element, index) => {
-                                        return(
-                                            <div className="row" key={index}>
-                                                <div className="form-group col-sm-6">
-                                                    <input type="text" className="form-control" placeholder="User Name" id={`user-name-${index}`} name="user-name" onChange={() => this.handleUserChange(index)} value={element.UserId} />
-                                                </div>
-                                                
-                                                <div className="col-sm-1">
-                                                    <button type="button" className="icon-button" onClick={() => this.removeUser(index)}>
-                                                        <i class="fa fa-times" aria-hidden="true"></i>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        )
-                                    })}
-                                </div>
-                            </div>
-
-                            <div className="row">
-                                <div className="col-sm mb-5">
-                                    <button className="icon-button" type="button" onClick={this.addUser}>
-                                        <i class="fa fa-plus" aria-hidden="true">Add User</i>
-                                    </button>
-                                </div>
-                            </div>*@

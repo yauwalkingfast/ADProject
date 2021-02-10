@@ -109,11 +109,12 @@ namespace ADProject.Controllers
 
             var groupPicture = group.GroupPicture;
             var groupPhoto = UploadPicture(groupPicture);
+            //group.GroupPhoto = groupPhoto;
             if (groupPhoto.Equals("error"))
             {
                 return View(group);
             } 
-            else if (groupPhoto.Equals("notset"))
+            else if (!groupPhoto.Equals("notset"))
             {
                 group.GroupPhoto = groupPhoto;
             }
@@ -220,6 +221,10 @@ namespace ADProject.Controllers
                 return View(group);
             }
             else if (groupPhoto.Equals("notset")) 
+            {
+                group.GroupPhoto = "";
+            }
+            else
             {
                 group.GroupPhoto = groupPhoto;
             }

@@ -52,7 +52,11 @@ namespace ADProject.Service
                 _context.UsersGroups.RemoveRange(dbGroup.UsersGroups);
 
                 dbGroup.GroupName = group.GroupName;
-                dbGroup.GroupPhoto = group.GroupPhoto;
+                if (group.GroupPhoto != "")
+                {
+                    dbGroup.GroupPhoto = group.GroupPhoto;
+                }
+
                 dbGroup.Description = group.Description;
                 dbGroup.IsPublished = group.IsPublished;
                 dbGroup.RecipeGroups = group.RecipeGroups;

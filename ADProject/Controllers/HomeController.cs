@@ -23,8 +23,12 @@ namespace ADProject.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            int id = 1;
-            return View(await _recipeService.GetAllRecipesByUserId(id));
+            ApplicationUser user = _context.Users.FirstOrDefault();
+            int id = user.Id;
+           // ApplicationUser user = await _userService.GetUserById(id);
+           var recipes= await _recipeService.GetAllRecipesByUserId(id);
+            ViewData ["FirstName"]= user.FirstName;
+            return View(recipes);
         }
         [HttpPost]
         public async Task<IActionResult> Index([FromForm]String search)

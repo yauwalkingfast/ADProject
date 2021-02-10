@@ -60,6 +60,9 @@ color: black;
     overflow: hidden;
     position:relative;
 }
+    .searchbar a, form {
+        display: inline;
+    }
     .searchbar a {
         float: right;
         
@@ -82,24 +85,28 @@ color: black;
 }
 .list_recipe_grid-container {
     display: grid;
-    grid-template-areas: 'trendingpost trendingpost heading heading heading heading' 
-        'trendingpost trendingpost recipes recipes recipes recipes';
+    grid-template-areas: 'heading heading heading heading heading heading' 
+        'recipes recipes recipes recipes recipes recipes';
     grid-column-gap: 10px;
     grid-row-gap: 10px;
-    grid-template-columns: 50px auto;
+    
     
     padding: 10px;
 }
-.trendingpost{
-    grid-area:trendingpost;
-    border:solid;
-}
+
 .heading{
     grid-area:heading;
     text-align:center;
     border:solid;
 }
+.heading a, form{
+   display:inline; 
+  
+}
 .heading a{
     float:right;
-    text-align:center;
 }
+.heading form{
+    float:left;
+}
+

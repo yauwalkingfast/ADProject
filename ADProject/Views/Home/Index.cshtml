@@ -1,7 +1,9 @@
 ﻿@model IEnumerable<ADProject.Models.Recipe>
-@*@model ADProject.Models.User*@
+
+@*@model ADProject.Models.ApplicationUser*@
 @{
     ViewData["Title"] = "Index";
+    string FirstName = (string)ViewData["FirstName"];
 }
 
 <h1>My Recipes</h1>
@@ -14,7 +16,7 @@
 
     <div class="user">
         <i style='font-size:64px' class='fas'>&#xf406;</i>
-        @*@Html.DisplayFor(model => Recipe.User.FirstName)*@
+        @FirstName
 
     </div>
     <div class="menu">
@@ -47,13 +49,13 @@
                             @foreach (var tag in item.RecipeTags)
                             {
                                 if (tag.IsAllergenTag == false)
-                                {
-                                    @tag.Tag.TagName
-                                    <text>, </text>
-
-                                }
+                                {<text>#</text>
+                                @tag.Tag.TagName
+                                <text> </text>
 
                             }
+
+                        }
                         </div>
                         <a asp-controller="Recipes" asp-action="Details" asp-route-id="@item.RecipeId">
                             <img src=@item.MainMediaUrl alt="a description of the image">

@@ -118,16 +118,22 @@
 <link href="~/css/RecipeDetail.css" rel="stylesheet" type="text/css" />
 <script src='https://kit.fontawesome.com/a076d05399.js'></script>
 <div class="list_recipe_grid-container">
-    <div class="trendingpost">
-        <i style='font-size:64px' class='fas'>&#xf406;</i>
+    <!--<div class="trendingpost">
+        <i style='font-size:64px' class='fas'>&#xf406;</i>-->
         @*@Html.DisplayFor(model => model.User.FirstName)*@
 
-    </div>
+    <!--</div>-->
     <div class="heading">
-        <div>
-            <h2>Your Subcribed Feed</h2>
-            <a asp-action="Create">Create New</a>
-        </div>
+        
+                <h2>Your Subcribed Feed</h2>
+                <form id="search-form" action="/Recipes/Index" method="post">
+                    <input type="text" placeholder="Search.." name="search">
+                    <button type="submit"><i class="fa fa-search"></i></button>
+                </form>
+                <a asp-controller="Recipes" asp-action="Create">Create New</a>
+            
+          
+        
     </div>
 
     @foreach (var item in Model)
@@ -139,19 +145,19 @@
                         <i style='font-size:32px' class='fas'>&#xf406;</i>
 
                         @Html.DisplayFor(modelitem => item.User.FirstName)
-      
+
                         <h3>@Html.DisplayFor(modelItem => item.Title)</h3>
                         Tags :
                         @foreach (var tag in item.RecipeTags)
                         {
                             if (tag.IsAllergenTag == false)
-                            {
-                                @tag.Tag.TagName
-                                <text>, </text>
-
-                            }
+                            {<text>#</text>
+                            @tag.Tag.TagName
+                            <text> </text>
 
                         }
+
+                    }
                     </td>
 
                 </tr>
