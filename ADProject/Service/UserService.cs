@@ -29,6 +29,19 @@ namespace ADProject.Service
             return user;
         }
 
+        public async Task<ApplicationUser> GetUserByUsername(string username)
+        {
+            ApplicationUser user = await _context.Users
+                .Include(r => r.Recipes)
+                .Include(r => r.LikesDislikes)
+                .Include(r => r.Comments)
+                .Include(r => r.UsersGroups)
+                .ThenInclude(rG => rG.Group)
+                .FirstOrDefaultAsync(r => r.UserName == username);
+
+            return user;
+        }
+
         public async Task<List<UsersGroup>> GetUserGroupByUserId(int? id)
         {
             return await _context.UsersGroups
