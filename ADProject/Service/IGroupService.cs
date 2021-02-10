@@ -21,5 +21,13 @@ namespace ADProject.Service
         Task<Group> ADGetGroupById(int? id);
 
         Task<List<Group>> GetAllGroupsSearch(string search);
+
+        Task<Group> AddGroupAD(Group group);
+
+        List<Group> UserInGroups(int userId);
+
+        List<Group> RecipeInGroups(int recipeId);
+
+        Task<bool> PostRecipes(List<Group> groups, int recipeId);
     }
 }

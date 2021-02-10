@@ -189,5 +189,57 @@ namespace ADProject.Service
 
             return groupTags.FindAll(gt => gt.Tag.TagName != null);
         }
+
+        public async Task<Group> AddGroupAD(Group group)
+        {
+            //group.UsersGroups = await this.CheckUsernameExist(group.UsersGroups.ToList());
+            group.GroupTags = await this.CheckTagsDatabase(group.GroupTags.ToList());
+            _context.Add(group);
+            var saveResult = await _context.SaveChangesAsync();
+
+            Group rg = _context.Groups.Where(x => x.GroupName == group.GroupName).FirstOrDefault();
+
+            return rg;
+            
+        }
+
+        public List<Group> UserInGroups(int userId)
+        {
+            List<Group> groups = _context.UsersGroups
+                .Where(ug => ug.User.Id == userId)
+                .Select(ug => ug.Group)
+                .ToList();
+
+            return groups;
+        }
+
+        public List<Group> RecipeInGroups(int recipeId)
+        {
+            List<Group> groups = _context.RecipeGroups
+                .Where(ug => ug.Recipe.RecipeId == recipeId)
+                .Select(ug => ug.Group)
+                .ToList();
+
+            return groups;
+        }
+
+        public async Task<bool> PostRecipes(List<Group> groups, int recipeId)
+        {
+            foreach (Group g in groups)
+            {
+                RecipeGroup rg = new RecipeGroup
+                {
+                    GroupId = g.GroupId,
+                    RecipeId = recipeId
+                };
+
+                _context.Add(rg);
+
+            }
+
+            var saveResult = await _context.SaveChangesAsync();
+            return saveResult >= 1;
+        }
+
     }
 }
