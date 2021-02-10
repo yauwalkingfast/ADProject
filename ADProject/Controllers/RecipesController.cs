@@ -21,7 +21,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using System.IO;
-
+using Microsoft.AspNetCore.Authorization;
 
 namespace ADProject.Controllers
 {
@@ -61,6 +61,7 @@ namespace ADProject.Controllers
         }
 
         // GET: Recipes/Create
+        [Authorize]
         public IActionResult Create()
         {
             ViewData["UserId"] = _context.Users.FirstOrDefault().UserId;
@@ -69,6 +70,7 @@ namespace ADProject.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> GroupNameAutocomplete()
         {
             var groupnames = await _context.Groups.Select(g => g.GroupName).ToListAsync();
@@ -79,6 +81,7 @@ namespace ADProject.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([FromBody] Recipe recipe)
         {
@@ -98,6 +101,7 @@ namespace ADProject.Controllers
         }
 
         // GET: Recipes/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -112,6 +116,11 @@ namespace ADProject.Controllers
                 return NotFound();
             }
 
+            if(!User.Identity.Name.Equals(recipe.User.UserName))
+            {
+                return RedirectToAction("Details", new { id = id });
+            }
+
             ViewData["UserId"] = _context.Users.FirstOrDefault().UserId;
             string json = JsonConvert.SerializeObject(recipe, Formatting.Indented);
             ViewData["Recipe"] = json;
@@ -123,12 +132,18 @@ namespace ADProject.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [FromBody] Recipe recipe)
         {
             if (id != recipe.RecipeId)
             {
                 return NotFound();
+            }
+
+            if (!User.Identity.Name.Equals(recipe.User.UserName))
+            {
+                return Unauthorized();
             }
 
             if (await _recipesService.EditRecipe(id, recipe))
@@ -140,6 +155,7 @@ namespace ADProject.Controllers
         }
 
         // GET: Recipes/Delete/5
+        [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -148,6 +164,11 @@ namespace ADProject.Controllers
             }
 
             var recipe = await _recipesService.GetRecipeById(id);
+
+            if (!User.Identity.Name.Equals(recipe.User.UserName))
+            {
+                return RedirectToAction("Details", new { id = id });
+            }
 
             if (recipe == null)
             {
@@ -159,15 +180,23 @@ namespace ADProject.Controllers
 
         // POST: Recipes/Delete/5
         [HttpPost, ActionName("Delete")]
+        [Authorize]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            var recipe = await _recipesService.GetRecipeById(id);
+
+            if (!User.Identity.Name.Equals(recipe.User.UserName))
+            {
+                return RedirectToAction("Details", new { id = id });
+            }
 
             var successful = await _recipesService.DeleteRecipe(id);
             if (successful)
             {
                 return RedirectToAction(nameof(Index));
             }
+
             return View("Error");
 
         }
@@ -203,6 +232,7 @@ namespace ADProject.Controllers
                 }*/
 
         [HttpPost]
+        [Authorize]
         [ValidateAntiForgeryToken]
         public IActionResult GenerateAllergenTag([FromBody] List<RecipeIngredient> recipeIngredients)
         {
@@ -262,6 +292,7 @@ namespace ADProject.Controllers
                 }*/
 
         [HttpPost]
+        [Authorize]
         public IActionResult FileUpload([FromForm] FileModel file)
         {
             try

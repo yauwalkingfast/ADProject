@@ -194,5 +194,33 @@ namespace ADProject.Service
 
             return groupTags.FindAll(gt => gt.Tag.TagName != null);
         }
+
+        public async Task<bool> IsGroupAdmin(int? groupId, string username)
+        {
+            if(groupId == null)
+            {
+                return false;
+            }
+
+            var group = await _context.Groups
+                .Include(g => g.UsersGroups)
+                .ThenInclude(ug => ug.User)
+                .FirstOrDefaultAsync(g => g.GroupId == groupId);
+
+            if(group == null)
+            {
+                return false;
+            }
+
+            foreach(var ug in group.UsersGroups)
+            {
+                if (ug.User.UserName.Equals(username) && ug.User.IsAdmin == true)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
     }
 }

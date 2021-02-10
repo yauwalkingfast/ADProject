@@ -19,6 +19,11 @@ namespace ADProject.Service
 
         Task<bool> JoinGroup(UsersGroup ug);
 
+
+        Task<ApplicationUser> GetUserByUsername(string username);
+        
+        //Android
         Task<bool> SaveRecipe(SaveUserRecipe saveUserRecipe);
+
     }
 }
