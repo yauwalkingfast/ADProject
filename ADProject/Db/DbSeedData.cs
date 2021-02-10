@@ -21,6 +21,32 @@ namespace ADProject.DbSeeder
             AddRecipes();
             AddTags();
             AddGroups();
+            AddUsers();
+        }
+
+        protected void AddUsers()
+        {
+            db.Users.Add(new ApplicationUser
+            {
+                FirstName = "Jackie",
+                LastName = "Chan",
+                UserName = "jc",
+                PasswordHash = "12345",
+                Email = "jackie@email.com",
+                IsAdmin = true
+            });
+
+            db.Users.Add(new ApplicationUser
+            {
+                FirstName = "Chun Sing",
+                LastName = "Chan",
+                UserName = "ccs",
+                PasswordHash = "12345",
+                Email = "ccs@email.com",
+                IsAdmin = true
+            });
+
+            db.SaveChanges();
         }
 
         protected void AddTags()
@@ -47,19 +73,19 @@ namespace ADProject.DbSeeder
 
         protected void AddRecipes()
         {
-            db.Users.Add(new User
+            db.Users.Add(new ApplicationUser
             {
                 FirstName = "Wilson",
                 LastName = "Chan",
-                Username = "wc",
-                Password = "12345",
+                UserName = "wc",
+                PasswordHash = "12345",
                 Email = "wilson@email.com",
                 IsAdmin = true
             });
 
             db.SaveChanges();
 
-            User user = db.Users.FirstOrDefault();
+            ApplicationUser user = db.Users.FirstOrDefault();
 
             List<RecipeIngredient> recipeIngredient = new List<RecipeIngredient>();
             
@@ -173,7 +199,7 @@ namespace ADProject.DbSeeder
             });
             db.Recipes.Add(new Recipe
             {
-                UserId = user.UserId,
+                UserId = user.Id,
                 Title = "Chocolate Cake",
                 Description = "Sweets and Tasty chocolate cake",
                 DateCreated = new DateTime(2008, 5, 1, 8, 30, 52),
@@ -187,16 +213,33 @@ namespace ADProject.DbSeeder
             });
 
             db.SaveChanges();
+
+            db.Recipes.Add(new Recipe
+            {
+                UserId = user.Id,
+                Title = "Mala Squid",
+                Description = "Hot and spicy",
+                DateCreated = new DateTime(2010, 10, 1, 8, 30, 52),
+                DurationInMins = 30,
+                Calories = 600,
+                IsPublished = true,
+                MainMediaUrl = "https://singaporebeauty.com/wp-content/uploads/2017/10/dm-chicken-squid-close-up.jpg",
+                //RecipeIngredients = recipeIngredient,
+                //RecipeSteps = recipeSteps,
+                //RecipeTags = recipeTag
+            });
+
+            db.SaveChanges();
         }
 
         protected void AddGroups()
         {
-            db.Users.Add(new User
+            db.Users.Add(new ApplicationUser
             {
                 FirstName = "Tingkai",
                 LastName = "Chua",
-                Username = "ctk",
-                Password = "12435",
+                UserName = "ctk",
+                PasswordHash = "12435",
                 Email = "ctk@email.com",
                 IsAdmin = true
             });
@@ -210,7 +253,24 @@ namespace ADProject.DbSeeder
                 Description = "For all hololive fans",
                 DateCreated = new DateTime(2008, 5, 1, 8, 30, 52),
                 IsPublished = true
+            });
 
+            db.Groups.Add(new Group
+            {
+                GroupName = "Esther's fan club",
+                GroupPhoto = "somephoto",
+                Description = "Yuen Kwan is her no.1 fan",
+                DateCreated = new DateTime(2018, 5, 1, 8, 30, 52),
+                IsPublished = true
+            });
+
+            db.Groups.Add(new Group
+            {
+                GroupName = "test",
+                GroupPhoto = "somephoto",
+                Description = "test",
+                DateCreated = new DateTime(2018, 5, 1, 8, 30, 52),
+                IsPublished = true
             });
 
             db.SaveChanges();

@@ -53,31 +53,83 @@ namespace ADProject.Controllers
             return View();
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> AddGroupTag([Bind("GroupTags")] Group group)
+        {
+            group.GroupTags.Add(new GroupTag());
+            return PartialView("AddGroupTags", group);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> RemoveGroupTag(Group group)
+        {
+            group.GroupTags.RemoveAt(group.GroupTags.Count - 1);
+            return PartialView("AddGroupTags", group);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> AddUser([Bind("UsersGroups")] Group group)
+        {
+            group.UsersGroups.Add(new UsersGroup());
+            return PartialView("AddUsers", group);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> RemoveUser(Group group)
+        {
+            group.UsersGroups.RemoveAt(group.UsersGroups.Count - 1);
+            return PartialView("AddUsers", group);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UserAutocomplete()
+        {
+            var names = await _context.Users.Select(u => u.UserName).ToListAsync();
+            return Json(names);
+        }
+
         // POST: Groups/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("GroupId,GroupName,GroupPicture,Description,DateCreated,IsPublished")] Group group)
+        public async Task<IActionResult> Create([Bind("GroupId,GroupName,GroupPicture,Description,DateCreated,IsPublished,GroupTags,UsersGroups")] Group group)
         {
-            if (ModelState.IsValid)
+            if (group.GroupName.Trim() == "" && !ModelState.IsValid)
             {
-                var groupPicture = group.GroupPicture;
-                var groupPhoto = UploadPicture(groupPicture);
-                if(groupPhoto.Equals("error"))
-                {
-                    return View(group);
-                }
-                group.GroupPhoto = groupPhoto;
-                await _groupService.AddGroup(group);
-                return RedirectToAction(nameof(Index));
+                return View(group);
             }
-            return View(group);
+
+            DateTime now = DateTime.Now;
+            group.DateCreated = now;
+
+            var groupPicture = group.GroupPicture;
+            var groupPhoto = UploadPicture(groupPicture);
+            if (groupPhoto.Equals("error"))
+            {
+                return View(group);
+            } 
+            else if (groupPhoto.Equals("notset"))
+            {
+                group.GroupPhoto = groupPhoto;
+            }
+
+            await _groupService.AddGroup(group);
+            return RedirectToAction(nameof(Index));
         }
 
         // It might be better to put this into a service
         private string UploadPicture(IFormFile file)
         {
+            if (file == null)
+            {
+                return "notset";
+            }
+
             try
             {
                 string fileName = Guid.NewGuid().ToString() + ".jpg";
@@ -149,27 +201,34 @@ namespace ADProject.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("GroupId,GroupName,GroupPicture,Description,DateCreated,IsPublished")] Group group)
+        public async Task<IActionResult> Edit(int id, [Bind("GroupId,GroupName,GroupPicture,Description,DateCreated,IsPublished, GroupTags, UsersGroups")] Group group)
         {
             if (id != group.GroupId)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if(group.GroupName.Trim() == "" && !ModelState.IsValid)
             {
-                var groupPicture = group.GroupPicture;
-                var groupPhoto = UploadPicture(groupPicture);
-                if (groupPhoto.Equals("error"))
-                {
-                    return View(group);
-                }
-                group.GroupPhoto = groupPhoto;
-                if (await _groupService.EditGroup(id, group))
-                {
-                    return RedirectToAction(nameof(Index));
-                }
+                return View(group);
             }
+
+            var groupPicture = group.GroupPicture;
+            var groupPhoto = UploadPicture(groupPicture);
+            if (groupPhoto.Equals("error"))
+            {
+                return View(group);
+            }
+            else if (groupPhoto.Equals("notset")) 
+            {
+                group.GroupPhoto = groupPhoto;
+            }
+
+            if (await _groupService.EditGroup(id, group))
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
             return View(group);
         }
 
