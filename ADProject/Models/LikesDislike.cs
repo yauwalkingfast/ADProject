@@ -27,6 +27,7 @@ namespace ADProject.Models
         [JsonIgnore]
         [ForeignKey(nameof(UserId))]
         [InverseProperty("LikesDislikes")]
-        public virtual User User { get; set; }
+        public virtual ApplicationUser User { get; set; }
+        
     }
 }

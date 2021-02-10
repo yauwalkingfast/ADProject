@@ -357,6 +357,50 @@
                                 </div>
                             </div>
 
+                            <div className="row mt-3">
+                                <div className="col-sm">
+                                    <div className="form-group form-check">
+                                        <label className="form-check-label font-weight-bold">
+                                            <input type="checkbox" className="form-check-input" name="IsPublished" checked={this.state.IsPublished === true} onChange={this.handleChange} /> 
+                                            {" "}Make Public
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="row">
+                                <div className="col-sm">
+                                    <label className="control-label font-weight-bold">Share in Groups</label>
+                                </div>
+                            </div>
+
+                            <div className="row">
+                                <div className="col-sm">
+                                    {this.state.RecipeGroups.map((element, index) => {
+                                        return(
+                                            <div className="row" key={index}>
+                                                <div className="form-group col-sm-6">
+                                                    <input type="text" id={`group-autocomplete-${index}`} className="form-control auto-complete-groupname" placeholder="Group" onChange={() => this.handleGroupChange(event, index)} value={element.Group.GroupName} />
+                                                </div>
+                                                <div className="col-sm-1">
+                                                    <button type="button" className="icon-button" onClick={() => this.removeGroup(index)}>
+                                                        <i class="fa fa-times" aria-hidden="true"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        )
+                                    })}
+                                </div>
+                            </div>
+
+                            <div className="row ">
+                                <div className="col-sm">
+                                    <button className="icon-button" type="button" onClick={this.addGroup}>
+                                        <i class="fa fa-plus" aria-hidden="true">Add Group</i>
+                                    </button>
+                                </div>
+                            </div>
+
                             <div className="row mt-3">  
                                 <div className="col-sm-2 offset-sm-10">
                                     <input type="submit" value="Edit" className="btn btn-primary" />
@@ -404,11 +448,49 @@
                         Warning: ""
                     }
                 }],
+                RecipeGroups: [{
+                    Group: {
+                        GroupName: ""
+                    }
+                }]
             };
         }
 
+        componentDidMount() {
+            this.setState(state =>{
+                var state = JSON.parse(JSON.stringify(@Html.Raw(recipe)));
+                return {
+                    ...state,
+                }
+            })
+
+            this.addAutocompleteGroupName();
+        }
+
+        addAutocompleteGroupName = () => {
+            const _handleGroupChange = this.handleGroupChange;
+
+            $(document).ready(function () {
+                $.ajax({
+                    async: true,
+                    url: "/Recipes/GroupNameAutocomplete",
+                    type: "POST",
+                    success: function ({ $values }) {
+                        $(".auto-complete-groupname").autocomplete({
+                            source: $values,
+                            select: function(event, ui) {
+                                const groupname = ui.item.value;
+                                const updatedIndex = event.target.id.split("-")[2];
+                                const toUpdate = { target: { value: groupname } };
+                                _handleGroupChange(toUpdate, updatedIndex);
+                            }
+                        })
+                    },
+                });
+            });
+        }
+
         onStepUrlChange = (event, index) => {
-            console.log(event.target.files[0].name);
             this.setState(state => {
                 const RecipeSteps = state.RecipeSteps;
                 RecipeSteps[index].MediaSelectedFile = event.target.files[0];
@@ -434,12 +516,10 @@
 
             try {
                 const { data: { fileUrl } } = await axios.post("/Recipes/FileUpload", formData);
-                console.log(fileUrl);
 
                 this.setState(state => {
                     const RecipeSteps = state.RecipeSteps;
                     RecipeSteps[index].MediaFileUrl = fileUrl.trim();
-                    console.log(RecipeSteps);
                     return {
                         RecipeSteps
                     }
@@ -464,7 +544,6 @@
 
             try {
                 const { data: { fileUrl } } = await axios.post("/Recipes/FileUpload", formData);
-                console.log(fileUrl);
 
                 this.setState({
                     MainMediaUrl: fileUrl.trim()
@@ -475,26 +554,25 @@
         }
 
         onMainMediaUrlChange = (event) => {
-            console.log(event.target.files[0].name)
             this.setState({
                 MainSelectedFile: event.target.files[0]
             })
         }
 
-        componentDidMount() {
-            this.setState(state =>{
-                var state = JSON.parse(JSON.stringify(@Html.Raw(recipe)));
-                console.log(state);
-                return {
-                    ...state,
-                }
-            })
-        }
-
         submitHandler = (event) => {
             event.preventDefault();
+
+            if(this.state.MainMediaUrl.trim() === "") {
+                alert("Main Recipe image is required!");
+                return false;
+            }
+
+            if(this.state.Title.trim() === "") {
+                alert("Recipe title is required!");
+                return false;
+            }
+
             const toSubmit = this.generateJson();
-            console.log(toSubmit);
             this.postRecipe(toSubmit);
         }
 
@@ -515,13 +593,17 @@
             var RecipeTags = this.state.RecipeTags
                 .filter(allergenTag => allergenTag.Tag.Warning.trim() !== "");
 
+            var RecipeGroups = this.state.RecipeGroups
+                .filter(recipeGroup => recipeGroup.Group.GroupName.trim() !== "");
+
             var state = {...this.state};
             delete state.MainSelectedFile;
             const toSubmit = {
                 ...state,
                 RecipeSteps,
                 RecipeIngredients,
-                RecipeTags
+                RecipeTags,
+                RecipeGroups
             }
             return toSubmit;
         }
@@ -529,7 +611,6 @@
         generateAllergenTags = (event) => {
             event.preventDefault();
             const ingredient = [...this.state.RecipeIngredients];
-            console.log(ingredient);
             this.fetchAllergenTags(ingredient, this.setAllergenTags);
         }
 
@@ -546,7 +627,6 @@
                     // Get tags from flask ML
                     if (this.status === 200) {
                         const { tags } = JSON.parse(this.response);
-                        console.log(tags);
                         callback(tags);
                     } else {
                         alert("Error generate tags");
@@ -568,7 +648,6 @@
                     RecipeTags
                 }
             })
-            console.log(this.state.RecipeTags);
         }
 
         removeAllergenTag = (index) => {
@@ -681,7 +760,10 @@
         }
 
         handleChange = (event) => {
-            const { name, value } = event.target;
+            const target = event.target;
+            const value = target.type === 'checkbox' ? target.checked : target.value;
+            const name = target.name;
+
             this.setState({
                 [name]: value
             });
@@ -723,6 +805,44 @@
                 }
                 return {
                     RecipeIngredients
+                };
+            })
+        }
+
+        addGroup = () => {
+            this.setState(state => {
+                const RecipeGroups = [...state.RecipeGroups, {
+                    Group: {
+                        GroupName: ""
+                    }
+                }];
+                return {
+                    RecipeGroups,
+                }
+            });
+
+            this.addAutocompleteGroupName();
+        }
+
+        removeGroup = (index) => {
+            this.setState(state => {
+                const RecipeGroups = state.RecipeGroups;
+                RecipeGroups.splice(index, 1);
+                return {
+                    RecipeGroups,
+                }
+            });
+        }
+
+        handleGroupChange = (event, index) => {
+            const GroupName = event.target.value;
+            this.setState(state => {
+                const RecipeGroups = state.RecipeGroups;
+                const oldGroup = RecipeGroups[index]
+                oldGroup.Group.GroupName = GroupName
+                RecipeGroups[index] = oldGroup;
+                return {
+                    RecipeGroups
                 };
             })
         }

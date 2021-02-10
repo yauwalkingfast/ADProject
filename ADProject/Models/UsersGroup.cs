@@ -24,6 +24,7 @@ namespace ADProject.Models
         public virtual Group Group { get; set; }
         [ForeignKey(nameof(UserId))]
         [InverseProperty("UsersGroups")]
-        public virtual User User { get; set; }
+        public virtual ApplicationUser User { get; set; }
+       
     }
 }

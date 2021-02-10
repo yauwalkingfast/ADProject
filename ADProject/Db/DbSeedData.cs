@@ -26,22 +26,22 @@ namespace ADProject.DbSeeder
 
         protected void AddUsers()
         {
-            db.Users.Add(new User
+            db.Users.Add(new ApplicationUser
             {
                 FirstName = "Jackie",
                 LastName = "Chan",
-                Username = "jc",
-                Password = "12345",
+                UserName = "jc",
+                PasswordHash = "12345",
                 Email = "jackie@email.com",
                 IsAdmin = true
             });
 
-            db.Users.Add(new User
+            db.Users.Add(new ApplicationUser
             {
                 FirstName = "Chun Sing",
                 LastName = "Chan",
-                Username = "ccs",
-                Password = "12345",
+                UserName = "ccs",
+                PasswordHash = "12345",
                 Email = "ccs@email.com",
                 IsAdmin = true
             });
@@ -73,19 +73,19 @@ namespace ADProject.DbSeeder
 
         protected void AddRecipes()
         {
-            db.Users.Add(new User
+            db.Users.Add(new ApplicationUser
             {
                 FirstName = "Wilson",
                 LastName = "Chan",
-                Username = "wc",
-                Password = "12345",
+                UserName = "wc",
+                PasswordHash = "12345",
                 Email = "wilson@email.com",
                 IsAdmin = true
             });
 
             db.SaveChanges();
 
-            User user = db.Users.FirstOrDefault();
+            ApplicationUser user = db.Users.FirstOrDefault();
 
             List<RecipeIngredient> recipeIngredient = new List<RecipeIngredient>();
             
@@ -199,7 +199,7 @@ namespace ADProject.DbSeeder
             });
             db.Recipes.Add(new Recipe
             {
-                UserId = user.UserId,
+                UserId = user.Id,
                 Title = "Chocolate Cake",
                 Description = "Sweets and Tasty chocolate cake",
                 DateCreated = new DateTime(2008, 5, 1, 8, 30, 52),
@@ -216,7 +216,7 @@ namespace ADProject.DbSeeder
 
             db.Recipes.Add(new Recipe
             {
-                UserId = user.UserId,
+                UserId = user.Id,
                 Title = "Mala Squid",
                 Description = "Hot and spicy",
                 DateCreated = new DateTime(2010, 10, 1, 8, 30, 52),
@@ -234,12 +234,12 @@ namespace ADProject.DbSeeder
 
         protected void AddGroups()
         {
-            db.Users.Add(new User
+            db.Users.Add(new ApplicationUser
             {
                 FirstName = "Tingkai",
                 LastName = "Chua",
-                Username = "ctk",
-                Password = "12435",
+                UserName = "ctk",
+                PasswordHash = "12435",
                 Email = "ctk@email.com",
                 IsAdmin = true
             });
@@ -249,17 +249,65 @@ namespace ADProject.DbSeeder
             db.Groups.Add(new Group
             {
                 GroupName = "Hololive Fans",
-                GroupPhoto = "sakura.com",
+                GroupPhoto = "https://user-images.strikinglycdn.com/res/hrscywv4p/image/upload/c_limit,fl_lossy,h_9000,w_1200,f_auto,q_auto/1369026/124086_244660.png",
                 Description = "For all hololive fans",
                 DateCreated = new DateTime(2008, 5, 1, 8, 30, 52),
+                IsPublished = true
+            });
+
+            db.Groups.Add(new Group
+            {
+                GroupName = "Esther's fan club",
+                GroupPhoto = "somephoto",
+                Description = "Yuen Kwan is her no.1 fan",
+                DateCreated = new DateTime(2018, 5, 1, 8, 30, 52),
+                IsPublished = true
+            });
+
+            db.Groups.Add(new Group
+            {
+                GroupName = "test",
+                GroupPhoto = "somephoto",
+                Description = "test",
+                DateCreated = new DateTime(2018, 5, 1, 8, 30, 52),
+                IsPublished = true
+            });
+
+            db.Groups.Add(new Group
+            {
+                GroupName = "No Ramen No Life",
+                GroupPhoto = "https://www.justonecookbook.com/wp-content/uploads/2017/07/Spicy-Shoyu-Ramen-NEW-500x400.jpg",
+                Description = "Shoyu, Tonkotsu and Shio is our holy trinity",
+                DateCreated = new DateTime(2008, 5, 15, 8, 30, 52),
+                IsPublished = true
+
+            });
+
+            db.Groups.Add(new Group
+            {
+                GroupName = "Curry and Spices",
+                GroupPhoto = "https://d3e8d6e8.rocketcdn.me/wp-content/uploads/2018/11/South-Indian-Chicken-Curry-3-of-5.jpg",
+                Description = "Let the aroma soak up our senses",
+                DateCreated = new DateTime(2010, 5, 15, 8, 30, 52),
+                IsPublished = true
+
+            });
+
+            db.Groups.Add(new Group
+            {
+                GroupName = "Korean Cuisine",
+                GroupPhoto = "https://christieathome.com/wp-content/uploads/2020/12/Jajangmyeon3-scaled.jpg",
+                Description = "Oppa Saranghae",
+                DateCreated = new DateTime(2012, 5, 15, 8, 30, 52),
                 IsPublished = true
 
             });
 
             db.SaveChanges();
 
-            /*User user = db.Users.FirstOrDefault();
+            ApplicationUser user = db.Users.FirstOrDefault();
             Group group = db.Groups.FirstOrDefault();
+            Group group2 = db.Groups.Where(x => x.GroupId == 2).FirstOrDefault();
 
             db.UsersGroups.Add(new UsersGroup
             {
@@ -268,7 +316,35 @@ namespace ADProject.DbSeeder
                 IsMod = true
             });
 
-            db.SaveChanges();*/
+            db.UsersGroups.Add(new UsersGroup
+            {
+                GroupId = group2.GroupId,
+                UserId = user.UserId,
+                IsMod = true
+            });
+
+            db.UsersGroups.Add(new UsersGroup
+            {
+                GroupId = 3,
+                UserId = user.UserId,
+                IsMod = true
+            });
+
+            db.SaveChanges();
+
+            db.RecipeGroups.Add(new RecipeGroup
+            {
+                GroupId = 4,
+                RecipeId = 1
+            });
+
+            db.RecipeGroups.Add(new RecipeGroup
+            {
+                GroupId = 4,
+                RecipeId = 2
+            });
+
+            db.SaveChanges();
 
 
         }
