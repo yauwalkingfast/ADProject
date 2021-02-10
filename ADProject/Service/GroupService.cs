@@ -54,6 +54,7 @@ namespace ADProject.Service
                 dbGroup.GroupName = group.GroupName;
 
                 if(group.GroupPhoto != "")
+
                 {
                     dbGroup.GroupPhoto = group.GroupPhoto;
                 }

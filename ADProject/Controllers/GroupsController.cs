@@ -119,6 +119,7 @@ namespace ADProject.Controllers
 
             var groupPicture = group.GroupPicture;
             var groupPhoto = UploadPicture(groupPicture);
+            //group.GroupPhoto = groupPhoto;
             if (groupPhoto.Equals("error"))
             {
                 return View(group);
@@ -256,6 +257,7 @@ namespace ADProject.Controllers
             {
                 group.GroupPhoto = "";
             } 
+
             else
             {
                 group.GroupPhoto = groupPhoto;

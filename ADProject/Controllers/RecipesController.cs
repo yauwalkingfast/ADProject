@@ -42,6 +42,19 @@ namespace ADProject.Controllers
             return View(await _recipesService.GetAllRecipes());
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Index([FromForm] String search)
+        {
+           
+            if (!String.IsNullOrEmpty(search))
+            {
+                return View(await _recipesService.GetAllRecipesSearch(search));
+            }
+            else
+                
+                return View(await _recipesService.GetAllRecipes());
+        }
+
         // GET: Recipes/Details/5
         public async Task<IActionResult> Details(int? id)
         {

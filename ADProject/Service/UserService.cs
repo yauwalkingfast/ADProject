@@ -21,6 +21,12 @@ namespace ADProject.Service
         {
             ApplicationUser user = await _context.Users
                 .Include(r => r.Recipes)
+                .ThenInclude(r=>r.RecipeIngredients)
+                .Include(r => r.Recipes)
+                .ThenInclude(r=>r.RecipeSteps)
+                .Include(r=>r.Recipes)
+                .ThenInclude(r=>r.RecipeTags)
+                .ThenInclude(r=>r.Tag)
                 .Include(r => r.LikesDislikes)
                 .Include(r => r.Comments)
                 .Include(r => r.SavedRecipes)
