@@ -159,7 +159,11 @@ namespace ADProject.Service
                 if(usersGroup[i].User.UserName != null)
                 {
                     var existUser = await _context.Users.FirstOrDefaultAsync(u => u.UserName.ToLower() == usersGroup[i].User.UserName.ToLower().Trim());
-                    if (existUser != null)
+                    if(existUser != null && usersGroup[i].IsMod == true)
+                    {
+                        foundUsers.Add(usersGroup[i]);
+                    }
+                    else if (existUser != null)
                     {
                         foundUsers.Add(new UsersGroup
                         {

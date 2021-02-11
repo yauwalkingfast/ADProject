@@ -308,55 +308,44 @@ namespace ADProject.Controllers
         }
 
         /*        [HttpPost]
-                public IActionResult FileUpload(List<IFormFile> postedFiles)
+                [Authorize]
+                public IActionResult FileUpload([FromForm] FileModel file)
                 {
-                    string wwwPath = this.Environment.WebRootPath;
-                    string contentPath = this.Environment.ContentRootPath;
-
-                    string path = Path.Combine(this.Environment.WebRootPath, "Uploads");
-                    if (!Directory.Exists(path))
+                    try
                     {
-                        Directory.CreateDirectory(path);
-                    }
+                        file.FileName = Guid.NewGuid().ToString() + ".jpg";
+                        string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", file.FileName);
 
-                    List<string> uploadedFiles = new List<string>();
-                    foreach (IFormFile postedFile in postedFiles)
-                    {
-                        string fileName = Path.GetFileName(postedFile.FileName);
-                        using (FileStream stream = new FileStream(Path.Combine(path, fileName), FileMode.Create))
+                        *//*                string path = Path.Combine(Directory.GetCurrentDirectory(), "RecipesImage", file.FileName);
+                        *//*
+                        using (Stream stream = new FileStream(path, FileMode.Create))
                         {
-                            postedFile.CopyTo(stream);
-                            uploadedFiles.Add(fileName);
-                            ViewBag.Message += string.Format("<b>{0}</b> uploaded.<br />", fileName);
+                            file.FormFile.CopyTo(stream);
                         }
-                    }
 
-                    return View();
+                        string imageUrl = "images/" + file.FileName;
+
+        *//*                string imageUrl = "RecipesImage/" + file.FileName;
+        *//*                
+                        return Json(new { fileUrl = imageUrl });
+                    }
+                    catch
+                    {
+                        return StatusCode(400);
+                    }
                 }*/
 
         [HttpPost]
         [Authorize]
-        public IActionResult FileUpload([FromForm] FileModel file)
+        public async Task<IActionResult> FileUpload([FromForm] FileModel file)
         {
-            try
+            IFormFile toUpload = file.FormFile;
+            string imageUrl = await ImageUpload.ImageUpload.UploadImage(toUpload);
+            if(imageUrl != "")
             {
-                file.FileName = Guid.NewGuid().ToString() + ".jpg";
-                string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", file.FileName);
-
-                /*                string path = Path.Combine(Directory.GetCurrentDirectory(), "RecipesImage", file.FileName);
-                */
-                using (Stream stream = new FileStream(path, FileMode.Create))
-                {
-                    file.FormFile.CopyTo(stream);
-                }
-
-                string imageUrl = "images/" + file.FileName;
-
-/*                string imageUrl = "RecipesImage/" + file.FileName;
-*/                
-                return Json(new { fileUrl = imageUrl });
-            }
-            catch
+                return Ok(new { fileUrl = imageUrl });
+            } 
+            else
             {
                 return StatusCode(400);
             }

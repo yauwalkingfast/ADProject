@@ -138,7 +138,7 @@ namespace ADProject.Controllers
         [Authorize]
         public async Task<IActionResult> UserAutocomplete()
         {
-            var names = await _context.Users.Select(u => u.UserName).ToListAsync();
+            var names = await _context.Users.Where(u => u.UserName != User.Identity.Name).Select(u => u.UserName).ToListAsync();
             return Json(names);
         }
 
@@ -159,7 +159,7 @@ namespace ADProject.Controllers
             group.DateCreated = now;
 
             var groupPicture = group.GroupPicture;
-            var groupPhoto = UploadPicture(groupPicture);
+            var groupPhoto = await UploadPicture(groupPicture);
             //group.GroupPhoto = groupPhoto;
             if (groupPhoto.Equals("error"))
             {
@@ -171,6 +171,7 @@ namespace ADProject.Controllers
             }
 
             ApplicationUser superUser = await _userService.GetUserByUsername(User.Identity.Name);
+            group.UsersGroups.RemoveAll(u => u.User.UserName == User.Identity.Name);
             group.UsersGroups.Add(new UsersGroup
             {
                 UserId = superUser.Id,
@@ -183,30 +184,47 @@ namespace ADProject.Controllers
         }
 
         // It might be better to put this into a service
+        /*        [Authorize]
+                private string UploadPicture(IFormFile file)
+                {
+                    if (file == null)
+                    {
+                        return "notset";
+                    }
+
+                    try
+                    {
+                        string fileName = Guid.NewGuid().ToString() + ".jpg";
+                        string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", fileName);
+                        using (Stream stream = new FileStream(path, FileMode.Create))
+                        {
+                            file.CopyTo(stream);
+                        }
+
+                        string imageUrl = "images/" + fileName;
+                        return imageUrl;
+                    } 
+                    catch
+                    {
+                        return "error";
+                    }
+                }*/
+
         [Authorize]
-        private string UploadPicture(IFormFile file)
+        private async Task<string> UploadPicture(IFormFile file)
         {
             if (file == null)
             {
                 return "notset";
             }
 
-            try
-            {
-                string fileName = Guid.NewGuid().ToString() + ".jpg";
-                string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", fileName);
-                using (Stream stream = new FileStream(path, FileMode.Create))
-                {
-                    file.CopyTo(stream);
-                }
-
-                string imageUrl = "images/" + fileName;
-                return imageUrl;
-            } 
-            catch
+            string imageUrl = await ImageUpload.ImageUpload.UploadImage(file);
+            if(imageUrl == "")
             {
                 return "error";
             }
+
+            return imageUrl;
         }
 
         // GET: Groups/Edit/5
@@ -289,7 +307,7 @@ namespace ADProject.Controllers
             }
 
             var groupPicture = group.GroupPicture;
-            var groupPhoto = UploadPicture(groupPicture);
+            var groupPhoto = await UploadPicture(groupPicture);
             if (groupPhoto.Equals("error"))
             {
                 return View(group);
