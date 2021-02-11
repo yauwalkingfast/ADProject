@@ -211,6 +211,8 @@
                             <a href="###"><i style='font-size:24px' class='fas'>&#xf067;</i> Add to try Later</a>
                         </div>
                         <div><a asp-action="Delete" asp-route-id="@item.RecipeId">Delete</a></div>
+
+                        @*Conditional Rendering*@
                         @if (item.User.UserName != User.Identity.Name)
                         {
                             if (item.SavedRecipes.Any(sr => sr.User.UserName.Equals(User.Identity.Name) && sr.RecipeId == item.RecipeId))
