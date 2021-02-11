@@ -37,5 +37,7 @@ namespace ADProject.Service
 
         Task<bool> JoinGroupWebVer(int? groupId, string username);
 
+        Task<bool> LeaveGroupWebVer(int? groupId, string username);
+
     }
 }

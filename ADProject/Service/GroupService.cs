@@ -351,5 +351,24 @@ namespace ADProject.Service
             return true;
         }
 
+        public async Task<bool> LeaveGroupWebVer(int? groupId, string username)
+        {
+            if(groupId == null || username == null || !await this.IsGroupMember(groupId, username))
+            {
+                return false;
+            }
+
+            var usergroup = await _context.UsersGroups.FirstOrDefaultAsync(ug => ug.User.UserName == username && ug.GroupId == groupId);
+
+            if(usergroup == null)
+            {
+                return false;
+            }
+
+            _context.UsersGroups.Remove(usergroup);
+            var success = await _context.SaveChangesAsync();
+            return success >= 1;
+        }
+
     }
 }

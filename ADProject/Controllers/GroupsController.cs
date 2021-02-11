@@ -46,7 +46,7 @@ namespace ADProject.Controllers
         {
             if(id == null)
             {
-                return NotFound();
+                return View("Error");
             }
 
             if(await _groupService.JoinGroupWebVer(id, User.Identity.Name))
@@ -55,6 +55,22 @@ namespace ADProject.Controllers
             }
 
             return RedirectToAction("Index", new { joingroupfailed = true });
+        }
+
+        [Authorize]
+        public async Task<IActionResult> Leave(int? id)
+        {
+            if(id == null)
+            {
+                return View("Error");
+            }
+
+            if(await _groupService.LeaveGroupWebVer(id, User.Identity.Name))
+            {
+                return RedirectToAction("Details", new { id = id });
+            }
+
+            return RedirectToAction("Index");
         }
 
         // GET: Groups/Details/5
