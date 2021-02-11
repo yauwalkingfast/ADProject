@@ -114,6 +114,7 @@
 
 <link href="~/css/RecipeDetail.css" rel="stylesheet" type="text/css" />
 
+
 <h2> @Html.DisplayFor(model => model.Title)</h2>
 
 <table>
@@ -160,7 +161,7 @@
             </ul>
             <div>Calories: @Html.DisplayFor(model => model.Calories)</div>
             <div>
-                <i style='font-size:24px' class='fas'>&#xf017;</i>
+                <i style='font-size:24px' class='fa fa-clock-o'></i>
                 @Html.DisplayFor(model => model.DurationInMins) minutes
             </div>
 
@@ -172,14 +173,14 @@
                 {
                     <div>
 
-                        <i style='font-size:24px' class='fas'>&#xf071;</i>
+                        <i style='font-size:24px' class='fa fa-exclamation-triangle'></i>
                         Warning may contains the traces of @allergenTag.Tag.Warning
                     </div>
 
                 }
             }
             <div>
-            <a href="###"><i style='font-size:24px' class='fas'>&#xf067;</i> Add to try Later</a>
+            <a href="###"><i style='font-size:24px' class='fa fa-plus'></i> Add to try Later</a>
             </div>
         </td>
     </tr>
