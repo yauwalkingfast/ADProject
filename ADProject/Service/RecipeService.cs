@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static MoreLinq.Extensions.DistinctByExtension;
 
 namespace ADProject.Service
 {
@@ -18,10 +19,13 @@ namespace ADProject.Service
 
         public async Task<bool> AddRecipe(Recipe recipe)
         {
+            ApplicationUser user = await _context.Users.FirstOrDefaultAsync(u => u.Id == recipe.UserId);
+            recipe.User = user;
             recipe.RecipeTags = await this.CheckTagsDatabase(recipe.RecipeTags.ToList());
             recipe.RecipeGroups = await this.CheckGroupDatabase(recipe.RecipeGroups.ToList());
 
             _context.Add(recipe);
+
             var saveResult = await _context.SaveChangesAsync();
             return saveResult >= 1;
         }
@@ -48,14 +52,14 @@ namespace ADProject.Service
                 //.Include(r => r.RecipeSteps)
                 //.Include(r => r.RecipeIngredients)
                 .FirstOrDefaultAsync(m => m.RecipeId == id);
-            
-            _context.Recipes.Remove(recipe); 
+
+            _context.Recipes.Remove(recipe);
             var saveResult = await _context.SaveChangesAsync();
             return saveResult >= 1;
         }
 
 
-        public void AddRecipeNonAsync (Recipe recipe)
+        public void AddRecipeNonAsync(Recipe recipe)
         {
             _context.Add(recipe);
             _context.SaveChanges();
@@ -110,7 +114,7 @@ namespace ADProject.Service
 
                 await _context.SaveChangesAsync();
                 return true;
-            } catch(DbUpdateConcurrencyException)
+            } catch (DbUpdateConcurrencyException)
             {
                 return false;
             }
@@ -127,6 +131,8 @@ namespace ADProject.Service
                 .Include(r => r.LikesDislikes)
                 .Include(r => r.RecipeTags)
                 .ThenInclude(rtag => rtag.Tag)
+                .Include(r => r.SavedRecipes)
+                .ThenInclude(sr => sr.User)
                 .ToListAsync();
         }
 
@@ -144,7 +150,7 @@ namespace ADProject.Service
             {
                 ApplicationUser n = new ApplicationUser
                 {
-                    
+
                     UserName = r.User.UserName
                 };
 
@@ -160,6 +166,8 @@ namespace ADProject.Service
                 .Include(r => r.User)
                 .Include(r => r.Comments)
                 .Include(r => r.LikesDislikes)
+                .Include(r => r.SavedRecipes)
+                .ThenInclude(sr => sr.User)
                 .Include(r => r.RecipeTags)
                 .ThenInclude(rtag => rtag.Tag)
                 .Where(r => r.Title.Contains(search)
@@ -172,7 +180,7 @@ namespace ADProject.Service
             {
                 ApplicationUser n = new ApplicationUser
                 {
-                    
+
                     UserName = r.User.UserName
                 };
 
@@ -197,19 +205,19 @@ namespace ADProject.Service
                 .ThenInclude(rgroup => rgroup.Group)
                 .FirstOrDefaultAsync(r => r.RecipeId == id);
 
-            recipe.RecipeSteps.Sort((x,y) => x.StepNumber.CompareTo(y.StepNumber));
+            recipe.RecipeSteps.Sort((x, y) => x.StepNumber.CompareTo(y.StepNumber));
 
             return recipe;
         }
-        
+
         // Check if the group exist
         private async Task<List<RecipeGroup>> CheckGroupDatabase(List<RecipeGroup> recipeGroups)
         {
             List<RecipeGroup> foundGroups = new List<RecipeGroup>();
-            for(int i = 0; i < recipeGroups.Count; i++)
+            for (int i = 0; i < recipeGroups.Count; i++)
             {
                 var existGroup = await _context.Groups.FirstOrDefaultAsync(global => global.GroupName.ToLower() == recipeGroups[i].Group.GroupName.ToLower().Trim());
-                if(existGroup != null)
+                if (existGroup != null)
                 {
                     foundGroups.Add(new RecipeGroup
                     {
@@ -219,7 +227,7 @@ namespace ADProject.Service
                 }
             }
 
-            return foundGroups;
+            return foundGroups.DistinctBy(rg => rg.GroupId).ToList();
         }
 
         // Check is the same tag already exist in the database
@@ -234,13 +242,13 @@ namespace ADProject.Service
                     recipeTag[i].Tag = existTag;
                 }
             }
-            return recipeTag;
+            return recipeTag.DistinctBy(rt => rt.TagId).ToList();
         }
 
         public async Task<List<Recipe>> GetAllRecipesByUserId(int? id)
         {
             return await _context.Recipes
-                
+
                 .Include(r => r.RecipeSteps)
                 .Include(r => r.RecipeIngredients)
                 .Include(r => r.Comments)
@@ -250,7 +258,7 @@ namespace ADProject.Service
                 .Where(r => r.UserId == id)
                 .ToListAsync();
         }
-        
+
         public async Task<List<Recipe>> SearchMyRecipe(string search, int? id)
         {
             return await _context.Recipes
@@ -261,11 +269,47 @@ namespace ADProject.Service
                 .Include(r => r.RecipeTags)
                 .ThenInclude(rtag => rtag.Tag)
                 .Where(r => r.UserId == id)
-                .Where(r=>r.Title.Contains(search)||
-                          r.Description.Contains(search) || 
-                          r.RecipeIngredients.Any(y => y.Ingredient.Contains(search))|| 
+                .Where(r => r.Title.Contains(search) ||
+                          r.Description.Contains(search) ||
+                          r.RecipeIngredients.Any(y => y.Ingredient.Contains(search)) ||
                           r.RecipeTags.Any(y => y.Tag.TagName.Contains(search)))
                 .ToListAsync();
+        }
+
+        public async Task<bool> SaveRecipe(int recipeId, string username)
+        {
+            var recipe = await this.GetRecipeById(recipeId);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == username);
+            var savedRecipes = await _context.SavedRecipes.Where(sr => sr.User.UserName == username).ToListAsync();
+
+            if (recipe == null || user == null || recipe.User.Id == user.Id || savedRecipes.Any(sr => sr.RecipeId == recipe.RecipeId))
+            {
+                return false;
+            }
+
+            _context.Add(new SavedRecipe
+            {
+                UserId = user.Id,
+                RecipeId = recipe.RecipeId,
+                Recipe = recipe,
+                User = user
+            });
+
+            var saveresult =  await _context.SaveChangesAsync();
+            return saveresult >= 1;
+        }
+
+        public async Task<bool> RemoveRecipe(int recipeId, string username)
+        {
+            var savedRecipe = await _context.SavedRecipes.FirstOrDefaultAsync(sr => sr.RecipeId == recipeId && sr.User.UserName == username);
+            if(savedRecipe == null)
+            {
+                return false;
+            }
+
+             _context.SavedRecipes.Remove(savedRecipe);
+            var successresult = await _context.SaveChangesAsync();
+            return successresult >= 1;
         }
     }
 }

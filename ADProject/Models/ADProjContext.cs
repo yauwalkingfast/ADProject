@@ -207,14 +207,14 @@ namespace ADProject.Models
                 entity.HasOne(d => d.Recipe)
                     .WithMany(p => p.SavedRecipes)
                     .HasForeignKey(d => d.RecipeId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_SavedRecipes_RecipeId");
+/*                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_SavedRecipes_RecipeId")*/;
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.SavedRecipes)
                     .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_SavedRecipes_UserId");
+/*                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_SavedRecipes_UserId")*/;
             });
 
             modelBuilder.Entity<Tag>(entity =>

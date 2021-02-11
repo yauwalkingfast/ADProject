@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static MoreLinq.Extensions.DistinctByExtension;
 
 namespace ADProject.Service
 {
@@ -170,7 +171,7 @@ namespace ADProject.Service
                 }
             }
 
-            return foundUsers;
+            return foundUsers.DistinctBy(u => u.User.Id).ToList();
         }
 
         // Check if the tag exist in database
@@ -193,7 +194,7 @@ namespace ADProject.Service
                 }
             }
 
-            return groupTags.FindAll(gt => gt.Tag.TagName != null);
+            return groupTags.FindAll(gt => gt.Tag.TagName != null).DistinctBy(gt => gt.Tag.TagName).ToList();
         }
 
 
@@ -275,6 +276,98 @@ namespace ADProject.Service
             }
 
             return false;
+        }
+
+        public async Task<bool> IsGroupMember(int? groupId, string username)
+        {
+            if (groupId == null)
+            {
+                return false;
+            }
+
+            var group = await _context.Groups
+                .Include(g => g.UsersGroups)
+                .ThenInclude(ug => ug.User)
+                .FirstOrDefaultAsync(g => g.GroupId == groupId);
+
+            if (group == null)
+            {
+                return false;
+            }
+
+            foreach (var ug in group.UsersGroups)
+            {
+                if (ug.User.UserName.Equals(username))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public async Task<bool> JoinGroupWebVer(int? groupId, string username)
+        {
+            if (groupId == null || username == null)
+            {
+                return false;
+            }
+
+            var group = await _context.Groups
+                .Include(g => g.UsersGroups)
+                .ThenInclude(ug => ug.User)
+                .FirstOrDefaultAsync(g => g.GroupId == groupId);
+
+            if (group == null)
+            {
+                return false;
+            }
+
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserName.Equals(username));
+
+            if(user == null || await this.IsGroupMember(groupId, username))
+            {
+                return false;
+            }
+
+            try
+            {
+                group.UsersGroups.Add(new UsersGroup
+                {
+                    UserId = user.Id,
+                    GroupId = group.GroupId,
+                    User = user,
+                    Group = group,
+                    IsMod = false
+                });
+
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public async Task<bool> LeaveGroupWebVer(int? groupId, string username)
+        {
+            if(groupId == null || username == null || !await this.IsGroupMember(groupId, username))
+            {
+                return false;
+            }
+
+            var usergroup = await _context.UsersGroups.FirstOrDefaultAsync(ug => ug.User.UserName == username && ug.GroupId == groupId);
+
+            if(usergroup == null)
+            {
+                return false;
+            }
+
+            _context.UsersGroups.Remove(usergroup);
+            var success = await _context.SaveChangesAsync();
+            return success >= 1;
         }
 
     }

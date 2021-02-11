@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Index";
+    bool joingroupfailed = (bool)ViewData["joingroupfailed"];
 }
 
 <h1>Index</h1>
@@ -9,6 +10,12 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+
+@if(joingroupfailed)
+{
+    <h3 style="color: red;">Failed to Join Group</h3>
+}
+
 <table class="table">
     <thead>
         <tr>
@@ -55,9 +62,25 @@
                 <img src=@item.GroupPhoto alt="group photo" style="width: 100px; height: 100px;"/>
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.GroupId">Edit</a> |
+
                 <a asp-action="Details" asp-route-id="@item.GroupId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.GroupId">Delete</a>
+
+                @*Conditional Rendering*@
+                @if (item.UsersGroups.Any(ug => ug.User.UserName == User.Identity.Name && ug.IsMod == true))
+                {
+                    <a asp-action="Edit" asp-route-id="@item.GroupId">Edit</a> <span>|</span>
+                    <a asp-action="Delete" asp-route-id="@item.GroupId">Delete</a> <span>|</span>
+                }
+
+                @if (item.UsersGroups.Any(ug => ug.User.UserName == User.Identity.Name))
+                {
+                    <a asp-action="Leave" asp-route-id="@item.GroupId">Leave</a>
+                }
+                else
+                {
+                    <a asp-action="Join" asp-route-id="@item.GroupId">Join</a>
+                }
+
             </td>
         </tr>
 }

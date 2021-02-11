@@ -33,5 +33,11 @@ namespace ADProject.Service
 
         Task<bool> IsGroupAdmin(int? groupId, string username);
 
+        Task<bool> IsGroupMember(int? groupId, string username);
+
+        Task<bool> JoinGroupWebVer(int? groupId, string username);
+
+        Task<bool> LeaveGroupWebVer(int? groupId, string username);
+
     }
 }
