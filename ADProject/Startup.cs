@@ -69,7 +69,10 @@ namespace ADProject
                 .AddEntityFrameworkStores<ADProjContext>()
                 .AddDefaultTokenProviders();
 
-            services.AddControllersWithViews();
+            services.AddControllersWithViews()
+                .AddRazorRuntimeCompilation();
+
+
             //This DI cannot use singleton because it couldnt scope another DI DBContext
             services.AddScoped<IRecipeService, RecipeService>();
             services.AddScoped<IUserService, UserService>();
