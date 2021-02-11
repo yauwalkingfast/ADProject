@@ -18,9 +18,6 @@ using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using System.IO;
 using Microsoft.AspNetCore.Authorization;
 
 namespace ADProject.Controllers
@@ -77,7 +74,7 @@ namespace ADProject.Controllers
         [Authorize]
         public IActionResult Create()
         {
-            ViewData["UserId"] = _context.Users.FirstOrDefault().UserId;
+            ViewData["UserId"] = _context.Users.FirstOrDefault(u => u.UserName == User.Identity.Name).UserId;
             ViewData["Recipe"] = new Recipe();
             return View();
         }
@@ -98,15 +95,12 @@ namespace ADProject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([FromBody] Recipe recipe)
         {
-            ApplicationUser user = await _context.Users.FirstOrDefaultAsync();
-            recipe.User = user;
             DateTime now = DateTime.Now;
             recipe.DateCreated = now;
 
-            var successful = await _recipesService.AddRecipe(recipe);
-            if (successful)
+            if(await _recipesService.AddRecipe(recipe));
             {
-                return Ok();
+                return Ok(new { id = recipe.RecipeId });
             }
 
             ViewData["UserId"] = recipe.UserId;
@@ -159,9 +153,9 @@ namespace ADProject.Controllers
                 return Unauthorized();
             }
 
-            if (await _recipesService.EditRecipe(id, recipe))
+            if(await _recipesService.EditRecipe(id, recipe))
             {
-                return Ok();
+                return Ok(new { id = recipe.RecipeId });
             }
 
             return NotFound();
@@ -212,6 +206,42 @@ namespace ADProject.Controllers
 
             return View("Error");
 
+        }
+
+        [Authorize]
+        public async Task<IActionResult> SaveRecipe(int? id)
+        {
+            if(id == null)
+            {
+                return View("Error");
+            }
+
+            int recipeId = id.Value;
+
+            if(await _recipesService.SaveRecipe(recipeId, User.Identity.Name))
+            {
+                return RedirectToAction("Details", new { id = id });
+            }
+
+            return RedirectToAction("Index");
+        }
+
+        [Authorize]
+        public async Task<IActionResult> RemoveRecipe(int? id)
+        {
+            if(id == null)
+            {
+                return View("Error");
+            }
+
+            int recipeId = id.Value;
+
+            if(await _recipesService.RemoveRecipe(recipeId, User.Identity.Name))
+            {
+                return RedirectToAction("Index");
+            }
+
+            return View("Error");
         }
 
 

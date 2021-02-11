@@ -73,6 +73,6 @@ namespace ADProject.Models
 
 
         [InverseProperty(nameof(SavedRecipe.Recipe))]
-        public virtual IEnumerable<SavedRecipe> SavedRecipes { get; set; }
+        public virtual List<SavedRecipe> SavedRecipes { get; set; }
     }
 }
