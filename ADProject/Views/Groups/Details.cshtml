@@ -43,6 +43,24 @@
     </dl>
 </div>
 <div>
+    <h5>Group Members</h5>
+    <ul>
+        @foreach(var usergroup in Model.UsersGroups)
+        {
+            <li>@usergroup.User.UserName</li>
+        }
+    </ul>
+</div>
+<div>
+    <h5>Recipes</h5>
+    <ul>
+        @foreach(var recipegroup in Model.RecipeGroups)
+        {
+            <li>@recipegroup.Recipe.Title</li>
+        }
+    </ul>
+</div>
+<div>
     <a asp-action="Edit" asp-route-id="@Model.GroupId">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>

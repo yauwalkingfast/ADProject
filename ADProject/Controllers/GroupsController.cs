@@ -27,9 +27,34 @@ namespace ADProject.Controllers
         }
 
         // GET: Groups
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(bool? joingroupfailed)
         {
+            if (joingroupfailed == true)
+            {
+                ViewData["joingroupfailed"] = true;
+            }
+            else
+            {
+                ViewData["joingroupfailed"] = false;
+            }
+
             return View(await _groupService.GetAllGroups());
+        }
+
+        [Authorize]
+        public async Task<IActionResult> Join(int? id)
+        {
+            if(id == null)
+            {
+                return NotFound();
+            }
+
+            if(await _groupService.JoinGroupWebVer(id, User.Identity.Name))
+            {
+                return RedirectToAction("Details", new { id = id });
+            }
+
+            return RedirectToAction("Index", new { joingroupfailed = true });
         }
 
         // GET: Groups/Details/5
@@ -138,7 +163,7 @@ namespace ADProject.Controllers
             });
             
             await _groupService.AddGroup(group);
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Details", new { id = group.GroupId });
         }
 
         // It might be better to put this into a service

@@ -619,7 +619,8 @@
                         var url = window.location.href;
                         var redirectUrl = url.split("/");
                         redirectUrl.pop();
-                        window.location.assign(redirectUrl.join("/"));
+                        const { id } = JSON.parse(this.response);
+                        window.location.assign(redirectUrl.join("/") + "/Details/" + id);
                     } else {
                         alert("Error adding recipe");
                     }

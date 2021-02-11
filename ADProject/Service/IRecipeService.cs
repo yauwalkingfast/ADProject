@@ -29,6 +29,8 @@ namespace ADProject.Service
 
         Task<List<Recipe>> GetAllRecipesSearch(string search);
 
+        Task<bool> SaveRecipe(int recipeId, string username);
 
+        Task<bool> RemoveRecipe(int recipeId, string username);
     }
 }
