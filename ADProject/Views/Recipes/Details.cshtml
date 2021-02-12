@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Details";
+    string gobackurl = @ViewData["Controller"] + "/" + @ViewData["Action"] + "/" + @ViewData["GoBackId"];
 }
 
 <link href="~/css/RecipeDetail.css" rel="stylesheet" />
@@ -94,25 +95,25 @@
                         {
                             if (Model.SavedRecipes.Any(sr => sr.User.UserName.Equals(User.Identity.Name) && sr.RecipeId == Model.RecipeId))
                             {
-                                <a asp-action="RemoveRecipe" asp-route-id="@Model.RecipeId">Remove Recipe</a>
+                                <a asp-action="RemoveRecipe" asp-route-id="@Model.RecipeId" asp-route-gobackurl="@gobackurl">Remove Recipe</a>
                             }
                             else
                             {
-                                <a asp-action="SaveRecipe" asp-route-id="@Model.RecipeId">Save Recipe</a>
+                                <a asp-action="SaveRecipe" asp-route-id="@Model.RecipeId" asp-route-gobackurl="@gobackurl">Save Recipe</a>
                             }
                         }
                         else
                         {
-                            <a asp-action="Edit" asp-route-id="@Model.RecipeId">Edit</a>
+                            <a asp-action="Edit" asp-route-gobackurl="@gobackurl" asp-route-id="@Model.RecipeId">Edit</a>
                             <br/>
-                            <a asp-action="Delete" asp-route-id="@Model.RecipeId">Delete</a>
-                        }
+                            <a asp-action="Delete" asp-route-gobackurl="@gobackurl" asp-route-id="@Model.RecipeId">Delete</a>
+                                    }
                     </div>
                 </div>
             </div>
         </div>
         @foreach(var step in Model.RecipeSteps)
-        {
+                                    {
             <div class="row mt-4">
                 <div class="col-sm">
                     <p><b>Step @step.StepNumber</b></p>
@@ -129,7 +130,7 @@
         }
         <div class="row mt-4 mb-2">
             <div class="col-sm">
-                <a asp-action="Index">Back to List</a>
+                <a asp-controller="@ViewData["Controller"]" asp-action="@ViewData["Action"]" asp-route-id="@ViewData["GoBackId"]">Back to List</a>
             </div>
         </div>
     </div>

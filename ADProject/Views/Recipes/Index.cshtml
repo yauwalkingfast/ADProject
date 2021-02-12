@@ -83,7 +83,7 @@
                                         {
                                             <li>@recipe.RecipeIngredients[i].Quantity @recipe.RecipeIngredients[i].UnitOfMeasurement of @recipe.RecipeIngredients[i].Ingredient</li>
                                         }
-                                        <li><a asp-action="Details" asp-route-id="@recipe.RecipeId">See All</a></li>
+                                        <li><a asp-action="Details" asp-route-gobackurl="Recipes" asp-route-id="@recipe.RecipeId">See All</a></li>
                                     </ul>
                                 </div>
                             </div>
@@ -125,18 +125,18 @@
                                     {
                                         if (recipe.SavedRecipes.Any(sr => sr.User.UserName.Equals(User.Identity.Name) && sr.RecipeId == recipe.RecipeId))
                                         {
-                                            <a asp-action="RemoveRecipe" asp-route-id="@recipe.RecipeId">Remove Recipe</a>
+                                            <a asp-action="RemoveRecipe" asp-route-gobackurl="Recipes/Index" asp-route-id="@recipe.RecipeId">Remove Recipe</a>
                                         }
                                         else
                                         {
-                                            <a asp-action="SaveRecipe" asp-route-id="@recipe.RecipeId">Save Recipe</a>
+                                            <a asp-action="SaveRecipe" asp-route-gobackurl="Recipes/Index" asp-route-id="@recipe.RecipeId">Save Recipe</a>
                                         }
                                     }
                                     else
                                     {
-                                        <a asp-action="Edit" asp-route-id="@recipe.RecipeId">Edit</a>
+                                        <a asp-action="Edit" asp-route-gobackurl="Recipes/Index" asp-route-id="@recipe.RecipeId">Edit</a>
                                         <br />
-                                        <a asp-action="Delete" asp-route-id="@recipe.RecipeId">Delete</a>
+                                        <a asp-action="Delete" asp-route-gobackurl="Recipes/Index" asp-route-id="@recipe.RecipeId">Delete</a>
                                     }
                                 </div>
                             </div>
