@@ -12,25 +12,19 @@
 <link href="~/css/RecipeDetail.css" rel="stylesheet" type="text/css" />
 
 <div class="row justify-content-center">
-    <div class="col-sm-10">
+    <div class="col-sm-12">
         <div class="border">
             <div class="display-flex-center">
-                <div>
-                    <h1>Recipes</h1>
-                </div>
+                   <h1>Recipes</h1>
             </div>
             <div class="display-flex-end">
-                <div>
-                    <form id="search-form" asp-controller="Recipes" asp-action="Index" method="get">
-                        <input type="text" placeholder="Search.." name="search" value="@ViewData["search"]">
-                        <button type="submit"><i class="fa fa-search"></i></button>
-                    </form>
-                </div>
+                <form id="search-form" asp-controller="Recipes" asp-action="Index" method="get">
+                    <input type="text" placeholder="Search.." name="search" value="@ViewData["search"]">
+                    <button type="submit"><i class="fa fa-search"></i></button>
+                </form>
             </div>
             <div class="display-flex-end">
-                <div>
-                    <a asp-controller="Recipes" asp-action="Create">Create New</a>
-                </div>
+                <a asp-controller="Recipes" asp-action="Create">Create New</a>
             </div>
         </div>
 
@@ -151,6 +145,7 @@
                 </div>
             </div>
         }
+
         <div class="row">
             <div class="col-sm">
                 <a asp-controller="Recipes"

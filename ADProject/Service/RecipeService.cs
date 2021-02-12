@@ -214,6 +214,8 @@ namespace ADProject.Service
                 .ThenInclude(rtag => rtag.Tag)
                 .Include(r => r.RecipeGroups)
                 .ThenInclude(rgroup => rgroup.Group)
+                .Include(r => r.SavedRecipes)
+                .ThenInclude(sr => sr.User)
                 .FirstOrDefaultAsync(r => r.RecipeId == id);
 
             recipe.RecipeSteps.Sort((x, y) => x.StepNumber.CompareTo(y.StepNumber));

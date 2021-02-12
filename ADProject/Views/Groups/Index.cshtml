@@ -1,6 +1,4 @@
-﻿@model IEnumerable<ADProject.Models.Group>
-
-@{
+﻿@{
     ViewData["Title"] = "Index";
     bool joingroupfailed = (bool)ViewData["joingroupfailed"];
 
@@ -9,106 +7,59 @@
     var nextDisabled = !paginatedList.HasNextPage ? "disabled" : "";
 }
 
-<h1>Index</h1>
+<link href="~/css/GroupStyle.css" rel="stylesheet" />
 
-<form id="search-form" asp-controller="Groups" asp-action="Index" method="get">
-    <input type="text" placeholder="Search.." name="search" value="@ViewData["search"]">
-    <button type="submit"><i class="fa fa-search"></i></button>
-</form>
+<div class="border">
+    <div class="display-flex-center">
+        <h1>Explore</h1>
+    </div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+    <div class="display-flex-end">
+        <form id="search-form" asp-controller="Groups" asp-action="Index" method="get">
+            <input type="text" placeholder="Search.." name="search" value="@ViewData["search"]">
+            <button type="submit"><i class="fa fa-search"></i></button>
+        </form>
+    </div>
 
-@if (joingroupfailed)
-{
-    <h3 style="color: red;">Failed to Join Group</h3>
-}
+    <div class="display-flex-end">
+        <a asp-action="Create">Create New</a>
+    </div>
+</div>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.GroupName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.GroupPhoto)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DateCreated)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsPublished)
-            </th>
-            <th>
-                Picture
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in paginatedList)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.GroupName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.GroupPhoto)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Description)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.DateCreated)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.IsPublished)
-                </td>
-                <td>
-                    <img src=@item.GroupPhoto alt="group photo" style="width: 100px; height: 100px;" />
-                </td>
-                <td>
 
-                    <a asp-action="Details" asp-route-id="@item.GroupId">Details</a> |
-
-                    @*Conditional Rendering*@
-                    @if (item.UsersGroups.Any(ug => ug.User.UserName == User.Identity.Name && ug.IsMod == true))
+<div class="group-container">
+    @foreach(var group in paginatedList)
+    {
+        <div class="group-item">
+            <a asp-action="Details" asp-route-id="@group.GroupId">
+                <img class="group-photo" src="@group.GroupPhoto" alt="group photo" />
+                <div class="top-left">@group.GroupName</div>
+                <div class="middle">@group.Description</div>
+                <div class="bottom-left">
+                    @for (int i = 0; i < 3 && i < group.GroupTags.Count(); i++)
                     {
-                        <a asp-action="Edit" asp-route-id="@item.GroupId">Edit</a> <span>|</span>
-                        <a asp-action="Delete" asp-route-id="@item.GroupId">Delete</a> <span>|</span>
+                        <span>#</span>@group.GroupTags[i].Tag.TagName<span> </span>
                     }
+                </div>
+            </a>
+        </div>
+    }
+</div>
 
-                    @if (item.UsersGroups.Any(ug => ug.User.UserName == User.Identity.Name))
-                    {
-                        <a asp-action="Leave" asp-route-id="@item.GroupId">Leave</a>
-                    }
-                    else
-                    {
-                        <a asp-action="Join" asp-route-id="@item.GroupId">Join</a>
-                    }
+<div>
+    <a asp-controller="Groups"
+       asp-action="Index"
+       asp-route-pageNumber="@(paginatedList.PageIndex - 1)"
+       asp-route-search="@ViewData["search"]"
+       class="btn btn-default @prevDisabled">
+        Previous
+    </a>
 
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
-
-<a asp-controller="Groups"
-   asp-action="Index"
-   asp-route-pageNumber="@(paginatedList.PageIndex - 1)"
-   asp-route-search="@ViewData["search"]"
-   class="btn btn-default @prevDisabled">
-    Previous
-</a>
-
-<a asp-controller="Groups"
-   asp-action="Index"
-   asp-route-pageNumber="@(paginatedList.PageIndex + 1)"
-   asp-route-search="@ViewData["search"]"
-   class="btn btn-default @nextDisabled">
-    Next
-</a>
+    <a asp-controller="Groups"
+       asp-action="Index"
+       asp-route-pageNumber="@(paginatedList.PageIndex + 1)"
+       asp-route-search="@ViewData["search"]"
+       class="btn btn-default @nextDisabled">
+        Next
+    </a>
+</div>

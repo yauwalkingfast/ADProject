@@ -481,32 +481,73 @@ namespace ADProject.DbSeeder
 
             db.SaveChanges();
 
+            List<GroupTag> groupTag = new List<GroupTag>();
+            groupTag.Add(new GroupTag
+            {
+                Tag = new Tag
+                {
+                    TagName = "noodles",
+                    Warning = "noodles"
+                }
+            });
+            groupTag.Add(new GroupTag
+            {
+                Tag = new Tag
+                {
+                    TagName = "rice",
+                    Warning = "rice"
+                }
+            });
+            groupTag.Add(new GroupTag
+            {
+                Tag = new Tag
+                {
+                    TagName = "meat",
+                    Warning = "meat"
+                }
+            });
+            groupTag.Add(new GroupTag
+            {
+                Tag = new Tag
+                {
+                    TagName = "vegan",
+                    Warning = "vegan"
+                }
+            });
+
             db.Groups.Add(new Group
             {
                 GroupName = "Hololive Fans",
                 GroupPhoto = "https://user-images.strikinglycdn.com/res/hrscywv4p/image/upload/c_limit,fl_lossy,h_9000,w_1200,f_auto,q_auto/1369026/124086_244660.png",
                 Description = "For all hololive fans",
                 DateCreated = new DateTime(2008, 5, 1, 8, 30, 52),
-                IsPublished = true
+                IsPublished = true,
+                GroupTags = groupTag
             });
+
+            db.SaveChanges();
 
             db.Groups.Add(new Group
             {
-                GroupName = "Esther's fan club",
-                GroupPhoto = "somephoto",
+                GroupName = "Esther's fan club (Enjoy a picture of bandori, <3)",
+                GroupPhoto = "https://pbs.twimg.com/media/Dki21sEU4AAKlB-?format=jpg&name=medium",
                 Description = "Yuen Kwan is her no.1 fan",
                 DateCreated = new DateTime(2018, 5, 1, 8, 30, 52),
-                IsPublished = true
+                IsPublished = true,
+                GroupTags = groupTag
             });
 
             db.Groups.Add(new Group
             {
-                GroupName = "test",
-                GroupPhoto = "somephoto",
+                GroupName = "Love Live",
+                GroupPhoto = "https://static.gojinshi.com/wp-content/uploads/2020/07/Love-Live-School-Idol-Project-Watch-Order-Guide.jpg",
                 Description = "test",
                 DateCreated = new DateTime(2018, 5, 1, 8, 30, 52),
-                IsPublished = true
+                IsPublished = true,
+                GroupTags = groupTag
             });
+
+            db.SaveChanges();
 
             db.Groups.Add(new Group
             {
@@ -514,8 +555,8 @@ namespace ADProject.DbSeeder
                 GroupPhoto = "https://www.justonecookbook.com/wp-content/uploads/2017/07/Spicy-Shoyu-Ramen-NEW-500x400.jpg",
                 Description = "Shoyu, Tonkotsu and Shio is our holy trinity",
                 DateCreated = new DateTime(2008, 5, 15, 8, 30, 52),
-                IsPublished = true
-
+                IsPublished = true,
+                GroupTags = groupTag
             });
 
             db.Groups.Add(new Group
@@ -524,8 +565,8 @@ namespace ADProject.DbSeeder
                 GroupPhoto = "https://d3e8d6e8.rocketcdn.me/wp-content/uploads/2018/11/South-Indian-Chicken-Curry-3-of-5.jpg",
                 Description = "Let the aroma soak up our senses",
                 DateCreated = new DateTime(2010, 5, 15, 8, 30, 52),
-                IsPublished = true
-
+                IsPublished = true,
+                GroupTags = groupTag
             });
 
             db.Groups.Add(new Group
@@ -534,8 +575,8 @@ namespace ADProject.DbSeeder
                 GroupPhoto = "https://christieathome.com/wp-content/uploads/2020/12/Jajangmyeon3-scaled.jpg",
                 Description = "Oppa Saranghae",
                 DateCreated = new DateTime(2012, 5, 15, 8, 30, 52),
-                IsPublished = true
-
+                IsPublished = true,
+                GroupTags = groupTag
             });
 
             db.SaveChanges();

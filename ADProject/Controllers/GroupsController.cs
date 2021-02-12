@@ -39,7 +39,7 @@ namespace ADProject.Controllers
             }
 
             ViewData["search"] = search;
-            int pageSize = 3;
+            int pageSize = 9;
             var groupList = await _groupService.GetAllGroupsQueryable();
             if (!String.IsNullOrEmpty(search))
             {

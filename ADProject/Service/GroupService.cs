@@ -99,10 +99,28 @@ namespace ADProject.Service
             return await _context.Groups
                 .Include(g => g.GroupTags)
                 .ThenInclude(gt => gt.Tag)
+
                 .Include(g => g.RecipeGroups)
                 .ThenInclude(rg => rg.Recipe)
+                .ThenInclude(r => r.RecipeTags)
+                .ThenInclude(rt => rt.Tag)
+                
+                .Include(g => g.RecipeGroups)
+                .ThenInclude(rg => rg.Recipe)
+                .ThenInclude(r => r.RecipeIngredients)
+
+                .Include(g => g.RecipeGroups)
+                .ThenInclude(rg => rg.Recipe)
+                .ThenInclude(r => r.SavedRecipes)
+                .ThenInclude(sr => sr.User)
+
+                .Include(g => g.RecipeGroups)
+                .ThenInclude(rg => rg.Recipe)
+                .ThenInclude(r => r.User)
+
                 .Include(g => g.UsersGroups)
                 .ThenInclude(ug => ug.User)
+
                 .FirstOrDefaultAsync(g => g.GroupId == id);
         }
 
