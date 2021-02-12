@@ -253,7 +253,7 @@ namespace ADProject.Service
                     recipeTag[i].Tag = existTag;
                 }
             }
-            return recipeTag.DistinctBy(rt => rt.TagId).ToList();
+            return recipeTag.DistinctBy(rt => rt.Tag.TagName).ToList();
         }
 
         public async Task<List<Recipe>> GetAllRecipesByUserId(int? id)

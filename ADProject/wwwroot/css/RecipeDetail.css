@@ -1,4 +1,52 @@
-﻿.image_ingredients {
+﻿.main-image {
+    width: 500px;
+    height: 500px;
+    overflow: hidden;
+}
+
+.step-image {
+    width: 300px;
+    height: 300px;
+    overflow: hidden;
+}
+
+.recipe-image {
+    width: 300px;
+    height: 300px;
+    overflow: hidden;
+}
+
+.border {
+    border-width: 1px;
+    border-color: black;
+}
+
+.display-flex-center {
+    display: flex;
+    justify-content: center;
+}
+
+.display-flex-end {
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 5px;
+}
+
+@media screen and (max-width: 500px) {
+    .main-image {
+        width: 250px;
+        height: 250px;
+        overflow: hidden;
+    }
+    .step-image {
+        width: 150px;
+        height: 150px;
+        overflow: hidden;
+    }
+}
+
+
+/*.image_ingredients {
     width: 100%;
     padding-top: 30px;
 }
@@ -108,5 +156,5 @@ color: black;
 }
 .heading form{
     float:left;
-}
+}*/
 
