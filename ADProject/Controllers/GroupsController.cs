@@ -27,7 +27,7 @@ namespace ADProject.Controllers
         }
 
         // GET: Groups
-        public async Task<IActionResult> Index(bool? joingroupfailed)
+        public async Task<IActionResult> Index(bool? joingroupfailed, int? pageNumber, string search)
         {
             if (joingroupfailed == true)
             {
@@ -38,7 +38,19 @@ namespace ADProject.Controllers
                 ViewData["joingroupfailed"] = false;
             }
 
-            return View(await _groupService.GetAllGroups());
+            ViewData["search"] = search;
+            int pageSize = 3;
+            var groupList = await _groupService.GetAllGroupsQueryable();
+            if (!String.IsNullOrEmpty(search))
+            {
+                groupList = await _groupService.GetAllGroupsSearchQueryable(search);
+            }
+
+            PaginatedList<Group> paginatedList = await PaginatedList<Group>.CreateAsync(groupList, pageNumber ?? 1, pageSize);
+
+            ViewData["paginatedList"] = paginatedList;
+
+            return View();
         }
 
         [Authorize]

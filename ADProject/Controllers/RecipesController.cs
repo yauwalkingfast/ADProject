@@ -65,7 +65,7 @@ namespace ADProject.Controllers
         {
 
             ViewData["search"] = search;
-            int pageSize = 1;
+            int pageSize = 3;
             var recipeList = await _recipesService.GetAllRecipesQueryable();
 
             if (!String.IsNullOrEmpty(search))

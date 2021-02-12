@@ -88,6 +88,12 @@ namespace ADProject.Service
                 .ToListAsync();
         }
 
+        public async Task<IQueryable<Group>> GetAllGroupsQueryable()
+        {
+            var groups = await this.GetAllGroups();
+            return groups.AsQueryable();
+        }
+
         public async Task<Group> GetGroupById(int? id)
         {
             return await _context.Groups
@@ -149,6 +155,14 @@ namespace ADProject.Service
             return gList;
 
         }
+
+
+        public async Task<IQueryable<Group>> GetAllGroupsSearchQueryable(string search)
+        {
+            var groups = await this.GetAllGroupsSearch(search);
+            return groups.AsQueryable();
+        }
+
         // Check if the username exist in database
         private async Task<List<UsersGroup>> CheckUsernameExist(List<UsersGroup> usersGroup)
         {

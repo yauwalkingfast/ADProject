@@ -52,7 +52,7 @@ namespace ADProject.Controllers
             int id = user.Id;
 
             ViewData["search"] = search;
-            int pageSize = 1;
+            int pageSize = 3;
             var recipeList = await _recipeService.GetAllRecipesByUserIdQueryable(id);
 
             if (!String.IsNullOrEmpty(search))

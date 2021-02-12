@@ -12,6 +12,8 @@ namespace ADProject.Service
 
         Task<List<Group>> GetAllGroups();
 
+        Task<IQueryable<Group>> GetAllGroupsQueryable();
+
         Task<Group> GetGroupById(int? id);
 
         Task<bool> EditGroup(int id, Group group);
@@ -22,6 +24,7 @@ namespace ADProject.Service
 
         Task<List<Group>> GetAllGroupsSearch(string search);
 
+        Task<IQueryable<Group>> GetAllGroupsSearchQueryable(string search);
 
         Task<Group> AddGroupAD(Group group);
 
