@@ -19,12 +19,12 @@
             </div>
             <div class="display-flex-end">
                 <form id="search-form" asp-controller="Recipes" asp-action="Index" method="get">
-                    <input type="text" placeholder="Search.." name="search" value="@ViewData["search"]">
+                    <input type="text" placeholder="Search Recipe.." name="search" value="@ViewData["search"]">
                     <button type="submit"><i class="fa fa-search"></i></button>
                 </form>
             </div>
             <div class="display-flex-end">
-                <a asp-controller="Recipes" asp-action="Create">Create New</a>
+                <a asp-controller="Recipes" asp-action="Create">Create New Recipe</a>
             </div>
         </div>
 
