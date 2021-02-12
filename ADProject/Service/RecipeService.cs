@@ -137,6 +137,12 @@ namespace ADProject.Service
                 .ToListAsync();
         }
 
+        public async Task<IQueryable<Recipe>> GetAllRecipesQueryable()
+        {
+            var recipes = await this.GetAllRecipes();
+            return recipes.AsQueryable();
+        }
+
         public async Task<List<Recipe>> GetAllRecipesBasic()
         {
             List<Recipe> rList = await _context.Recipes
@@ -164,20 +170,19 @@ namespace ADProject.Service
         public async Task<List<Recipe>> GetAllRecipesSearch(string search)
         {
             List<Recipe> rList = await _context.Recipes
-                .Include(r => r.User)
+                .Include(r => r.RecipeSteps)
+                .Include(r => r.RecipeIngredients)
                 .Include(r => r.Comments)
                 .Include(r => r.LikesDislikes)
-                .Include(r => r.SavedRecipes)
-                .ThenInclude(sr => sr.User)
                 .Include(r => r.RecipeTags)
                 .ThenInclude(rtag => rtag.Tag)
-                .Where(r => r.Title.Contains(search)
-                            || r.Description.Contains(search)
-                            || r.RecipeIngredients.Any(y => y.Ingredient.Contains(search))
-                            || r.RecipeTags.Any(y => y.Tag.TagName.Contains(search)))
+                .Where(r => r.Title.Contains(search) ||
+                          r.Description.Contains(search) ||
+                          r.RecipeIngredients.Any(y => y.Ingredient.Contains(search)) ||
+                          r.RecipeTags.Any(y => y.Tag.TagName.Contains(search)))
                 .ToListAsync();
 
-            foreach (Recipe r in rList)
+/*            foreach (Recipe r in rList)
             {
                 ApplicationUser n = new ApplicationUser
                 {
@@ -186,11 +191,16 @@ namespace ADProject.Service
                 };
 
                 r.User = n;
-            }
+            }*/
 
             return rList;
         }
 
+        public async Task<IQueryable<Recipe>> GetAllRecipeSearchQueryable(string search)
+        {
+            var searchedRecipeList = await this.GetAllRecipesSearch(search);
+            return searchedRecipeList.AsQueryable();
+        }
 
         public async Task<Recipe> GetRecipeById(int? id)
         {
@@ -260,7 +270,13 @@ namespace ADProject.Service
                 .ToListAsync();
         }
 
-        public async Task<List<Recipe>> SearchMyRecipe(string search, int? id)
+        public async Task<IQueryable<Recipe>> GetAllRecipesByUserIdQueryable(int? id)
+        {
+            var recipes = await this.GetAllRecipesByUserId(id);
+            return recipes.AsQueryable();
+        }
+
+        public async Task<List<Recipe>> SearchMyRecipe(String search, int? id)
         {
             return await _context.Recipes
                 .Include(r => r.RecipeSteps)
@@ -275,6 +291,12 @@ namespace ADProject.Service
                           r.RecipeIngredients.Any(y => y.Ingredient.Contains(search)) ||
                           r.RecipeTags.Any(y => y.Tag.TagName.Contains(search)))
                 .ToListAsync();
+        }
+
+        public async Task<IQueryable<Recipe>> SearchMyRecipeQueryable(String search, int? id)
+        {
+            var recipes = await this.SearchMyRecipe(search, id);
+            return recipes.AsQueryable();
         }
 
         public async Task<bool> SaveRecipe(int recipeId, string username)

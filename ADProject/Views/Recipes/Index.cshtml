@@ -1,151 +1,43 @@
-﻿@model IEnumerable<ADProject.Models.Recipe>
+﻿@*@model IEnumerable<ADProject.Models.Recipe>
+*@
 @{
     ViewData["Title"] = "Index";
+
+    PaginatedList<Recipe> paginatedList = (PaginatedList<Recipe>)ViewData["paginatedList"];
+    var prevDisabled = !paginatedList.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !paginatedList.HasNextPage ? "disabled" : "";
 }
 <h1>All Recipes</h1>
-
-@*<table class="table">
-        <thead>
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Title)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Description)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.DateCreated)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.DurationInMins)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Calories)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.ServingSize)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.IsPublished)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.MainMediaUrl)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.User)
-                </th>
-                <th>
-                    Steps
-                </th>
-                <th>
-                    Ingredients
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Title)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Description)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.DateCreated)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.DurationInMins)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Calories)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.ServingSize)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.IsPublished)
-                    </td>
-                    <td>
-                        <img src=@item.MainMediaUrl alt="a description of the image" width="100px">
-                        @* @Html.DisplayFor(modelItem => item.MainMediaUrl)
-                    </td>
-    <td>
-        @Html.DisplayFor(modelItem => item.User.Email)
-    </td>
-    <td>
-        <ul>
-            @foreach (var step in item.RecipeSteps)
-            {
-                <li>
-                    <div>
-                        @step.StepNumber
-                    </div>
-                    <div>
-                        <img src=@step.MediaFileUrl alt="a description of the image" width="100px">
-                    </div>
-                    <div>
-                        @step.TextInstructions
-                    </div>
-
-                </li>
-            }
-        </ul>
-    </td>
-    <td>
-        <ul>
-            @foreach (var ingredient in item.RecipeIngredients)
-            {
-                <li>
-                    <div>
-                        @ingredient.Ingredient
-                    </div>
-                </li>
-            }
-        </ul>
-    </td>
-    <td>
-        <a asp-action="Edit" asp-route-id="@item.RecipeId">Edit</a> |
-        <a asp-action="Details" asp-route-id="@item.RecipeId">Details</a> |
-        <a asp-action="Delete" asp-route-id="@item.RecipeId">Delete</a>
-    </td>
-                </tr>
-            }
-        </tbody>
-    </table>*@
 
 <link href="~/css/RecipeDetail.css" rel="stylesheet" type="text/css" />
 <div class="list_recipe_grid-container">
     <!--<div class="trendingpost">
         <i style='font-size:64px' class='fas'>&#xf406;</i>-->
-        @*@Html.DisplayFor(model => model.User.FirstName)*@
+    @*@Html.DisplayFor(model => model.User.FirstName)*@
 
     <!--</div>-->
     <div class="heading">
-        
-                <h2>Your Subcribed Feed</h2>
-                <form id="search-form" action="/Recipes/Index" method="post">
-                    <input type="text" placeholder="Search.." name="search">
-                    <button type="submit"><i class="fa fa-search"></i></button>
-                </form>
-                <a asp-controller="Recipes" asp-action="Create">Create New</a>
-            
-          
-        
+
+        <h2>Your Subcribed Feed</h2>
+        <form id="search-form" asp-controller="Recipes" asp-action="Index" method="get">
+            <input type="text" placeholder="Search.." name="search" value="@ViewData["search"]">
+            <button type="submit"><i class="fa fa-search"></i></button>
+        </form>
+        <a asp-controller="Recipes" asp-action="Create">Create New</a>
     </div>
 
-    @foreach (var item in Model)
-        { int i = 0;
+    @foreach (var item in paginatedList)
+    {
+        int i = 0;
         <div class="recipes">
             <table>
                 <tr>
                     <td>
                         <i style='font-size:32px' class='fa fa-user'></i>
 
-                        @Html.DisplayFor(modelitem => item.User.FirstName)
+                        @item.User.FirstName
 
-                        <h3>@Html.DisplayFor(modelItem => item.Title)</h3>
+                        <h3>@item.Title</h3>
                         Tags :
                         @foreach (var tag in item.RecipeTags)
                         {
@@ -154,9 +46,9 @@
                             @tag.Tag.TagName
                             <text> </text>}
 
-                        }
-
                     }
+
+                        }
                     </td>
                 </tr>
                 <tr>
@@ -231,4 +123,21 @@
             <a asp-action="Details" asp-route-id="@item.RecipeId">Details</a>
             <a asp-action="Delete" asp-route-id="@item.RecipeId">Delete</a>*@
     }
+
+    <a asp-controller="Recipes"
+       asp-action="Index"
+       asp-route-pageNumber="@(paginatedList.PageIndex - 1)"
+       asp-route-search="@ViewData["search"]"
+       class="btn btn-default @prevDisabled">
+        Previous
+    </a>
+
+    <a asp-controller="Recipes"
+       asp-action="Index"
+       asp-route-pageNumber="@(paginatedList.PageIndex + 1)"
+       asp-route-search="@ViewData["search"]"
+       class="btn btn-default @nextDisabled">
+        Next
+    </a>
+
 </div>

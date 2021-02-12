@@ -1,9 +1,13 @@
-﻿@model IEnumerable<ADProject.Models.Recipe>
+﻿@*@model IEnumerable<ADProject.Models.Recipe>
+*@
 
-@*@model ADProject.Models.ApplicationUser*@
 @{
     ViewData["Title"] = "Index";
     string FirstName = (string)ViewData["FirstName"];
+
+    PaginatedList<Recipe> paginatedList = (PaginatedList<Recipe>)ViewData["paginatedList"];
+    var prevDisabled = !paginatedList.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !paginatedList.HasNextPage ? "disabled" : "";
 }
 
 <h1>My Recipes</h1>
@@ -29,21 +33,21 @@
 
     </div>
     <div class="searchbar">
-        <form id="search-form" action="/Home/Index" method="post">
-            <input type="text" placeholder="Search.." name="search">
+        <form id="search-form" asp-controller="Home" asp-action="Index" method="get">
+            <input type="text" placeholder="Search.." name="search" value="@ViewData["search"]">
             <button type="submit"><i class="fa fa-search"></i></button>
         </form>
         <a asp-controller="Recipes" asp-action="Create">Create New</a>
     </div>
     @*@foreach(var recipe in Model.Recipes)*@
-    @foreach (var item in Model)
+    @foreach (var item in paginatedList)
     {
         int i = 0;
         <div class="recipes">
             <table>
                 <tr>
                     <td>
-                        <h2> @Html.DisplayFor(modelItem => item.Title)</h2> 
+                        <h2> @Html.DisplayFor(modelItem => item.Title)</h2>
                         <div>
                             Tags :
                             @foreach (var tag in item.RecipeTags)
@@ -112,4 +116,21 @@
             <a asp-action="Details" asp-route-id="@item.RecipeId">Details</a>
             <a asp-action="Delete" asp-route-id="@item.RecipeId">Delete</a>*@
     }
+
+    <a asp-controller="Home"
+       asp-action="Index"
+       asp-route-pageNumber="@(paginatedList.PageIndex - 1)"
+       asp-route-search="@ViewData["search"]"
+       class="btn btn-default @prevDisabled">
+        Previous
+    </a>
+
+    <a asp-controller="Home"
+       asp-action="Index"
+       asp-route-pageNumber="@(paginatedList.PageIndex + 1)"
+       asp-route-search="@ViewData["search"]"
+       class="btn btn-default @nextDisabled">
+        Next
+    </a>
+
 </div>

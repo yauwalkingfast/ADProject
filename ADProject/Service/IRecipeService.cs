@@ -21,13 +21,19 @@ namespace ADProject.Service
 
         Task<List<Recipe>> GetAllRecipes();
 
+        Task<IQueryable<Recipe>> GetAllRecipesQueryable();
+
         Task<List<Recipe>> GetAllRecipesBasic();
         Task<Recipe> GetRecipeById(int? id);
         Task<bool> EditRecipe(int id, Recipe recipe);
         Task<List<Recipe>> GetAllRecipesByUserId(int? id);
+        Task<IQueryable<Recipe>> GetAllRecipesByUserIdQueryable(int? id);
         Task<List<Recipe>> SearchMyRecipe(String search, int? id);
+        Task<IQueryable<Recipe>> SearchMyRecipeQueryable(String search, int? id);
 
         Task<List<Recipe>> GetAllRecipesSearch(string search);
+
+        Task<IQueryable<Recipe>> GetAllRecipeSearchQueryable(string search);
 
         Task<bool> SaveRecipe(int recipeId, string username);
 

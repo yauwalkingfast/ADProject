@@ -34,22 +34,49 @@ namespace ADProject.Controllers
         }
 
         // GET: Recipes
-        public async Task<IActionResult> Index()
-        {
-            return View(await _recipesService.GetAllRecipes());
-        }
+        /*        public async Task<IActionResult> Index()
+                {
+                    return View(await _recipesService.GetAllRecipes());
+                }*/
 
-        [HttpPost]
-        public async Task<IActionResult> Index([FromForm] String search)
+/*        public async Task<IActionResult> Index(int? pageNumber)
         {
-           
+            var allRecipes = await _recipesService.GetAllRecipesQueryable();
+            int pageSize = 1;
+            var paginatedList = await PaginatedList<Recipe>.CreateAsync(allRecipes, pageNumber ?? 1, pageSize);
+
+            return View(paginatedList);
+        }*/
+
+        /*        [HttpPost]
+                public async Task<IActionResult> Index([FromForm] String search)
+                {
+
+                    if (!String.IsNullOrEmpty(search))
+                    {
+                        return View(await _recipesService.GetAllRecipesSearch(search));
+                    }
+                    else
+
+                        return View(await _recipesService.GetAllRecipes());
+                }*/
+
+        public async Task<IActionResult> Index(int? pageNumber, string search)
+        {
+
+            ViewData["search"] = search;
+            int pageSize = 1;
+            var recipeList = await _recipesService.GetAllRecipesQueryable();
+
             if (!String.IsNullOrEmpty(search))
             {
-                return View(await _recipesService.GetAllRecipesSearch(search));
+                recipeList = await _recipesService.GetAllRecipeSearchQueryable(search);
             }
-            else
-                
-                return View(await _recipesService.GetAllRecipes());
+
+            PaginatedList<Recipe> paginatedList = await PaginatedList<Recipe>.CreateAsync(recipeList, pageNumber ?? 1, pageSize);
+            ViewData["paginatedList"] = paginatedList;
+
+            return View();
         }
 
         // GET: Recipes/Details/5
