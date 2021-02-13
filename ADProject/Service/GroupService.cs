@@ -48,6 +48,8 @@ namespace ADProject.Service
                     .ThenInclude(ug => ug.User)
                     .FirstOrDefaultAsync(g => g.GroupId == id);
 
+                var newUsersGroup = await this.CheckUsernameExistEditVer(group.UsersGroups, id);
+
                 _context.GroupTags.RemoveRange(dbGroup.GroupTags);
                 _context.RecipeGroups.RemoveRange(dbGroup.RecipeGroups);
                 _context.UsersGroups.RemoveRange(dbGroup.UsersGroups);
@@ -65,7 +67,7 @@ namespace ADProject.Service
                 dbGroup.RecipeGroups = group.RecipeGroups;
 
                 dbGroup.GroupTags = await this.CheckTagsDatabase(group.GroupTags);
-                dbGroup.UsersGroups = await this.CheckUsernameExist(group.UsersGroups);
+                dbGroup.UsersGroups = newUsersGroup;
 
                 await _context.SaveChangesAsync();
                 return true;
@@ -210,6 +212,43 @@ namespace ADProject.Service
             return foundUsers.DistinctBy(u => u.User.Id).ToList();
         }
 
+        private async Task<List<UsersGroup>> CheckUsernameExistEditVer(List<UsersGroup> inputUsersGroup, int groupId)
+        {
+            List<UsersGroup> foundUsers = new List<UsersGroup>();
+            List<UsersGroup> usersGroup = inputUsersGroup.DistinctBy(u => u.User.UserName).ToList();
+
+            for (int i = 0; i < usersGroup.Count; i++)
+            {
+                if (usersGroup[i].User.UserName != null)
+                {
+                    var existUser = await _context.Users.FirstOrDefaultAsync(u => u.UserName.ToLower() == usersGroup[i].User.UserName.ToLower().Trim());
+                    if (existUser != null)
+                    {
+                        if (await this.IsGroupAdmin(groupId, existUser.UserName) == true)
+                        {
+                            foundUsers.Add(new UsersGroup
+                            {
+                                UserId = existUser.Id,
+                                User = existUser,
+                                IsMod = true,
+                            });
+                        }
+                        else
+                        {
+                            foundUsers.Add(new UsersGroup
+                            {
+                                UserId = existUser.Id,
+                                User = existUser,
+                                IsMod = false,
+                            });
+                        }
+                    }
+                }
+            }
+
+            return foundUsers;
+        }
+
         // Check if the tag exist in database
         private async Task<List<GroupTag>> CheckTagsDatabase(List<GroupTag> groupTags)
         {
@@ -305,7 +344,7 @@ namespace ADProject.Service
 
             foreach(var ug in group.UsersGroups)
             {
-                if (ug.User.UserName.Equals(username) && ug.User.IsAdmin == true)
+                if (ug.User.UserName.Equals(username) && ug.IsMod == true)
                 {
                     return true;
                 }

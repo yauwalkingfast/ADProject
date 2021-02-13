@@ -334,9 +334,10 @@ namespace ADProject.Controllers
                 group.GroupPhoto = groupPhoto;
             }
 
+
             if (await _groupService.EditGroup(id, group))
             {
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Details", new { id = id });
             }
 
             return View(group);

@@ -36,17 +36,41 @@
                     </div>
                 </div>
                 <div class="col-sm">
-                    <ul>
-                        Moderators:
-                        @foreach (var mod in Model.UsersGroups)
-                        {
-                            if (mod.IsMod == true)
+                    <div class="row">
+                        <div class="col-sm">
+                            <ul>
+                                Moderators:
+                                @foreach (var mod in Model.UsersGroups)
+                                {
+                                    if (mod.IsMod == true)
+                                    {
+                                        <li>@mod.User.UserName</li>
+                                    }
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm">
+                            @if (Model.UsersGroups.Any(ug => ug.User.UserName == User.Identity.Name && ug.IsMod == true))
                             {
-                                <li>@mod.User.UserName</li>
+                                <a asp-action="Edit" asp-route-id="@Model.GroupId">Edit</a> <span>|</span>
+                                <a asp-action="Delete" asp-route-id="@Model.GroupId">Delete</a> <span>|</span>
                             }
-                        }
-
-                    </ul>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm">
+                            @if (Model.UsersGroups.Any(ug => ug.User.UserName == User.Identity.Name))
+                            {
+                                <a asp-action="Leave" asp-route-id="@Model.GroupId">Leave</a>
+                            }
+                            else
+                            {
+                                <a asp-action="Join" asp-route-id="@Model.GroupId">Join</a>
+                            }
+                        </div>
+                    </div>
                 </div>
             </div>
 
