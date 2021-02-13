@@ -53,6 +53,11 @@
                         </a>
                     </div>
                 }
+                <div>
+                    <a asp-controller="Groups" asp-action="Leave" asp-route-id="@usersGroup.GroupId" asp-route-gobackurl="UserProfile/@user.Id">
+                        Leave
+                    </a>
+                </div>
             </div>
         </div>
     }

@@ -79,7 +79,14 @@ namespace ADProject.Controllers
 
             if(await _groupService.LeaveGroupWebVer(id, User.Identity.Name))
             {
-                return RedirectToAction("Details", new { id = id, gobackurl = gobackurl });
+                if (gobackurl.Contains("UserProfile"))
+                {
+                    return RedirectToAction("MyGroups", "UserProfile");
+                }
+                else
+                {
+                    return RedirectToAction(nameof(Index));
+                }
             }
 
             return RedirectToAction("Index");

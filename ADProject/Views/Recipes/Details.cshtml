@@ -119,9 +119,12 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-sm">
-                    <img class="step-image" src="@step.MediaFileUrl" alt="main recipe image">
-                </div>
+                @if (!String.IsNullOrEmpty(step.MediaFileUrl))
+                {
+                    <div class="col-sm">
+                        <img class="step-image" src="@step.MediaFileUrl" alt="main recipe image">
+                    </div>
+                }
                 <div class="col-sm">
                     @step.TextInstructions
                 </div>
