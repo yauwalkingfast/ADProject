@@ -95,6 +95,13 @@ namespace ADProject.Controllers
                 ViewData["Action"] = "Details";
                 ViewData["GoBackId"] = urls[2];
             }
+            else if (gobackurl.Contains("UserProfile"))
+            {
+                var urls = gobackurl.Split("/");
+                ViewData["Controller"] = "UserProfile";
+                ViewData["Action"] = "Index";
+                ViewData["GoBackId"] = urls[1];
+            }
 
             if (id == null)
             {
@@ -113,8 +120,30 @@ namespace ADProject.Controllers
 
         // GET: Recipes/Create
         [Authorize]
-        public IActionResult Create()
+        public IActionResult Create(string gobackurl)
         {
+            if (gobackurl == null)
+            {
+                ViewData["Controller"] = "Recipes";
+                ViewData["Action"] = "Index";
+                ViewData["GoBackId"] = "";
+            }
+            else if (gobackurl.Contains("Groups"))
+            {
+                var urls = gobackurl.Split("/");
+                ViewData["Controller"] = "Groups";
+                ViewData["Action"] = "Details";
+                ViewData["GoBackId"] = urls[2];
+            }
+            else if (gobackurl.Contains("UserProfile"))
+            {
+                var urls = gobackurl.Split("/");
+                ViewData["Controller"] = "UserProfile";
+                ViewData["Action"] = "Index";
+                ViewData["GoBackId"] = urls[1];
+            }
+
+            ViewData["gobackurl"] = gobackurl;
             ViewData["UserId"] = _context.Users.FirstOrDefault(u => u.UserName == User.Identity.Name).UserId;
             ViewData["Recipe"] = new Recipe();
             return View();
@@ -134,14 +163,14 @@ namespace ADProject.Controllers
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([FromBody] Recipe recipe)
+        public async Task<IActionResult> Create([FromBody] Recipe recipe, string gobackurl)
         {
             DateTime now = DateTime.Now;
             recipe.DateCreated = now;
 
             if(await _recipesService.AddRecipe(recipe))
             {
-                return Ok(new { id = recipe.RecipeId });
+                return Ok(new { id = recipe.RecipeId, gobackurl = gobackurl });
             }
 
             ViewData["UserId"] = recipe.UserId;
@@ -152,6 +181,27 @@ namespace ADProject.Controllers
         [Authorize]
         public async Task<IActionResult> Edit(int? id, string gobackurl)
         {
+            if (gobackurl == null)
+            {
+                ViewData["Controller"] = "Recipes";
+                ViewData["Action"] = "Index";
+                ViewData["GoBackId"] = "";
+            }
+            else if (gobackurl.Contains("Groups"))
+            {
+                var urls = gobackurl.Split("/");
+                ViewData["Controller"] = "Groups";
+                ViewData["Action"] = "Details";
+                ViewData["GoBackId"] = urls[2];
+            }
+            else if (gobackurl.Contains("UserProfile"))
+            {
+                var urls = gobackurl.Split("/");
+                ViewData["Controller"] = "UserProfile";
+                ViewData["Action"] = "Index";
+                ViewData["GoBackId"] = urls[1];
+            }
+
             if (id == null)
             {
                 return NotFound();
@@ -212,6 +262,27 @@ namespace ADProject.Controllers
                 return NotFound();
             }
 
+            if (gobackurl == null)
+            {
+                ViewData["Controller"] = "Recipes";
+                ViewData["Action"] = "Index";
+                ViewData["GoBackId"] = "";
+            }
+            else if (gobackurl.Contains("Groups"))
+            {
+                var urls = gobackurl.Split("/");
+                ViewData["Controller"] = "Groups";
+                ViewData["Action"] = "Details";
+                ViewData["GoBackId"] = urls[2];
+            }
+            else if (gobackurl.Contains("UserProfile"))
+            {
+                var urls = gobackurl.Split("/");
+                ViewData["Controller"] = "UserProfile";
+                ViewData["Action"] = "Index";
+                ViewData["GoBackId"] = urls[1];
+            }
+
             var recipe = await _recipesService.GetRecipeById(id);
 
             if (!User.Identity.Name.Equals(recipe.User.UserName))
@@ -251,6 +322,11 @@ namespace ADProject.Controllers
             {
                 var urls = gobackurl.Split("/");
                 return RedirectToAction("Details", "Groups", new { id = urls[2] });
+            }
+            else if(successful && gobackurl.Contains("UserProfile"))
+            {
+                var urls = gobackurl.Split("/");
+                return RedirectToAction("Index", "UserProfile", new { id = urls[1] });
             }
 
             return View("Error");

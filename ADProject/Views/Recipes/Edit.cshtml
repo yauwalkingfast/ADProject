@@ -10,7 +10,7 @@
 <div id="edit"></div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-controller="@ViewData["Controller"]" asp-action="@ViewData["Action"]" asp-route-id="@ViewData["GoBackId"]">Back to List</a>
 </div>
 
 @section Scripts {

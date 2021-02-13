@@ -196,6 +196,21 @@ namespace ADProject.DbSeeder
                 RecipeTags = recipeTag
             });
 
+            db.Recipes.Add(new Recipe
+            {
+                UserId = user.Id,
+                Title = "I just copy paste",
+                Description = "Beacuse i am efficient",
+                DateCreated = new DateTime(2008, 5, 1, 8, 30, 52),
+                DurationInMins = 60,
+                Calories = 500,
+                IsPublished = true,
+                MainMediaUrl = "https://th.bing.com/th/id/OIP.P70fg98tIgi-8b-pMMhZXAHaFj?pid=Api&rs=1",
+                RecipeIngredients = recipeIngredient,
+                RecipeSteps = recipeSteps,
+                RecipeTags = recipeTag
+            });
+
             db.SaveChanges();
         }
 

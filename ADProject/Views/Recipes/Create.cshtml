@@ -3,12 +3,13 @@
 @{
     ViewData["Title"] = "Create";
     int userId = (int)ViewData["UserId"];
+    string gobackurl = (string)ViewData["gobackurl"];
 }
 
 <div id="create"></div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-controller="@ViewData["Controller"]" asp-action="@ViewData["Action"]" asp-route-id="@ViewData["GoBackId"]">Back to List</a>
 </div>
 @* <form method="post" enctype="multipart/form-data" asp-controller="Recipes" asp-action="FileUpload">
         <dl>
@@ -606,7 +607,7 @@
 
         postRecipe = (toSubmit) => {
             let xhr = new XMLHttpRequest();
-            xhr.open("POST", "/Recipes/Create");
+            xhr.open("POST", `/Recipes/Create?gobackurl=${'@Html.Raw(gobackurl)'}`);
             xhr.setRequestHeader("Content-Type", "application/json; charset=utf8");
 
             xhr.setRequestHeader("RequestVerificationToken",
@@ -619,8 +620,8 @@
                         var url = window.location.href;
                         var redirectUrl = url.split("/");
                         redirectUrl.pop();
-                        const { id } = JSON.parse(this.response);
-                        window.location.assign(redirectUrl.join("/") + "/Details/" + id);
+                        const { id, gobackurl } = JSON.parse(this.response);
+                        window.location.assign(redirectUrl.join("/") + "/Details/" + id + "?gobackurl=" + gobackurl);
                     } else {
                         alert("Error adding recipe");
                     }

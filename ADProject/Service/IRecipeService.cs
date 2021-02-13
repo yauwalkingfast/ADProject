@@ -26,8 +26,10 @@ namespace ADProject.Service
         Task<List<Recipe>> GetAllRecipesBasic();
         Task<Recipe> GetRecipeById(int? id);
         Task<bool> EditRecipe(int id, Recipe recipe);
+
         Task<List<Recipe>> GetAllRecipesByUserId(int? id);
         Task<IQueryable<Recipe>> GetAllRecipesByUserIdQueryable(int? id);
+
         Task<List<Recipe>> SearchMyRecipe(String search, int? id);
         Task<IQueryable<Recipe>> SearchMyRecipeQueryable(String search, int? id);
 

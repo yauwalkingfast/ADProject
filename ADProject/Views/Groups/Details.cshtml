@@ -83,8 +83,8 @@
 
         @foreach (var recipe in Model.RecipeGroups)
         {
-            <div class="row my-4">
-                <div class="col-sm">
+            <div class="row my-4 justify-content-center">
+                <div class="col-sm-10">
                     <div class="row mb-2">
                         <div class="col-sm-1">
                             <i style='font-size:50px' class='fa fa-user'></i>
@@ -115,10 +115,10 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-sm">
+                        <div class="col-sm-6">
                             <img class="recipe-image" src="@recipe.Recipe.MainMediaUrl" alt="recipe main image" />
                         </div>
-                        <div class="col-sm">
+                        <div class="col-sm-6">
                             <div class="row">
                                 <div class="col-sm">
                                     <h5>Ingredients</h5>

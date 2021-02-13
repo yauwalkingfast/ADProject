@@ -1,0 +1,71 @@
+﻿<!DOCTYPE html>
+
+@{
+    ApplicationUser user = (ApplicationUser)ViewData["User"];
+    ViewData["Title"] = "Profile";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/css/UserProfileStyle.css" rel="stylesheet" />
+
+<div class="row">
+    <div class="col-sm">
+        <div class="row mx-5 mt-2 mb-3">
+            <div class="col-sm-2">
+                <i style='font-size:100px' class='fa fa-user'></i>
+            </div>
+            <div class="col-sm-10">
+                <div class="row">
+                    <div class="col-sm">
+                        <h3><b>@user.UserName</b></h3>
+                    </div>
+                </div>
+                <div class="row mb-sm-4 mb-2">
+                    <div class="col-sm">
+                        @user.FirstName @user.LastName
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-3">
+                        @user.Recipes.Count() recipes
+                    </div>
+                    <div class="col-sm-3">
+                        @user.UsersGroups.Count() groups
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm">
+                <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom border-top">
+                    <div class="container">
+                        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".user" aria-controls="navbarSupportedContent"
+                                aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <div class="user nav-fill w-100 navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                            <ul class="col-sm navbar-nav flex-grow-1">
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-controller="UserProfile" asp-action="Index">My Recipes</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-controller="UserProfile" asp-action="MyGroups">My Groups</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Manage Profile</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm">
+                @RenderBody()
+            </div>
+        </div>
+    </div>
+</div>
+
+
