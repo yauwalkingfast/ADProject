@@ -96,6 +96,7 @@ namespace ADProject.Service
             return groups.AsQueryable();
         }
 
+        //TODO: Refactor this if there is time as it is really slow
         public async Task<Group> GetGroupById(int? id)
         {
             return await _context.Groups
