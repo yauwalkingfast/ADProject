@@ -5,6 +5,13 @@
     flex-wrap: wrap;
 }
 
+.menu-options {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    padding-top: 20px;
+}
+
 .element-options {
     display: flex;
     flex-direction: row;
@@ -27,6 +34,12 @@
     display: flex;
     justify-content: flex-end;
     padding-right: 5px;
+}
+
+.display-flex-start {
+    display: flex;
+    justify-content: flex-start;
+    padding-left: 5px;
 }
 
 .element-item {

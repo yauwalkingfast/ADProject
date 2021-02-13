@@ -21,13 +21,18 @@ namespace ADProject.Controllers
         }
 
         [Authorize]
-        public async Task<IActionResult> Index(int? pageNumber)
+        public async Task<IActionResult> Index(int? pageNumber, string search)
         {
             var user = await _userService.GetUserByUsername(User.Identity.Name);
             ViewData["User"] = user;
 
             int pageSize = 9;
             var recipeList = await _recipeService.GetAllRecipesByUserIdQueryable(user.Id);
+            if (!String.IsNullOrEmpty(search))
+            {
+                recipeList = await _recipeService.SearchMyRecipeQueryable(search, user.Id);
+            }
+
             PaginatedList<Recipe> paginatedList = await PaginatedList<Recipe>.CreateAsync(recipeList, pageNumber ?? 1, pageSize);
             ViewData["paginatedList"] = paginatedList;
 

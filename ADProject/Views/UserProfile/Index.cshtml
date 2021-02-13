@@ -7,8 +7,19 @@
     var nextDisabled = !paginatedList.HasNextPage ? "disabled" : "";
 }
 
-<div class="display-flex-end">
-    <a asp-controller="Recipes" asp-action="Create" asp-route-gobackurl="UserProfile/@user.Id">Create new recipe</a>
+<div class="menu-options">
+    <div>
+        <form id="search-form" asp-controller="UserProfile" asp-action="Index" method="get">
+            <div class="form-group form-inline">
+                <input class="form-control" type="text" placeholder="Search My Recipe.." name="search" value="@ViewData["search"]">
+                <button type="submit" class="btn ml-1"><i class="fa fa-search"></i></button>
+            </div>
+        </form>
+    </div>
+
+    <div>
+        <a asp-controller="Recipes" asp-action="Create" asp-route-gobackurl="UserProfile/@user.Id">Create new recipe</a>
+    </div>
 </div>
 
 <div class="element-container my-3">
