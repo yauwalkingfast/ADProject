@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Create";
+    string gobackurl = @ViewData["Controller"] + "/" + @ViewData["Action"] + "/" + @ViewData["GoBackId"];
 }
 
 <link href="~/css/GroupForm.css" rel="stylesheet" type="text/css" />
@@ -11,7 +12,7 @@
     <hr />
     <div class="row">
         <div class="col-sm-12">
-            <form enctype="multipart/form-data" asp-action="Create" id="group-form">
+            <form enctype="multipart/form-data" asp-action="Create" asp-route-gobackurl="@gobackurl" id="group-form">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="row mb-4">
                     <div class="col-sm">

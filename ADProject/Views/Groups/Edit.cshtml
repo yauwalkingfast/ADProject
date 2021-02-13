@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Edit";
+    string gobackurl = @ViewData["Controller"] + "/" + @ViewData["Action"] + "/" + @ViewData["GoBackId"];
 }
 
 
@@ -12,7 +13,7 @@
     <hr />
     <div class="row">
         <div class="col-sm-12">
-            <form enctype="multipart/form-data" asp-action="Edit" id="group-edit">
+            <form enctype="multipart/form-data" asp-action="Edit" asp-route-gobackurl="@gobackurl" id="group-edit">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <input type="hidden" asp-for="GroupId" />
 
@@ -103,7 +104,7 @@
                 </div>
                 <div class="row justify-content-between">
                     <div class="col-sm-2 mb-4">
-                        <a asp-action="Details" asp-route-id="@Model.GroupId">Back to Details</a>
+                        <a asp-action="Details" asp-route-id="@Model.GroupId" asp-route-gobackurl="@gobackurl">Back to Details</a>
                     </div>
                     <div class="col-sm-1 offset-md-12">
                         <div class="form-group">

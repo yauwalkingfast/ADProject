@@ -18,7 +18,7 @@
     </div>
 
     <div>
-        <a asp-controller="Recipes" asp-action="Create" asp-route-gobackurl="UserProfile/@user.Id">Create new recipe</a>
+        <a asp-controller="Recipes" asp-action="Create" asp-route-gobackurl="UserProfile/@user.Id">Create New Recipe</a>
     </div>
 </div>
 
@@ -59,6 +59,7 @@
     <a asp-controller="UserProfile"
        asp-action="Index"
        asp-route-pageNumber="@(paginatedList.PageIndex - 1)"
+       asp-route-search="@ViewData["search"]"
        class="btn btn-default @prevDisabled">
         Previous
     </a>
@@ -66,6 +67,7 @@
     <a asp-controller="UserProfile"
        asp-action="Index"
        asp-route-pageNumber="@(paginatedList.PageIndex + 1)"
+       asp-route-search="@ViewData["search"]"
        class="btn btn-default @nextDisabled">
         Next
     </a>

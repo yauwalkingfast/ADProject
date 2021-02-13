@@ -96,6 +96,26 @@ namespace ADProject.Service
             return groups.AsQueryable();
         }
 
+        public async Task<IQueryable<UsersGroup>> GetMyGroups(int id)
+        {
+            return _context.UsersGroups
+                .Where(ug => ug.UserId == id)
+                .Include(ug => ug.Group)
+                .ThenInclude(g => g.GroupTags)
+                .ThenInclude(gt => gt.Tag)
+                .Include(ug => ug.User)
+                .AsQueryable();
+        }
+
+        public async Task<IQueryable<UsersGroup>> GetMyGroupsSearch(int id, string search)
+        {
+            var myGroups = await this.GetMyGroups(id);
+            return myGroups.Where(ug =>
+                ug.Group.GroupName.Contains(search) ||
+                ug.Group.Description.Contains(search) ||
+                ug.Group.GroupTags.Any(gt => gt.Tag.TagName.Contains(search)));
+        }
+
         //TODO: Refactor this if there is time as it is really slow
         public async Task<Group> GetGroupById(int? id)
         {

@@ -13,11 +13,13 @@ namespace ADProject.Controllers
     {
         private readonly IUserService _userService;
         private readonly IRecipeService _recipeService;
+        private readonly IGroupService _groupService;
 
-        public UserProfileController(IUserService userService, IRecipeService recipeService)
+        public UserProfileController(IUserService userService, IRecipeService recipeService, IGroupService groupService)
         {
             _userService = userService;
             _recipeService = recipeService;
+            _groupService = groupService;
         }
 
         [Authorize]
@@ -40,9 +42,21 @@ namespace ADProject.Controllers
         }
 
         [Authorize]
-        public async Task<IActionResult> MyGroups()
+        public async Task<IActionResult> MyGroups(int? pageNumber, string search)
         {
-            ViewData["User"] = await _userService.GetUserByUsername(User.Identity.Name);
+            var user = await _userService.GetUserByUsername(User.Identity.Name);
+            ViewData["User"] = user;
+
+            int pageSize = 9;
+            var groupList = await _groupService.GetMyGroups(user.Id);
+            if (!String.IsNullOrEmpty(search))
+            {
+                groupList = await _groupService.GetMyGroupsSearch(user.Id, search);
+            }
+
+            PaginatedList<UsersGroup> paginatedList = await PaginatedList<UsersGroup>.CreateAsync(groupList, pageNumber ?? 1, pageSize);
+            ViewData["paginatedList"] = paginatedList;
+
             return View();
         }
     }

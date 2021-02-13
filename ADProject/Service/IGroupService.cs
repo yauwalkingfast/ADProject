@@ -14,6 +14,10 @@ namespace ADProject.Service
 
         Task<IQueryable<Group>> GetAllGroupsQueryable();
 
+        Task<IQueryable<UsersGroup>> GetMyGroups(int id);
+
+        Task<IQueryable<UsersGroup>> GetMyGroupsSearch(int id, string search);
+
         Task<Group> GetGroupById(int? id);
 
         Task<bool> EditGroup(int id, Group group);

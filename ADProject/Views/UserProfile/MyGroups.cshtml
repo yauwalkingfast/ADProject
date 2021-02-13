@@ -1,5 +1,77 @@
 ﻿@{
     Layout = "~/Views/Shared/_UserProfileLayout.cshtml";
+    ApplicationUser user = (ApplicationUser)ViewData["User"];
+
+    PaginatedList<UsersGroup> paginatedList = (PaginatedList<UsersGroup>)ViewData["paginatedList"];
+    var prevDisabled = !paginatedList.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !paginatedList.HasNextPage ? "disabled" : "";
 }
 
-<h1>My Groups</h1>
+<div class="menu-options">
+    <div>
+        <form id="search-form" asp-controller="UserProfile" asp-action="MyGroups" method="get">
+            <div class="form-group form-inline">
+                <input class="form-control" type="text" placeholder="Search My Group.." name="search" value="@ViewData["search"]">
+                <button type="submit" class="btn ml-1"><i class="fa fa-search"></i></button>
+            </div>
+        </form>
+    </div>
+
+    <div>
+        <a asp-controller="Groups" asp-action="Create" asp-route-gobackurl="UserProfile/@user.Id">Create New Group</a>
+    </div>
+</div>
+
+<div class="element-container my-3">
+    @foreach (var usersGroup in paginatedList)
+    {
+        <div>
+            <div class="element-item">
+                <a asp-controller="Groups" asp-action="Details" asp-route-gobackurl="UserProfile/@user.Id" asp-route-id="@usersGroup.GroupId">
+                    <img class="element-photo" src="@usersGroup.Group.GroupPhoto" alt="recipe main photo" />
+                    <div class="top-left">@usersGroup.Group.GroupName</div>
+                    <div class="middle">@usersGroup.Group.Description</div>
+                    <div class="bottom-left">
+                        @for (int i = 0; i < 3 && i < usersGroup.Group.GroupTags.Count(); i++)
+                        {
+                            <span>#</span>@usersGroup.Group.GroupTags[i].Tag.TagName<span> </span>
+                        }
+                    </div>
+                </a>
+            </div>
+            <div class="element-options">
+                @if (usersGroup.IsMod == true)
+                {
+                    <div>
+                        <a asp-controller="Groups" asp-action="Edit" asp-route-id="@usersGroup.GroupId" asp-route-gobackurl="UserProfile/@user.Id">
+                            Edit
+                        </a>
+                    </div>
+                    <div>
+                        <a asp-controller="Groups" asp-action="Delete" asp-route-id="@usersGroup.GroupId" asp-route-gobackurl="UserProfile/@user.Id">
+                            Delete
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</div>
+
+<div>
+    <a asp-controller="UserProfile"
+       asp-action="MyGroups"
+       asp-route-pageNumber="@(paginatedList.PageIndex - 1)"
+       asp-route-search="@ViewData["search"]"
+       class="btn btn-default @prevDisabled">
+        Previous
+    </a>
+
+    <a asp-controller="UserProfile"
+       asp-action="MyGroups"
+       asp-route-pageNumber="@(paginatedList.PageIndex + 1)"
+       asp-route-search="@ViewData["search"]"
+       class="btn btn-default @nextDisabled">
+        Next
+    </a>
+</div>

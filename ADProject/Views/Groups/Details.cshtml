@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Details";
+    string gobackurl = @ViewData["Controller"] + "/" + @ViewData["Action"] + "/" + @ViewData["GoBackId"];
 }
 
 
@@ -56,20 +57,20 @@
             @if (Model.UsersGroups.Any(ug => ug.User.UserName == User.Identity.Name && ug.IsMod == true))
             {
                 <div class="display-flex-end">
-                    <a asp-action="Edit" asp-route-id="@Model.GroupId">Edit</a>
+                    <a asp-action="Edit" asp-route-gobackurl="@gobackurl" asp-route-id="@Model.GroupId">Edit</a>
                 </div>
                 <div class="display-flex-end">
-                    <a asp-action="Delete" asp-route-id="@Model.GroupId">Delete</a>
+                    <a asp-action="Delete" asp-route-gobackurl="@gobackurl" asp-route-id="@Model.GroupId">Delete</a>
                 </div>
             }
             <div class="display-flex-end">
                 @if (Model.UsersGroups.Any(ug => ug.User.UserName == User.Identity.Name))
                 {
-                    <a asp-action="Leave" asp-route-id="@Model.GroupId">Leave</a>
+                    <a asp-action="Leave" asp-route-gobackurl="@gobackurl" asp-route-id="@Model.GroupId">Leave</a>
                 }
                 else
                 {
-                    <a asp-action="Join" asp-route-id="@Model.GroupId">Join</a>
+                    <a asp-action="Join" asp-route-gobackurl="@gobackurl" asp-route-id="@Model.GroupId">Join</a>
                 }
             </div>
 
@@ -200,69 +201,8 @@
         }
         <div class="row mt-4 mb-2">
             <div class="col-sm">
-                <a asp-controller="Groups" asp-action="Index">Back to List</a>
+                <a asp-controller="@ViewData["Controller"]" asp-action="@ViewData["Action"]" asp-route-id="@ViewData["GoBackId"]">Back to List</a>
             </div>
         </div>
     </div>
 </div>
-
-@*<h1>Details</h1>
-
-    <div>
-        <h4>Group</h4>
-        <hr />
-        <dl class="row">
-            <dt class = "col-sm-2">
-                @Html.DisplayNameFor(model => model.GroupName)
-            </dt>
-            <dd class = "col-sm-10">
-                @Html.DisplayFor(model => model.GroupName)
-            </dd>
-            <dt class = "col-sm-2">
-                @Html.DisplayNameFor(model => model.GroupPhoto)
-            </dt>
-            <dd class = "col-sm-10">
-                @Html.DisplayFor(model => model.GroupPhoto)
-            </dd>
-            <dt class = "col-sm-2">
-                @Html.DisplayNameFor(model => model.Description)
-            </dt>
-            <dd class = "col-sm-10">
-                @Html.DisplayFor(model => model.Description)
-            </dd>
-            <dt class = "col-sm-2">
-                @Html.DisplayNameFor(model => model.DateCreated)
-            </dt>
-            <dd class = "col-sm-10">
-                @Html.DisplayFor(model => model.DateCreated)
-            </dd>
-            <dt class = "col-sm-2">
-                @Html.DisplayNameFor(model => model.IsPublished)
-            </dt>
-            <dd class = "col-sm-10">
-                @Html.DisplayFor(model => model.IsPublished)
-            </dd>
-        </dl>
-    </div>
-    <div>
-        <h5>Group Members</h5>
-        <ul>
-            @foreach(var usergroup in Model.UsersGroups)
-            {
-                <li>@usergroup.User.UserName</li>
-            }
-        </ul>
-    </div>
-    <div>
-        <h5>Recipes</h5>
-        <ul>
-            @foreach(var recipegroup in Model.RecipeGroups)
-            {
-                <li>@recipegroup.Recipe.Title</li>
-            }
-        </ul>
-    </div>
-    <div>
-        <a asp-action="Edit" asp-route-id="@Model.GroupId">Edit</a> |
-        <a asp-action="Index">Back to List</a>
-    </div>*@
