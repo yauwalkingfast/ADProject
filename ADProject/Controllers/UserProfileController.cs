@@ -59,5 +59,14 @@ namespace ADProject.Controllers
 
             return View();
         }
+
+        [Authorize]
+        public async Task<IActionResult> SavedRecipes()
+        {
+            var user = await _userService.GetUserByUsername(User.Identity.Name);
+            ViewData["User"] = user;
+
+            return View();
+        }
     }
 }
