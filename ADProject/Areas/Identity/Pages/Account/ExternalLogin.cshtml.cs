@@ -52,6 +52,9 @@ namespace ADProject.Areas.Identity.Pages.Account
             [Required]
             [EmailAddress]
             public string Email { get; set; }
+            public string UserName { get; set; }
+            public string FirstName { get; set; }
+            public string LastName { get; set; }
         }
 
         public IActionResult OnGetAsync()
@@ -122,7 +125,7 @@ namespace ADProject.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email };
+                var user = new ApplicationUser { UserName = Input.UserName, Email = Input.Email, FirstName = Input.FirstName, LastName = Input.LastName };
 
                 var result = await _userManager.CreateAsync(user);
                 if (result.Succeeded)
