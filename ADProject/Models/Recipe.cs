@@ -54,7 +54,7 @@ namespace ADProject.Models
         [InverseProperty("Recipes")]
         public virtual ApplicationUser User { get; set; }
         [InverseProperty(nameof(Comment.Recipe))]
-        public virtual IEnumerable<Comment> Comments { get; set; }
+        public virtual List<Comment> Comments { get; set; }
         [InverseProperty(nameof(LikesDislike.Recipe))]
         public virtual IEnumerable<LikesDislike> LikesDislikes { get; set; }
         [InverseProperty(nameof(RecipeGroup.Recipe))]

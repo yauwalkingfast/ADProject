@@ -209,6 +209,7 @@ namespace ADProject.Service
                 .Include(r => r.RecipeSteps)
                 .Include(r => r.RecipeIngredients)
                 .Include(r => r.Comments)
+                .ThenInclude(c => c.User)
                 .Include(r => r.LikesDislikes)
                 .Include(r => r.RecipeTags)
                 .ThenInclude(rtag => rtag.Tag)

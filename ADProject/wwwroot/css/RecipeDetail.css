@@ -1,7 +1,12 @@
 ﻿.main-image {
-    width: 500px;
-    height: 500px;
+    width: 400px;
+    height: 400px;
     overflow: hidden;
+}
+
+textarea {
+    min-height: 200px;
+    resize: none;
 }
 
 .step-image {

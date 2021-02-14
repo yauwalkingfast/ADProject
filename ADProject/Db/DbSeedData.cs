@@ -181,6 +181,30 @@ namespace ADProject.DbSeeder
                 }
             });
 
+            List<Comment> comments = new List<Comment>();
+            comments.Add(new Comment
+            {
+                UserId = user.Id,
+                User = user,
+                Dateposted = new DateTime(2008, 5, 1, 8, 30, 52),
+                Comment1 = "I comment my own recipe"
+            });
+            comments.Add(new Comment
+            {
+                UserId = user.Id,
+                User = user,
+                Dateposted = new DateTime(2008, 5, 1, 8, 30, 52),
+                Comment1 = "because I am so lonely"
+            });
+            comments.Add(new Comment
+            {
+                UserId = user.Id,
+                User = user,
+                Dateposted = new DateTime(2008, 5, 1, 8, 30, 52),
+                Comment1 = "ownself praise ownself"
+            });
+
+
             db.Recipes.Add(new Recipe
             {
                 UserId = user.Id,
@@ -193,7 +217,8 @@ namespace ADProject.DbSeeder
                 MainMediaUrl = "https://th.bing.com/th/id/OIP.P70fg98tIgi-8b-pMMhZXAHaFj?pid=Api&rs=1",
                 RecipeIngredients = recipeIngredient,
                 RecipeSteps = recipeSteps,
-                RecipeTags = recipeTag
+                RecipeTags = recipeTag,
+                Comments = comments,
             });
 
             db.Recipes.Add(new Recipe
@@ -208,7 +233,8 @@ namespace ADProject.DbSeeder
                 MainMediaUrl = "https://th.bing.com/th/id/OIP.P70fg98tIgi-8b-pMMhZXAHaFj?pid=Api&rs=1",
                 RecipeIngredients = recipeIngredient,
                 RecipeSteps = recipeSteps,
-                RecipeTags = recipeTag
+                RecipeTags = recipeTag,
+                Comments = comments
             });
 
             db.SaveChanges();

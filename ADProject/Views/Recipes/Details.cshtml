@@ -1,4 +1,7 @@
 ﻿@model ADProject.Models.Recipe
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
 
 @{
     ViewData["Title"] = "Details";
@@ -16,7 +19,8 @@
         </div>
         <div class="row mb-4">
             <div class="col-sm">
-                <i style='font-size:32px' class='fa fa-user'>@Model.User.UserName</i>
+                <i style='font-size:32px' class='fa fa-user'></i>
+                <span style="font-size: 32px" class="ml-2">@Model.User.UserName</span>
             </div>
             <div class="col-sm">
                 Featured in: Tribe name
@@ -104,15 +108,15 @@
                         else
                         {
                             <a asp-action="Edit" asp-route-gobackurl="@gobackurl" asp-route-id="@Model.RecipeId">Edit</a>
-                            <br/>
+                            <br />
                             <a asp-action="Delete" asp-route-gobackurl="@gobackurl" asp-route-id="@Model.RecipeId">Delete</a>
                         }
                     </div>
                 </div>
             </div>
         </div>
-        @foreach(var step in Model.RecipeSteps)
-                                    {
+        @foreach (var step in Model.RecipeSteps)
+        {
             <div class="row mt-4">
                 <div class="col-sm">
                     <p><b>Step @step.StepNumber</b></p>
@@ -130,6 +134,68 @@
                 </div>
             </div>
         }
+        <div class="row">
+            <div class="col-sm">
+                <p><h5><b>Comments: </b></h5></p>
+            </div>
+        </div>
+        @if (SignInManager.IsSignedIn(User))
+        {
+            <div class="row mb-4">
+                <div class="col-sm">
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                        Add Comments
+                    </button>
+                </div>
+            </div>
+        }
+
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Create Comment</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form onsubmit="event.preventDefault(); submitComment();">
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <textarea id="comment" class="form-control"></textarea>
+                            </div>
+                            <input type="hidden" id="gobackurl" value="@gobackurl" />
+                            <input type="hidden" id="recipe-id" value="@Model.RecipeId" />
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <input type="submit" value="Submit" class="btn btn-primary" />
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        @foreach (var comment in Model.Comments)
+        {
+            <div class="row">
+                <div class="col-sm-2">
+                    <i style='font-size:20px' class='fa fa-user'></i>
+                    <span class=ml-2>@comment.User.UserName</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm">
+                    @comment.Comment1
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-sm">
+                    @comment.Dateposted
+                </div>
+            </div>
+        }
         <div class="row mt-4 mb-2">
             <div class="col-sm">
                 <a asp-controller="@ViewData["Controller"]" asp-action="@ViewData["Action"]" asp-route-id="@ViewData["GoBackId"]">Back to List</a>
@@ -137,3 +203,39 @@
         </div>
     </div>
 </div>
+
+<script type="text/javascript">
+    async function submitComment() {
+        const comment = document.getElementById("comment").value;
+        const gobackurl = document.getElementById("gobackurl").value;
+        const recipeId = document.getElementById("recipe-id").value;
+        if (gobackurl == "" || recipeId == "") {
+            alert("Error submitting comment");
+            return false;
+        }
+
+        if (comment == "" || comment.trim() == "") {
+            alert("Cannot submit empty comment");
+            return false;
+        }
+
+        if (comment.length >= 500) {
+            alert("Maxium characters reached");
+            return false;
+        }
+
+        const toSubmit = {
+            recipeId,
+            gobackurl,
+            comment
+        };
+
+        const { status } = await axios.post("/Comments/AddCommentToRecipe", toSubmit);
+
+        if (status == 200) {
+            location.reload();
+        }
+
+        return true;
+    }
+</script>
