@@ -1,6 +1,65 @@
 ﻿@{
     Layout = "~/Views/Shared/_UserProfileLayout.cshtml";
     ApplicationUser user = (ApplicationUser)ViewData["User"];
+
+    PaginatedList<SavedRecipe> paginatedList = (PaginatedList<SavedRecipe>)ViewData["paginatedList"];
+    var prevDisabled = !paginatedList.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !paginatedList.HasNextPage ? "disabled" : "";
 }
 
-<h1>Saved Recipes</h1>
+<div class="menu-options">
+    <div>
+        <form id="search-form" asp-controller="UserProfile" asp-action="SavedRecipes" method="get">
+            <div class="form-group form-inline">
+                <input class="form-control" type="text" placeholder="Search Saved Recipe.." name="search" value="@ViewData["search"]">
+                <button type="submit" class="btn ml-1"><i class="fa fa-search"></i></button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="element-container my-3">
+    @foreach (var recipe in paginatedList)
+    {
+        <div>
+            <div class="element-item">
+                <a asp-controller="Recipes" asp-action="Details" asp-route-gobackurl="UserProfile/SavedRecipes/@user.Id" asp-route-id="@recipe.RecipeId">
+                    <img class="element-photo" src="@recipe.Recipe.MainMediaUrl" alt="recipe main photo" />
+                    <div class="top-left">@recipe.Recipe.Title</div>
+                    <div class="middle">@recipe.Recipe.Description</div>
+                    <div class="bottom-left">
+                        @for (int i = 0; i < 3 && i < recipe.Recipe.RecipeTags.Count(); i++)
+                        {
+                            <span>#</span>@recipe.Recipe.RecipeTags[i].Tag.TagName<span> </span>
+                        }
+                    </div>
+                </a>
+            </div>
+            <div class="element-options">
+                <div>
+                    <a asp-controller="Recipes" asp-action="RemoveRecipe" asp-route-id="@recipe.RecipeId" asp-route-gobackurl="UserProfile/SavedRecipes/@user.Id/@ViewData["search"]">
+                        Remove
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<div>
+    <a asp-controller="UserProfile"
+       asp-action="SavedRecipes"
+       asp-route-pageNumber="@(paginatedList.PageIndex - 1)"
+       asp-route-search="@ViewData["search"]"
+       class="btn btn-default @prevDisabled">
+        Previous
+    </a>
+
+    <a asp-controller="UserProfile"
+       asp-action="SavedRecipes"
+       asp-route-pageNumber="@(paginatedList.PageIndex + 1)"
+       asp-route-search="@ViewData["search"]"
+       class="btn btn-default @nextDisabled">
+        Next
+    </a>
+</div>

@@ -336,5 +336,26 @@ namespace ADProject.Service
             var successresult = await _context.SaveChangesAsync();
             return successresult >= 1;
         }
+
+        public async Task<IQueryable<SavedRecipe>> AllSavedRecipes(string username)
+        {
+            return _context.SavedRecipes
+                    .Include(sr => sr.Recipe)
+                    .ThenInclude(r => r.RecipeTags)
+                    .ThenInclude(rt => rt.Tag)
+                    .Include(sr => sr.User)
+                    .Where(sr => sr.User.UserName == username)
+                    .AsQueryable();
+        }
+
+        public async Task<IQueryable<SavedRecipe>> SearchSavedRecipes(string username, string search)
+        {
+            var myGroup = await this.AllSavedRecipes(username);
+            return myGroup.Where(sr => sr.Recipe.Title.Contains(search) ||
+                      sr.Recipe.Description.Contains(search) ||
+                      sr.Recipe.RecipeIngredients.Any(y => y.Ingredient.Contains(search)) ||
+                      sr.Recipe.RecipeTags.Any(y => y.Tag.TagName.Contains(search)))
+                .AsQueryable();  
+        }
     }
 }

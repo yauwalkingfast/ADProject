@@ -81,7 +81,8 @@ namespace ADProject.Controllers
             {
                 if (gobackurl.Contains("UserProfile"))
                 {
-                    return RedirectToAction("MyGroups", "UserProfile");
+                    var urls = gobackurl.Split("/");
+                    return RedirectToAction("MyGroups", "UserProfile", new { search = urls[2] });
                 }
                 else
                 {

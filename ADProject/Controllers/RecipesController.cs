@@ -326,7 +326,8 @@ namespace ADProject.Controllers
             }
             else if (successful)
             {
-                return RedirectToAction(nameof(Index));
+                var urls = gobackurl.Split("/");
+                return RedirectToAction(nameof(Index), new { search = urls[2] });
             }
 
             return View("Error");
@@ -345,7 +346,15 @@ namespace ADProject.Controllers
 
             if(await _recipesService.SaveRecipe(recipeId, User.Identity.Name))
             {
-                return RedirectToAction("Details", new { id = id, gobackurl = gobackurl });
+                if (gobackurl.Contains("Details"))
+                {
+                    return RedirectToAction("Details", new { id = id, gobackurl = gobackurl });
+                }
+                else
+                {
+                    var urls = gobackurl.Split("/");
+                    return RedirectToAction(nameof(Index), new { search = urls[2] });
+                }
             }
 
             return RedirectToAction("Index");
@@ -363,7 +372,19 @@ namespace ADProject.Controllers
 
             if(await _recipesService.RemoveRecipe(recipeId, User.Identity.Name))
             {
-                return RedirectToAction("Details", new { id = id, gobackurl = gobackurl });
+                if (gobackurl.Contains("SavedRecipes"))
+                {
+                    return RedirectToAction("SavedRecipes", "UserProfile");
+                }
+                else if(gobackurl.Contains("Details"))
+                {
+                    return RedirectToAction("Details", new { id = id, gobackurl = gobackurl });
+                }
+                else
+                {
+                    var urls = gobackurl.Split("/");
+                    return RedirectToAction(nameof(Index), new { search = urls[2] });
+                }
             }
 
             return View("Error");

@@ -27,6 +27,7 @@ namespace ADProject.Controllers
         {
             var user = await _userService.GetUserByUsername(User.Identity.Name);
             ViewData["User"] = user;
+            ViewData["search"] = search;
 
             int pageSize = 9;
             var recipeList = await _recipeService.GetAllRecipesByUserIdQueryable(user.Id);
@@ -46,6 +47,7 @@ namespace ADProject.Controllers
         {
             var user = await _userService.GetUserByUsername(User.Identity.Name);
             ViewData["User"] = user;
+            ViewData["search"] = search;
 
             int pageSize = 9;
             var groupList = await _groupService.GetMyGroups(user.Id);
@@ -61,10 +63,21 @@ namespace ADProject.Controllers
         }
 
         [Authorize]
-        public async Task<IActionResult> SavedRecipes()
+        public async Task<IActionResult> SavedRecipes(int? pageNumber, string search)
         {
             var user = await _userService.GetUserByUsername(User.Identity.Name);
             ViewData["User"] = user;
+            ViewData["search"] = search;
+
+            int pageSize = 9;
+            var savedRecipeList = await _recipeService.AllSavedRecipes(User.Identity.Name);
+            if (!String.IsNullOrEmpty(search))
+            {
+                savedRecipeList = await _recipeService.SearchSavedRecipes(User.Identity.Name, search);
+            }
+
+            PaginatedList<SavedRecipe> paginatedList = await PaginatedList<SavedRecipe>.CreateAsync(savedRecipeList, pageNumber ?? 1, pageSize);
+            ViewData["paginatedList"] = paginatedList;
 
             return View();
         }

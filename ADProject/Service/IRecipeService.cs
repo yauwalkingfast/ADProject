@@ -40,5 +40,8 @@ namespace ADProject.Service
         Task<bool> SaveRecipe(int recipeId, string username);
 
         Task<bool> RemoveRecipe(int recipeId, string username);
+
+        Task<IQueryable<SavedRecipe>> AllSavedRecipes(string username);
+        Task<IQueryable<SavedRecipe>> SearchSavedRecipes(string username, string search);
     }
 }
