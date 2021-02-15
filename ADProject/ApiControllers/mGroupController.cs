@@ -28,16 +28,20 @@ namespace ADProject.ApiControllers
             _recipesService = recipeService;
         }
 
-        [HttpGet]
-        [Route("{id}")]
-        public async Task<ActionResult<Group>> GetGroupById(int id)
+        [HttpPost]
+        [Route("getGroup")]
+        public async Task<ActionResult<Group>> GetGroupById([FromBody] UsersGroup ug)
         {
+            int id = ug.GroupId;
             var group = await _groupService.ADGetGroupById(id);
 
             if (group == null)
             {
                 return NotFound();
             }
+
+            int userId = ug.UserId;
+            group.isJoined = await _groupService.IsGroupMemberAD(id, userId);
 
             return group;
         }
@@ -113,7 +117,8 @@ namespace ADProject.ApiControllers
             }
 
             //User auto joins group, is automatically a moderator
-            UsersGroup n = new UsersGroup{
+            UsersGroup n = new UsersGroup
+            {
                 GroupId = rg.GroupId,
                 UserId = user.Id,
                 IsMod = true
