@@ -77,6 +77,7 @@ namespace ADProject
             services.AddScoped<IRecipeService, RecipeService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IGroupService, GroupService>();
+            services.AddScoped<ICommentService, CommentService>();
 
             // This is to handle reference loop situation when returning Json from async method
             // in API controller

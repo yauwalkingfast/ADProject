@@ -67,9 +67,9 @@
         </dd class>
     </dl>
     
-    <form asp-action="Delete">
+    <form asp-action="Delete" asp-route-gobackurl="@ViewData["gobackurl"]">
         <input type="hidden" asp-for="RecipeId" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
+        <a asp-controller="@ViewData["Controller"]" asp-action="@ViewData["Action"]" asp-route-id="@ViewData["GoBackId"]">Back to List</a>
     </form>
 </div>

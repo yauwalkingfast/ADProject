@@ -4,12 +4,13 @@
     ViewData["Title"] = "Edit";
     int userId = (int)ViewData["UserId"];
     string recipe = (string)ViewData["Recipe"];
+    string gobackurl = (string)ViewData["gobackurl"];
 }
 
 <div id="edit"></div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-controller="@ViewData["Controller"]" asp-action="@ViewData["Action"]" asp-route-id="@ViewData["GoBackId"]">Back to List</a>
 </div>
 
 @section Scripts {
@@ -50,7 +51,7 @@
                                                 <div className="col-sm">
                                                     <div className="row">
                                                         <div className="col-sm">
-                                                            <img src={`@Url.Content("~/${this.state.MainMediaUrl}")`} className="img-fluid main-image mb-2" alt="MainMediaUrl" />
+                                                            <img src={this.state.MainMediaUrl} className="img-fluid main-image mb-2" alt="MainMediaUrl" />
                                                         </div>
                                                     </div>
                                                     <div className="row">
@@ -218,7 +219,7 @@
                                                                 <div className="col-sm">
                                                                     <div className="row">
                                                                         <div className="col-sm">
-                                                                            <img src={`@Url.Content("~/${element.MediaFileUrl}")`} className="img-fluid main-image mb-2" alt="MainMediaUrl" />
+                                                                            <img src={element.MediaFileUrl} className="img-fluid main-image mb-2" alt="MainMediaUrl" />
                                                                         </div>
                                                                     </div>
                                                                     <div className="row">
@@ -379,6 +380,8 @@
                     ...state,
                 }
             })
+
+            console.log(this.state);
 
             this.addAutocompleteGroupName();
         }
@@ -687,7 +690,7 @@
 
         postRecipe = (toSubmit) => {
             let xhr = new XMLHttpRequest();
-            xhr.open("POST", `/Recipes/Edit/${this.state.RecipeId}`);
+            xhr.open("POST", `/Recipes/Edit/${this.state.RecipeId}?gobackurl=${'@Html.Raw(gobackurl)'}`);
             xhr.setRequestHeader("Content-Type", "application/json; charset=utf8");
 
             xhr.setRequestHeader("RequestVerificationToken",
@@ -700,8 +703,8 @@
                         var url = window.location.href;
                         var redirectUrl = url.split("/");
                         redirectUrl.splice(-2,2);
-                        const { id } = JSON.parse(this.response);
-                        window.location.assign(redirectUrl.join("/") + "/Details/" + id);
+                        const { id, gobackurl } = JSON.parse(this.response);
+                        window.location.assign(redirectUrl.join("/") + "/Details/" + id + "?gobackurl=" + gobackurl);
                     } else {
                         alert("Error editing recipe");
                     }
