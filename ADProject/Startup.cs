@@ -122,12 +122,6 @@ namespace ADProject
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-            // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/static-files?view=aspnetcore-5.0
-            /*            app.UseStaticFiles(new StaticFileOptions
-                        {
-                            FileProvider = new PhysicalFileProvider(Path.Combine(env.ContentRootPath, "RecipesImage")),
-                            RequestPath = "/RecipesImage"
-                        });*/
 
             app.UseRouting();
 
