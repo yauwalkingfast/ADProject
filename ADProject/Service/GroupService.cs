@@ -466,5 +466,27 @@ namespace ADProject.Service
             return success >= 1;
         }
 
+        public async Task<IQueryable<RecipeGroup>> getRecipesGroupByGroupId(int? groupId)
+        {
+            var recipeGroup = await _context.RecipeGroups
+                    .Include(r => r.Recipe)
+                    .ThenInclude(r=>r.RecipeIngredients)
+                    .Include(r => r.Recipe)
+                    .ThenInclude(r => r.RecipeTags)
+                    .ThenInclude(rt => rt.Tag)
+                    .Where(u => u.GroupId == groupId)
+                    .ToListAsync();
+            return recipeGroup.AsQueryable();
+        }
+        public async Task<IQueryable<RecipeGroup>> getRecipesGroupSearchByGroupId(int? groupId, string search)
+        {
+            var recipeGroup =await  this.getRecipesGroupByGroupId(groupId);
+            return recipeGroup.Where(sr => sr.Recipe.Title.Contains(search) ||
+                      sr.Recipe.Description.Contains(search) ||
+                      sr.Recipe.RecipeIngredients.Any(y => y.Ingredient.Contains(search)) ||
+                      sr.Recipe.RecipeTags.Any(y => y.Tag.TagName.Contains(search)))
+                .AsQueryable();
+
+        }
     }
 }
