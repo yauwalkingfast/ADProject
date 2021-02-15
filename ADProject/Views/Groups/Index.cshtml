@@ -1,65 +1,67 @@
-﻿@model IEnumerable<ADProject.Models.Group>
-
-@{
+﻿@{
     ViewData["Title"] = "Index";
+    bool joingroupfailed = (bool)ViewData["joingroupfailed"];
+
+    PaginatedList<Group> paginatedList = (PaginatedList<Group>)ViewData["paginatedList"];
+    var prevDisabled = !paginatedList.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !paginatedList.HasNextPage ? "disabled" : "";
 }
 
-<h1>Index</h1>
+<link href="~/css/GroupStyle.css" rel="stylesheet" />
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.GroupName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.GroupPhoto)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DateCreated)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsPublished)
-            </th>
-            <th>
-                Picture
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.GroupName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.GroupPhoto)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DateCreated)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsPublished)
-            </td>
-            <td>
-                <img src=@item.GroupPhoto alt="group photo" style="width: 100px; height: 100px;"/>
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.GroupId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.GroupId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.GroupId">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<div class="border">
+    <div class="display-flex-center">
+        <h1>Explore</h1>
+    </div>
+
+    <div class="display-flex-end">
+        <form id="search-form" asp-controller="Groups" asp-action="Index" method="get">
+            <div class="form-group form-inline">
+                <input class="form-control" type="text" placeholder="Search Group.." name="search" value="@ViewData["search"]">
+                <button type="submit" class="btn ml-1"><i class="fa fa-search"></i></button>
+            </div> 
+        </form>
+    </div>
+
+    <div class="display-flex-end">
+        <a asp-action="Create" asp-route-gobackurl="Groups">Create New Group</a>
+    </div>
+</div>
+
+
+<div class="group-container">
+    @foreach(var group in paginatedList)
+    {
+        <div class="group-item">
+            <a asp-action="Details" asp-route-gobackurl="Groups" asp-route-id="@group.GroupId">
+                <img class="group-photo" src="@group.GroupPhoto" alt="group photo" />
+                <div class="top-left">@group.GroupName</div>
+                <div class="middle">@group.Description</div>
+                <div class="bottom-left">
+                    @for (int i = 0; i < 3 && i < group.GroupTags.Count(); i++)
+                    {
+                        <span>#</span>@group.GroupTags[i].Tag.TagName<span> </span>
+                    }
+                </div>
+            </a>
+        </div>
+    }
+</div>
+
+<div>
+    <a asp-controller="Groups"
+       asp-action="Index"
+       asp-route-pageNumber="@(paginatedList.PageIndex - 1)"
+       asp-route-search="@ViewData["search"]"
+       class="btn btn-default @prevDisabled">
+        Previous
+    </a>
+
+    <a asp-controller="Groups"
+       asp-action="Index"
+       asp-route-pageNumber="@(paginatedList.PageIndex + 1)"
+       asp-route-search="@ViewData["search"]"
+       class="btn btn-default @nextDisabled">
+        Next
+    </a>
+</div>

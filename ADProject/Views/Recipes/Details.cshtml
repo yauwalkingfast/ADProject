@@ -1,207 +1,242 @@
 ﻿@model ADProject.Models.Recipe
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
 
 @{
     ViewData["Title"] = "Details";
+    string gobackurl = @ViewData["Controller"] + "/" + @ViewData["Action"] + "/" + @ViewData["GoBackId"];
 }
 
-<h1>Details</h1>
+<link href="~/css/RecipeDetail.css" rel="stylesheet" />
 
-@*<div>
-        <h4>Recipe</h4>
-        <hr />
-        <dl class="row">
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Title)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Title)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Description)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Description)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.DateCreated)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.DateCreated)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.DurationInMins)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.DurationInMins)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Calories)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Calories)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.ServingSize)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.ServingSize)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.IsPublished)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.IsPublished)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.MainMediaUrl)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.MainMediaUrl)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.User)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.User.Email)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.RecipeSteps)
-            </dt>
-            @foreach (var step in Model.RecipeSteps)
-            {
-                <div>
-                    <dd class="col-sm-10">
-                        @step.StepNumber
-                    </dd>
-                    <dd class="col-sm-10">
-                        @step.TextInstructions
-                    </dd>
-                </div>
-            }
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.RecipeIngredients)
-            </dt>
-            @foreach (var ingredient in Model.RecipeIngredients)
-            {
-                <div>
-                    <dd class="col-sm-10">
-                        @ingredient.Ingredient
-                    </dd>
-                    <dd class="col-sm-10">
-                        @ingredient.Quantity
-                    </dd>
-                    <dd class="col-sm-10">
-                        @ingredient.UnitOfMeasurement
-                    </dd>
-                </div>
-            }
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.RecipeTags)
-            </dt>
-            @foreach (var allergenTag in Model.RecipeTags)
-            {
-                if(allergenTag.IsAllergenTag == true)
+<div class="row justify-content-center">
+    <div class="col-sm-10">
+        <div class="row">
+            <div class="col-sm">
+                <h2>@Model.Title</h2>
+            </div>
+        </div>
+        <div class="row mb-4">
+            <div class="col-sm">
+                <i style='font-size:32px' class='fa fa-user'></i>
+                <span style="font-size: 32px" class="ml-2">@Model.User.UserName</span>
+            </div>
+            <div class="col-sm">
+                Featured in: Tribe name
+            </div>
+            <div class="col-sm">
+                Tags:
+                @foreach (var tag in Model.RecipeTags)
                 {
-                    <div>
-                        <dd class="col-sm-10">
-                            @allergenTag.Tag.Warning
-                        </dd>
+                    if (tag.IsAllergenTag == false)
+                    {
+                        <span>#</span>@tag.Tag.TagName<span> </span>
+                    }
+                }
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm">
+                <img class="main-image" src=@Model.MainMediaUrl alt="main recipe image">
+            </div>
+            <div class="col-sm">
+                <div class="row">
+                    <div class="col-sm">
+                        <h5>Ingredients</h5>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm">
+                        <p>for @Model.ServingSize serving</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm">
+                        <ul>
+                            @foreach (var ingredient in Model.RecipeIngredients)
+                            {
+                                <li>@ingredient.Quantity @ingredient.UnitOfMeasurement of @ingredient.Ingredient</li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-sm">
+                        Calories: @Model.Calories kcal
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-sm-1">
+                        <i style='font-size:24px' class='fa fa-clock-o mr-3'></i>
+                    </div>
+                    <div class="col-sm-11">
+                        @Model.DurationInMins minutes
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm">
+                        @foreach (var allergen in Model.RecipeTags)
+                        {
+                            if (allergen.IsAllergenTag == true)
+                            {
+                                <div class="row mb-2">
+                                    <div class="col-sm-1">
+                                        <i style='font-size:24px' class='fa fa-exclamation-triangle'></i>
+                                    </div>
+                                    <div class="col-sm-11">
+                                        Warning: Contains @allergen.Tag.Warning
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-sm">
+                        @if (Model.User.UserName != User.Identity.Name)
+                        {
+                            if (Model.SavedRecipes.Any(sr => sr.User.UserName.Equals(User.Identity.Name) && sr.RecipeId == Model.RecipeId))
+                            {
+                                <a asp-action="RemoveRecipe" asp-route-id="@Model.RecipeId" asp-route-gobackurl="@gobackurl">Remove Recipe</a>
+                            }
+                            else
+                            {
+                                <a asp-action="SaveRecipe" asp-route-id="@Model.RecipeId" asp-route-gobackurl="@gobackurl">Save Recipe</a>
+                            }
+                        }
+                        else
+                        {
+                            <a asp-action="Edit" asp-route-gobackurl="@gobackurl" asp-route-id="@Model.RecipeId">Edit</a>
+                            <br />
+                            <a asp-action="Delete" asp-route-gobackurl="@gobackurl" asp-route-id="@Model.RecipeId">Delete</a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        @foreach (var step in Model.RecipeSteps)
+        {
+            <div class="row mt-4">
+                <div class="col-sm">
+                    <p><b>Step @step.StepNumber</b></p>
+                </div>
+            </div>
+            <div class="row">
+                @if (!String.IsNullOrEmpty(step.MediaFileUrl))
+                {
+                    <div class="col-sm">
+                        <img class="step-image" src="@step.MediaFileUrl" alt="main recipe image">
                     </div>
                 }
-            }
-        </dl>
-    </div>*@
+                <div class="col-sm">
+                    @step.TextInstructions
+                </div>
+            </div>
+        }
+        <div class="row">
+            <div class="col-sm">
+                <p><h5><b>Comments: </b></h5></p>
+            </div>
+        </div>
+        @if (SignInManager.IsSignedIn(User))
+        {
+            <div class="row mb-4">
+                <div class="col-sm">
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                        Add Comments
+                    </button>
+                </div>
+            </div>
+        }
 
-<link href="~/css/RecipeDetail.css" rel="stylesheet" type="text/css" />
-<script src='https://kit.fontawesome.com/a076d05399.js'></script>
-
-<h2> @Html.DisplayFor(model => model.Title)</h2>
-
-<table>
-    <tr>
-        <td><i style='font-size:32px' class='fas'>&#xf406;</i>
-        @Html.DisplayFor(model => model.User.FirstName) </td>
-
-        <td>Featured in: Tribe name</td>
-
-        <td>
-            Tags :
-            @foreach (var tag in Model.RecipeTags)
-            {
-                if (tag.IsAllergenTag == false )
-                {
-                        @tag.Tag.TagName 
-                }
-            }
-        </td>
-    </tr>
-</table>
-    
-
-<table class="image_ingredients">
-    <tr>
-        <td>
-            <img src=@Url.Content("~/" + Model.MainMediaUrl) alt="a description of the image">
-        </td>
-        <td>
-            <h3>Ingredients</h3>
-            <p> for @Html.DisplayFor(model => model.ServingSize) serving</p>
-            <ul>
-                @foreach (var ingredient in Model.RecipeIngredients)
-                {
-                    <li>
-                        <div>
-                            @ingredient.Ingredient @ingredient.Quantity @ingredient.UnitOfMeasurement
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Create Comment</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form onsubmit="event.preventDefault(); submitComment();">
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <textarea id="comment" class="form-control"></textarea>
+                            </div>
+                            <input type="hidden" id="gobackurl" value="@gobackurl" />
+                            <input type="hidden" id="recipe-id" value="@Model.RecipeId" />
                         </div>
-                    </li>
-                }
-            </ul>
-            <div>Calories: @Html.DisplayFor(model => model.Calories)</div>
-            <div>
-                <i style='font-size:24px' class='fas'>&#xf017;</i>
-                @Html.DisplayFor(model => model.DurationInMins) minutes
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <input type="submit" value="Submit" class="btn btn-primary" />
+                        </div>
+                    </form>
+                </div>
             </div>
+        </div>
 
-
-
-            @foreach (var allergenTag in Model.RecipeTags)
-            {
-                if (allergenTag.IsAllergenTag == true)
-                {
-                    <div>
-
-                        <i style='font-size:24px' class='fas'>&#xf071;</i>
-                        Warning may contains the traces of @allergenTag.Tag.Warning
-                    </div>
-
-                }
-            }
-            <div>
-            <a href="###"><i style='font-size:24px' class='fas'>&#xf067;</i> Add to try Later</a>
+        @foreach (var comment in Model.Comments)
+        {
+            <div class="row">
+                <div class="col-sm-2">
+                    <i style='font-size:20px' class='fa fa-user'></i>
+                    <span class=ml-2>@comment.User.UserName</span>
+                </div>
             </div>
-        </td>
-    </tr>
-</table>
-<div><h3> How to Cook </h3></div>
-<dl>
-    @foreach (var step in Model.RecipeSteps)
-    {
-        <dt>
-            
-                STEP : @step.StepNumber
-            
-            <dd>
-                <img src=@Url.Content("~/" + step.MediaFileUrl) alt="a description of the image">
-            </dd>
-            <dd>
-                @step.TextInstructions
-            </dd>
-
-        </dt>
-    }
-</dl>
-
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.RecipeId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+            <div class="row">
+                <div class="col-sm">
+                    @comment.Comment1
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-sm">
+                    @comment.Dateposted
+                </div>
+            </div>
+        }
+        <div class="row mt-4 mb-2">
+            <div class="col-sm">
+                <a asp-controller="@ViewData["Controller"]" asp-action="@ViewData["Action"]" asp-route-id="@ViewData["GoBackId"]" asp-route-gobackurl="@gobackurl">Back to List</a>
+            </div>
+        </div>
+    </div>
 </div>
+
+<script type="text/javascript">
+    async function submitComment() {
+        const comment = document.getElementById("comment").value;
+        const gobackurl = document.getElementById("gobackurl").value;
+        const recipeId = document.getElementById("recipe-id").value;
+        if (gobackurl == "" || recipeId == "") {
+            alert("Error submitting comment");
+            return false;
+        }
+
+        if (comment == "" || comment.trim() == "") {
+            alert("Cannot submit empty comment");
+            return false;
+        }
+
+        if (comment.length >= 500) {
+            alert("Maxium characters reached");
+            return false;
+        }
+
+        const toSubmit = {
+            recipeId,
+            gobackurl,
+            comment
+        };
+
+        const { status } = await axios.post("/Comments/AddCommentToRecipe", toSubmit);
+
+        if (status == 200) {
+            location.reload();
+            return true;
+        }
+
+        return false;
+    }
+</script>

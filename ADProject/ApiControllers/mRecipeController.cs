@@ -116,7 +116,6 @@ namespace ADProject.ApiControllers
         public async Task<booleanJson> UpdateRecipe(int id, [FromBody] Recipe recipe)
         {
             booleanJson isUpdated = new booleanJson();
-
             isUpdated.flag = await _recipesService.EditRecipe(id, recipe);
             return isUpdated;
         }

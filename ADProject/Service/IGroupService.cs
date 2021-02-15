@@ -12,6 +12,12 @@ namespace ADProject.Service
 
         Task<List<Group>> GetAllGroups();
 
+        Task<IQueryable<Group>> GetAllGroupsQueryable();
+
+        Task<IQueryable<UsersGroup>> GetMyGroups(int id);
+
+        Task<IQueryable<UsersGroup>> GetMyGroupsSearch(int id, string search);
+
         Task<Group> GetGroupById(int? id);
 
         Task<bool> EditGroup(int id, Group group);
@@ -21,5 +27,24 @@ namespace ADProject.Service
         Task<Group> ADGetGroupById(int? id);
 
         Task<List<Group>> GetAllGroupsSearch(string search);
+
+        Task<IQueryable<Group>> GetAllGroupsSearchQueryable(string search);
+
+        Task<Group> AddGroupAD(Group group);
+
+        List<Group> UserInGroups(int userId);
+
+        List<Group> RecipeInGroups(int recipeId);
+
+        Task<bool> PostRecipes(List<Group> groups, int recipeId);
+
+        Task<bool> IsGroupAdmin(int? groupId, string username);
+
+        Task<bool> IsGroupMember(int? groupId, string username);
+
+        Task<bool> JoinGroupWebVer(int? groupId, string username);
+
+        Task<bool> LeaveGroupWebVer(int? groupId, string username);
+
     }
 }

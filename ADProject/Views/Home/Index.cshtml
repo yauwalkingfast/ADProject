@@ -1,8 +1,137 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@*@model IEnumerable<ADProject.Models.Recipe>
+*@
+
+@{
+    ViewData["Title"] = "Index";
+    string FirstName = (string)ViewData["FirstName"];
+
+    PaginatedList<Recipe> paginatedList = (PaginatedList<Recipe>)ViewData["paginatedList"];
+    var prevDisabled = !paginatedList.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !paginatedList.HasNextPage ? "disabled" : "";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<h1>My Recipes</h1>
+@*this page is designed for user's MY Recipes page that shows the list of the user's posted recipe*@
+
+<link href="~/css/RecipeDetail.css" rel="stylesheet" type="text/css" />
+
+<div class="grid-container">
+
+
+    <div class="user">
+        <i style='font-size:64px' class='fa fa-user'></i>
+        @FirstName
+
+    </div>
+    <div class="menu">
+
+        <a asp-action="Index">MyRecipes</a>
+        <a asp-action="Index">Completed</a>
+        <a asp-action="Index">Posts</a>
+        <a asp-action="Index">TryLater</a>
+        <a asp-controller="Groups" asp-action="Index">My Tribes</a>
+
+    </div>
+    <div class="searchbar">
+        <form id="search-form" asp-controller="Home" asp-action="Index" method="get">
+            <input type="text" placeholder="Search.." name="search" value="@ViewData["search"]">
+            <button type="submit"><i class="fa fa-search"></i></button>
+        </form>
+        <a asp-controller="Recipes" asp-action="Create">Create New</a>
+    </div>
+    @*@foreach(var recipe in Model.Recipes)*@
+    @foreach (var item in paginatedList)
+    {
+        int i = 0;
+        <div class="recipes">
+            <table>
+                <tr>
+                    <td>
+                        <h2> @Html.DisplayFor(modelItem => item.Title)</h2>
+                        <div>
+                            Tags :
+                            @foreach (var tag in item.RecipeTags)
+                            {
+                                if (tag.IsAllergenTag == false)
+                                {<text>#</text>
+                                @tag.Tag.TagName
+                                <text> </text>
+
+                            }
+
+                        }
+                        </div>
+                        <a asp-controller="Recipes" asp-action="Details" asp-route-id="@item.RecipeId">
+                            <img src=@item.MainMediaUrl alt="a description of the image">
+                        </a>
+                    </td>
+
+                    <td>
+                        <h3>Ingredients</h3>
+                        <p> for @item.ServingSize serving</p>
+                        <ul>
+                            @foreach (var ingredient in item.RecipeIngredients)
+                            {
+
+                                if (i <= 3)
+                                {
+                                    <li>
+                                        <div>
+                                            @ingredient.Ingredient @ingredient.Quantity @ingredient.UnitOfMeasurement
+                                        </div>
+                                    </li>
+                                    i++;
+                                }
+                                else { break; }
+                            }
+                            <div><a asp-controller="Recipes" asp-action="Details" asp-route-id="@item.RecipeId">See All</a></div>
+                        </ul>
+                        <div>Calories: @item.Calories)</div>
+                        <div>
+                            <i style='font-size:24px' class='fa fa-clock-o'></i>
+                            @item.DurationInMins minutes
+                        </div>
+
+
+
+                        @foreach (var allergenTag in item.RecipeTags)
+                        {
+                            if (allergenTag.IsAllergenTag == true)
+                            {
+                                <div>
+
+                                    <i style='font-size:24px' class='fa fa-exclamation-triangle'></i>
+                                    Warning may contains the traces of @allergenTag.Tag.Warning
+                                </div>
+
+                            }
+                        }
+                        <div>
+                            <a href="###"><i style='font-size:24px' class='fa fa-plus'></i> Add to try Later</a>
+                        </div>
+                    </td>
+
+        </div>
+
+        @*<a asp-action="Edit" asp-route-id="@item.RecipeId">Edit</a>
+            <a asp-action="Details" asp-route-id="@item.RecipeId">Details</a>
+            <a asp-action="Delete" asp-route-id="@item.RecipeId">Delete</a>*@
+    }
+
+    <a asp-controller="Home"
+       asp-action="Index"
+       asp-route-pageNumber="@(paginatedList.PageIndex - 1)"
+       asp-route-search="@ViewData["search"]"
+       class="btn btn-default @prevDisabled">
+        Previous
+    </a>
+
+    <a asp-controller="Home"
+       asp-action="Index"
+       asp-route-pageNumber="@(paginatedList.PageIndex + 1)"
+       asp-route-search="@ViewData["search"]"
+       class="btn btn-default @nextDisabled">
+        Next
+    </a>
+
 </div>

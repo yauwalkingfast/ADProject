@@ -54,17 +54,17 @@ namespace ADProject.Models
         [InverseProperty("Recipes")]
         public virtual ApplicationUser User { get; set; }
         [InverseProperty(nameof(Comment.Recipe))]
-        public virtual IEnumerable<Comment> Comments { get; set; }
+        public virtual List<Comment> Comments { get; set; }
         [InverseProperty(nameof(LikesDislike.Recipe))]
         public virtual IEnumerable<LikesDislike> LikesDislikes { get; set; }
         [InverseProperty(nameof(RecipeGroup.Recipe))]
-        public virtual IEnumerable<RecipeGroup> RecipeGroups { get; set; }
+        public virtual List<RecipeGroup> RecipeGroups { get; set; }
         [InverseProperty(nameof(RecipeIngredient.Recipe))]
-        public virtual IEnumerable<RecipeIngredient> RecipeIngredients { get; set; }
+        public virtual List<RecipeIngredient> RecipeIngredients { get; set; }
         [InverseProperty(nameof(RecipeStep.Recipe))]
-        public virtual IEnumerable<RecipeStep> RecipeSteps { get; set; }
+        public virtual List<RecipeStep> RecipeSteps { get; set; }
         [InverseProperty(nameof(RecipeTag.Recipe))]
-        public virtual IEnumerable<RecipeTag> RecipeTags { get; set; }
+        public virtual List<RecipeTag> RecipeTags { get; set; }
        
         public static implicit operator List<object>(Recipe v)
         {
@@ -73,6 +73,6 @@ namespace ADProject.Models
 
 
         [InverseProperty(nameof(SavedRecipe.Recipe))]
-        public virtual IEnumerable<SavedRecipe> SavedRecipes { get; set; }
+        public virtual List<SavedRecipe> SavedRecipes { get; set; }
     }
 }

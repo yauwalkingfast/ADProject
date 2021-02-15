@@ -29,15 +29,16 @@ namespace ADProject.Models
 
         [NotMapped]
         public int UserId { get { return Id; } }
+
         /*[Required]*/
         [Column("firstName")]
         [StringLength(30)]
         public string FirstName { get; set; }
+
         /*[Required]*/
         [Column("lastName")]
         [StringLength(30)]
         public string LastName { get; set; }
-        
        
         public bool? IsAdmin { get; set; }
 

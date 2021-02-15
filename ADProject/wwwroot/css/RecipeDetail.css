@@ -1,27 +1,52 @@
-﻿.image_ingredients {
-    width: 100%;
-    padding-top: 30px;
+﻿.main-image {
+    width: 400px;
+    height: 400px;
+    overflow: hidden;
 }
 
-
-td {
-    padding: 10px;
-    text-align: left;
+textarea {
+    min-height: 200px;
+    resize: none;
 }
 
-img {
-    height: 500px;
-    width: 500px;
-    border-radius: 8px;
+.step-image {
+    width: 300px;
+    height: 300px;
+    overflow: hidden;
 }
 
-div {
-    padding: 5px;
+.recipe-image {
+    width: 300px;
+    height: 300px;
+    overflow: hidden;
 }
-dt{
-    padding-top:20px;
-    padding-bottom:20px;
+
+.border {
+    border-width: 1px;
+    border-color: black;
 }
-dd{
-    padding:10px;
+
+.display-flex-center {
+    display: flex;
+    justify-content: center;
 }
+
+.display-flex-end {
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 5px;
+}
+
+@media screen and (max-width: 500px) {
+    .main-image {
+        width: 250px;
+        height: 250px;
+        overflow: hidden;
+    }
+    .step-image {
+        width: 150px;
+        height: 150px;
+        overflow: hidden;
+    }
+}
+

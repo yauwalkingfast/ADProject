@@ -3,25 +3,26 @@
 @{
     ViewData["Title"] = "Create";
     int userId = (int)ViewData["UserId"];
+    string gobackurl = (string)ViewData["gobackurl"];
 }
 
 <div id="create"></div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-controller="@ViewData["Controller"]" asp-action="@ViewData["Action"]" asp-route-id="@ViewData["GoBackId"]">Back to List</a>
 </div>
 @* <form method="post" enctype="multipart/form-data" asp-controller="Recipes" asp-action="FileUpload">
-    <dl>
-        <dt>
-            <label>Upload</label>
-        </dt>
-        <dd>
-            <input type="file" name="FormFile" id="FormFile">
+        <dl>
+            <dt>
+                <label>Upload</label>
+            </dt>
+            <dd>
+                <input type="file" name="FormFile" id="FormFile">
 
-        </dd>
-    </dl>
-    <input class="btn" type="submit" value="Upload" />
-</form> *@
+            </dd>
+        </dl>
+        <input class="btn" type="submit" value="Upload" />
+    </form> *@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
@@ -35,99 +36,9 @@
     }
 }
 
-<input type="hidden" id="RequestVerificationToken" 
+<input type="hidden" id="RequestVerificationToken"
        name="RequestVerificationToken" value="@GetAntiXsrfRequestToken()">
-
-<!-- React JS -->
-<script crossorigin src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
-<script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
-<script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
-
-<!-- axios -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js" integrity="sha512-bZS47S7sPOxkjU/4Bt0zrhEtWx0y0CRkhEp8IckzK+ltifIIE9EMIMTuT/mEzoIMewUINruDBIR/jJnbguonqQ==" crossorigin="anonymous"></script>
-
-<!-- Font Awesome -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<style>
-    .create-form-header {
-        text-align: center;
-    }
-
-    hr {
-        border-color: black;
-    }
-
-    textarea {
-        min-height: 200px;
-        resize: none;
-    }
-
-    .icon-button {
-        background-color: Transparent;
-        background-repeat:no-repeat;
-        border: none;
-        cursor:pointer;
-        overflow: hidden;
-        outline:none;
-    }
-    .files input {
-        outline: 2px dashed #92b0b3;
-        outline-offset: -10px;
-        -webkit-transition: outline-offset .15s ease-in-out, background-color .15s linear;
-        transition: outline-offset .15s ease-in-out, background-color .15s linear;
-        padding: 120px 0px 85px 35%;
-        text-align: center !important;
-        margin: 0;
-        width: 100% !important;
-    }
-    .files input:focus{     
-        outline: 2px dashed #92b0b3;  
-        outline-offset: -10px;
-        -webkit-transition: outline-offset .15s ease-in-out, background-color .15s linear;
-        transition: outline-offset .15s ease-in-out, background-color .15s linear; border:1px solid #92b0b3;
-    }
-    .files{ 
-        position:relative
-    }
-    .files:after {  pointer-events: none;
-        position: absolute;
-        top: 50px;
-        left: 0;
-        width: 50px;
-        right: 0;
-        height: 56px;
-        content: "";
-        background-image: url(https://image.flaticon.com/icons/png/128/109/109612.png);
-        display: block;
-        margin: 0 auto;
-        background-size: 100%;
-        background-repeat: no-repeat;
-    }
-    .color input{ 
-        background-color:#f1f1f1;
-    }
-    .files:before {
-        position: absolute;
-        bottom: 50px;
-        left: 0;  pointer-events: none;
-        width: 100%;
-        right: 0;
-        height: 57px;
-        content: " or drag it here. ";
-        display: block;
-        margin: 0 auto;
-        color: #2ea591;
-        font-weight: 600;
-        text-transform: capitalize;
-        text-align: center;
-    }
-    .main-image {
-        width: 350px;
-        height: 300px;
-        overflow: hidden;
-    }
-</style>
-
+<link href="~/css/RecipeForms.css" rel="stylesheet" type="text/css" />
 <script type="text/babel">
     class Create extends React.Component {
         render() {
@@ -151,7 +62,7 @@
                                                 <div className="col-sm">
                                                     <div className="row">
                                                         <div className="col-sm">
-                                                            <img src={`@Url.Content("~/${this.state.MainMediaUrl}")`} className="img-fluid main-image mb-2" alt="MainMediaUrl" />
+                                                            <img src={this.state.MainMediaUrl} className="img-fluid main-image mb-2" alt="MainMediaUrl" />
                                                         </div>
                                                     </div>
                                                     <div className="row">
@@ -208,10 +119,10 @@
                                                         if(tag.IsAllergenTag) {
                                                             return (
                                                                 <div className="row mb-1" key={index}>
-                                                                    <div className="col-sm-10">
+                                                                    <div className="col-10">
                                                                         <input type="text" className="form-control" onChange={() => this.handleAllergenTagChange(event, index)} value={tag.Tag.Warning} />
                                                                     </div>
-                                                                    <div className="col-sm-2">
+                                                                    <div className="col-2">
                                                                         <button type="button" className="icon-button" onClick={() => this.removeAllergenTag(index)}>
                                                                             <i class="fa fa-times" aria-hidden="true"></i>
                                                                         </button>
@@ -243,10 +154,10 @@
                                                 if(!tag.IsAllergenTag) {
                                                     return (
                                                         <div className="row mb-1" key={index}>
-                                                            <div className="col-sm-10">
+                                                            <div className="col-10">
                                                                 <input type="text" className="form-control" onChange={() => this.handleTagChange(event, index)} value={tag.Tag.TagName} />
                                                             </div>
-                                                            <div className="col-sm-2">
+                                                            <div className="col-2">
                                                                 <button type="button" className="icon-button" onClick={() => this.removeTag(index)}>
                                                                     <i class="fa fa-times" aria-hidden="true"></i>
                                                                 </button>
@@ -274,16 +185,16 @@
                                     {this.state.RecipeIngredients.map((element, index) => {
                                         return(
                                             <div className="row" key={index}>
-                                                <div className="form-group col-sm-6">
+                                                <div className="form-group col-6">
                                                     <input type="text" className="form-control" placeholder="Ingredient" id={`ingredient-name-${index}`} name="ingredient-name" onChange={() => this.handleIngredientChange(index)} value={element.Ingredient} />
                                                 </div>
-                                                <div className="form-group col-sm-2">
+                                                <div className="form-group col-2">
                                                     <input type="number" className="form-control" placeholder="Quantity" id={`ingredient-qty-${index}`} name="ingredient-qty" onChange={() => this.handleIngredientChange(index)} value={element.Quantity} />
                                                 </div>
-                                                <div className="form-group col-sm-3">
+                                                <div className="form-group col-3">
                                                     <input type="text" className="form-control" placeholder="Unit" id={`ingredient-unit-${index}`} name="ingredient-unit" onChange={() => this.handleIngredientChange(index)} value={element.UnitOfMeasurement} />
                                                 </div>
-                                                <div className="col-sm-1">
+                                                <div className="col-1">
                                                     <button type="button" className="icon-button" onClick={() => this.removeIngredient(index)}>
                                                         <i class="fa fa-times" aria-hidden="true"></i>
                                                     </button>
@@ -297,7 +208,7 @@
                             <div className="row">
                                 <div className="col-sm mb-5">
                                     <button className="icon-button" type="button" onClick={this.addIngredient}>
-                                        <i class="fa fa-plus" aria-hidden="true">Add ingredient</i>    
+                                        <i class="fa fa-plus" aria-hidden="true">Add ingredient</i>
                                     </button>
                                 </div>
                             </div>
@@ -319,7 +230,7 @@
                                                                 <div className="col-sm">
                                                                     <div className="row">
                                                                         <div className="col-sm">
-                                                                            <img src={`@Url.Content("~/${element.MediaFileUrl}")`} className="img-fluid main-image mb-2" alt="MainMediaUrl" />
+                                                                            <img src={element.MediaFileUrl} className="img-fluid main-image mb-2" alt="MainMediaUrl" />
                                                                         </div>
                                                                     </div>
                                                                     <div className="row">
@@ -349,8 +260,14 @@
                                                         <textarea type="text" placeholder="Step Instructions" className="form-control" name="step-instruction" onChange={() => this.handleStepChange(event, index)}  value={element.TextInstructions}></textarea>
                                                     </div>
                                                     <div className="col-sm-1">
-                                                        <button type="button" className="icon-button" onClick={() => this.removeStep(index)}>
+                                                        <button type="button" className="icon-button mb-5" onClick={() => this.removeStep(index)}>
                                                             <i class="fa fa-times" aria-hidden="true"></i>
+                                                        </button>
+                                                        <button type="button" className="icon-button" onClick={() => this.moveStepUp(index)}>
+                                                            <i className="fa fa-arrow-up"></i>
+                                                        </button>
+                                                        <button type="button" className="icon-button" onClick={() => this.moveStepDown(index)}>
+                                                            <i className="fa fa-arrow-down"></i>
                                                         </button>
                                                     </div>
                                                 </div>
@@ -372,7 +289,7 @@
                                 <div className="col-sm">
                                     <div className="form-group form-check">
                                         <label className="form-check-label font-weight-bold">
-                                            <input type="checkbox" className="form-check-input" name="IsPublished" checked={this.state.IsPublished === true} onChange={this.handleChange} /> 
+                                            <input type="checkbox" className="form-check-input" name="IsPublished" checked={this.state.IsPublished === true} onChange={this.handleChange} />
                                             {" "}Make Public
                                         </label>
                                     </div>
@@ -390,10 +307,10 @@
                                     {this.state.RecipeGroups.map((element, index) => {
                                         return(
                                             <div className="row" key={index}>
-                                                <div className="form-group col-sm-6">
+                                                <div className="form-group col-6">
                                                     <input type="text" id={`group-autocomplete-${index}`} className="form-control auto-complete-groupname" placeholder="Group" onChange={() => this.handleGroupChange(event, index)} value={element.Group.GroupName} />
                                                 </div>
-                                                <div className="col-sm-1">
+                                                <div className="col-1">
                                                     <button type="button" className="icon-button" onClick={() => this.removeGroup(index)}>
                                                         <i class="fa fa-times" aria-hidden="true"></i>
                                                     </button>
@@ -412,7 +329,7 @@
                                 </div>
                             </div>
 
-                            <div className="row mt-3">  
+                            <div className="row mt-3">
                                 <div className="col-sm-4 offset-sm-8">
                                     <input type="submit" value="Create" className="btn btn-primary" />
                                 </div>
@@ -507,6 +424,38 @@
             this.addAutocompleteGroupName();
         }
 
+        moveStepUp = (index) => {
+            if(index === 0) {
+                return;
+            }
+            this.setState(state => {
+                var RecipeSteps = state.RecipeSteps;
+                var temp = RecipeSteps[index];
+                RecipeSteps[index] = RecipeSteps[index - 1];
+                RecipeSteps[index - 1] = temp;
+
+                return {
+                    RecipeSteps
+                }
+            });
+        }
+
+        moveStepDown = (index) => {
+            if(index === this.state.RecipeSteps.length - 1) {
+                return;
+            }
+            this.setState(state => {
+                var RecipeSteps = state.RecipeSteps;
+                var temp = RecipeSteps[index];
+                RecipeSteps[index] = RecipeSteps[index + 1];
+                RecipeSteps[index + 1] = temp;
+
+                return {
+                    RecipeSteps
+                }
+            });
+        }
+
         addAutocompleteGroupName = () => {
             const _handleGroupChange = this.handleGroupChange;
 
@@ -572,7 +521,7 @@
         onMainMediaUpload = async (event) => {
             event.preventDefault();
             const file = this.state.MainSelectedFile;
-            
+
             if(!file) {
                 alert("Please choose a new image");
                 return;
@@ -628,11 +577,11 @@
                 .map((step, index) => {
                     delete step.MediaSelectedFile;
                     return {
-                        ...step, 
+                        ...step,
                         StepNumber: index + 1
                     }
                 });
-            
+
             var RecipeIngredients = this.state.RecipeIngredients
                 .filter(ingredient => ingredient.Ingredient.trim() !== "");
 
@@ -651,12 +600,14 @@
                 RecipeTags,
                 RecipeGroups
             }
+
+            console.log(toSubmit);
             return toSubmit;
         }
 
         postRecipe = (toSubmit) => {
             let xhr = new XMLHttpRequest();
-            xhr.open("POST", "/Recipes/Create");
+            xhr.open("POST", `/Recipes/Create?gobackurl=${'@Html.Raw(gobackurl)'}`);
             xhr.setRequestHeader("Content-Type", "application/json; charset=utf8");
 
             xhr.setRequestHeader("RequestVerificationToken",
@@ -669,7 +620,8 @@
                         var url = window.location.href;
                         var redirectUrl = url.split("/");
                         redirectUrl.pop();
-                        window.location.assign(redirectUrl.join("/"));
+                        const { id, gobackurl } = JSON.parse(this.response);
+                        window.location.assign(redirectUrl.join("/") + "/Details/" + id + "?gobackurl=" + gobackurl);
                     } else {
                         alert("Error adding recipe");
                     }

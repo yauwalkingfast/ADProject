@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static MoreLinq.Extensions.DistinctByExtension;
 
 namespace ADProject.Service
 {
@@ -47,18 +48,26 @@ namespace ADProject.Service
                     .ThenInclude(ug => ug.User)
                     .FirstOrDefaultAsync(g => g.GroupId == id);
 
+                var newUsersGroup = await this.CheckUsernameExistEditVer(group.UsersGroups, id);
+
                 _context.GroupTags.RemoveRange(dbGroup.GroupTags);
                 _context.RecipeGroups.RemoveRange(dbGroup.RecipeGroups);
                 _context.UsersGroups.RemoveRange(dbGroup.UsersGroups);
 
                 dbGroup.GroupName = group.GroupName;
-                dbGroup.GroupPhoto = group.GroupPhoto;
+
+                if(group.GroupPhoto != "")
+
+                {
+                    dbGroup.GroupPhoto = group.GroupPhoto;
+                }
+
                 dbGroup.Description = group.Description;
                 dbGroup.IsPublished = group.IsPublished;
                 dbGroup.RecipeGroups = group.RecipeGroups;
 
                 dbGroup.GroupTags = await this.CheckTagsDatabase(group.GroupTags);
-                dbGroup.UsersGroups = await this.CheckUsernameExist(group.UsersGroups);
+                dbGroup.UsersGroups = newUsersGroup;
 
                 await _context.SaveChangesAsync();
                 return true;
@@ -81,15 +90,60 @@ namespace ADProject.Service
                 .ToListAsync();
         }
 
+        public async Task<IQueryable<Group>> GetAllGroupsQueryable()
+        {
+            var groups = await this.GetAllGroups();
+            return groups.AsQueryable();
+        }
+
+        public async Task<IQueryable<UsersGroup>> GetMyGroups(int id)
+        {
+            return _context.UsersGroups
+                .Where(ug => ug.UserId == id)
+                .Include(ug => ug.Group)
+                .ThenInclude(g => g.GroupTags)
+                .ThenInclude(gt => gt.Tag)
+                .Include(ug => ug.User)
+                .AsQueryable();
+        }
+
+        public async Task<IQueryable<UsersGroup>> GetMyGroupsSearch(int id, string search)
+        {
+            var myGroups = await this.GetMyGroups(id);
+            return myGroups.Where(ug =>
+                ug.Group.GroupName.Contains(search) ||
+                ug.Group.Description.Contains(search) ||
+                ug.Group.GroupTags.Any(gt => gt.Tag.TagName.Contains(search)));
+        }
+
+        //TODO: Refactor this if there is time as it is really slow
         public async Task<Group> GetGroupById(int? id)
         {
             return await _context.Groups
                 .Include(g => g.GroupTags)
                 .ThenInclude(gt => gt.Tag)
+
                 .Include(g => g.RecipeGroups)
                 .ThenInclude(rg => rg.Recipe)
+                .ThenInclude(r => r.RecipeTags)
+                .ThenInclude(rt => rt.Tag)
+                
+                .Include(g => g.RecipeGroups)
+                .ThenInclude(rg => rg.Recipe)
+                .ThenInclude(r => r.RecipeIngredients)
+
+                .Include(g => g.RecipeGroups)
+                .ThenInclude(rg => rg.Recipe)
+                .ThenInclude(r => r.SavedRecipes)
+                .ThenInclude(sr => sr.User)
+
+                .Include(g => g.RecipeGroups)
+                .ThenInclude(rg => rg.Recipe)
+                .ThenInclude(r => r.User)
+
                 .Include(g => g.UsersGroups)
                 .ThenInclude(ug => ug.User)
+
                 .FirstOrDefaultAsync(g => g.GroupId == id);
         }
 
@@ -142,6 +196,14 @@ namespace ADProject.Service
             return gList;
 
         }
+
+
+        public async Task<IQueryable<Group>> GetAllGroupsSearchQueryable(string search)
+        {
+            var groups = await this.GetAllGroupsSearch(search);
+            return groups.AsQueryable();
+        }
+
         // Check if the username exist in database
         private async Task<List<UsersGroup>> CheckUsernameExist(List<UsersGroup> usersGroup)
         {
@@ -152,7 +214,11 @@ namespace ADProject.Service
                 if(usersGroup[i].User.UserName != null)
                 {
                     var existUser = await _context.Users.FirstOrDefaultAsync(u => u.UserName.ToLower() == usersGroup[i].User.UserName.ToLower().Trim());
-                    if (existUser != null)
+                    if(existUser != null && usersGroup[i].IsMod == true)
+                    {
+                        foundUsers.Add(usersGroup[i]);
+                    }
+                    else if (existUser != null)
                     {
                         foundUsers.Add(new UsersGroup
                         {
@@ -160,6 +226,43 @@ namespace ADProject.Service
                             UserId = existUser.UserId,
                             IsMod = false
                         });
+                    }
+                }
+            }
+
+            return foundUsers.DistinctBy(u => u.User.Id).ToList();
+        }
+
+        private async Task<List<UsersGroup>> CheckUsernameExistEditVer(List<UsersGroup> inputUsersGroup, int groupId)
+        {
+            List<UsersGroup> foundUsers = new List<UsersGroup>();
+            List<UsersGroup> usersGroup = inputUsersGroup.DistinctBy(u => u.User.UserName).ToList();
+
+            for (int i = 0; i < usersGroup.Count; i++)
+            {
+                if (usersGroup[i].User.UserName != null)
+                {
+                    var existUser = await _context.Users.FirstOrDefaultAsync(u => u.UserName.ToLower() == usersGroup[i].User.UserName.ToLower().Trim());
+                    if (existUser != null)
+                    {
+                        if (await this.IsGroupAdmin(groupId, existUser.UserName) == true)
+                        {
+                            foundUsers.Add(new UsersGroup
+                            {
+                                UserId = existUser.Id,
+                                User = existUser,
+                                IsMod = true,
+                            });
+                        }
+                        else
+                        {
+                            foundUsers.Add(new UsersGroup
+                            {
+                                UserId = existUser.Id,
+                                User = existUser,
+                                IsMod = false,
+                            });
+                        }
                     }
                 }
             }
@@ -187,7 +290,181 @@ namespace ADProject.Service
                 }
             }
 
-            return groupTags.FindAll(gt => gt.Tag.TagName != null);
+            return groupTags.FindAll(gt => gt.Tag.TagName != null).DistinctBy(gt => gt.Tag.TagName).ToList();
         }
+
+
+        public async Task<Group> AddGroupAD(Group group)
+        {
+            //group.UsersGroups = await this.CheckUsernameExist(group.UsersGroups.ToList());
+            group.GroupTags = await this.CheckTagsDatabase(group.GroupTags.ToList());
+            _context.Add(group);
+            var saveResult = await _context.SaveChangesAsync();
+
+            Group rg = _context.Groups.Where(x => x.GroupName == group.GroupName).FirstOrDefault();
+
+            return rg;
+            
+        }
+
+        public List<Group> UserInGroups(int userId)
+        {
+            List<Group> groups = _context.UsersGroups
+                .Where(ug => ug.User.Id == userId)
+                .Select(ug => ug.Group)
+                .ToList();
+
+            return groups;
+        }
+
+        public List<Group> RecipeInGroups(int recipeId)
+        {
+            List<Group> groups = _context.RecipeGroups
+                .Where(ug => ug.Recipe.RecipeId == recipeId)
+                .Select(ug => ug.Group)
+                .ToList();
+
+            return groups;
+        }
+
+        public async Task<bool> PostRecipes(List<Group> groups, int recipeId)
+        {
+            foreach (Group g in groups)
+            {
+                RecipeGroup rg = new RecipeGroup
+                {
+                    GroupId = g.GroupId,
+                    RecipeId = recipeId
+                };
+
+                _context.Add(rg);
+
+            }
+
+            var saveResult = await _context.SaveChangesAsync();
+            return saveResult >= 1;
+        }
+
+
+        public async Task<bool> IsGroupAdmin(int? groupId, string username)
+        {
+            if(groupId == null)
+            {
+                return false;
+            }
+
+            var group = await _context.Groups
+                .Include(g => g.UsersGroups)
+                .ThenInclude(ug => ug.User)
+                .FirstOrDefaultAsync(g => g.GroupId == groupId);
+
+            if(group == null)
+            {
+                return false;
+            }
+
+            foreach(var ug in group.UsersGroups)
+            {
+                if (ug.User.UserName.Equals(username) && ug.IsMod == true)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public async Task<bool> IsGroupMember(int? groupId, string username)
+        {
+            if (groupId == null)
+            {
+                return false;
+            }
+
+            var group = await _context.Groups
+                .Include(g => g.UsersGroups)
+                .ThenInclude(ug => ug.User)
+                .FirstOrDefaultAsync(g => g.GroupId == groupId);
+
+            if (group == null)
+            {
+                return false;
+            }
+
+            foreach (var ug in group.UsersGroups)
+            {
+                if (ug.User.UserName.Equals(username))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public async Task<bool> JoinGroupWebVer(int? groupId, string username)
+        {
+            if (groupId == null || username == null)
+            {
+                return false;
+            }
+
+            var group = await _context.Groups
+                .Include(g => g.UsersGroups)
+                .ThenInclude(ug => ug.User)
+                .FirstOrDefaultAsync(g => g.GroupId == groupId);
+
+            if (group == null)
+            {
+                return false;
+            }
+
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserName.Equals(username));
+
+            if(user == null || await this.IsGroupMember(groupId, username))
+            {
+                return false;
+            }
+
+            try
+            {
+                group.UsersGroups.Add(new UsersGroup
+                {
+                    UserId = user.Id,
+                    GroupId = group.GroupId,
+                    User = user,
+                    Group = group,
+                    IsMod = false
+                });
+
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public async Task<bool> LeaveGroupWebVer(int? groupId, string username)
+        {
+            if(groupId == null || username == null || !await this.IsGroupMember(groupId, username))
+            {
+                return false;
+            }
+
+            var usergroup = await _context.UsersGroups.FirstOrDefaultAsync(ug => ug.User.UserName == username && ug.GroupId == groupId);
+
+            if(usergroup == null)
+            {
+                return false;
+            }
+
+            _context.UsersGroups.Remove(usergroup);
+            var success = await _context.SaveChangesAsync();
+            return success >= 1;
+        }
+
     }
 }

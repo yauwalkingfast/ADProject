@@ -2,6 +2,7 @@ using ADProject.Data;
 using ADProject.DbSeeder;
 using ADProject.Models;
 using ADProject.Service;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -37,11 +38,20 @@ namespace ADProject
                             options.UseSqlServer(
                                 Configuration.GetConnectionString("DefaultConnection")));*/
 
+            services.AddAuthentication()
+                .AddGoogle(options =>
+                {
+                    options.ClientId = "285372488193-u1s12juncblkh0n3en9fk26q8ei6r2sa.apps.googleusercontent.com";
+                    options.ClientSecret = "CN0pBpWFi9oxLVKEclKockDV";
+                });
+                
+
             services.AddDbContext<ADProjContext>(options =>
-                options.UseSqlServer(Environment.GetEnvironmentVariable("DB_CONNECTION_STRING", EnvironmentVariableTarget.User))); 
+                options.UseSqlServer(Environment.GetEnvironmentVariable("DB_CONNECTION_STRING", EnvironmentVariableTarget.User)));
 
+            services.AddRazorPages();
 
-             services.AddDatabaseDeveloperPageExceptionFilter();
+            services.AddDatabaseDeveloperPageExceptionFilter();
 
             /*services.AddDefaultIdentity<IdentityUser<int>>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ADProjContext>();*/
@@ -49,18 +59,25 @@ namespace ADProject
             //This configures identity to work with the database, uses applicationrole class to manage perms.
             //Point ASPNETCOREIDENTITY to the context.
 
-            services.AddIdentity<ApplicationUser, ApplicationRole>()
+            services.AddIdentity<ApplicationUser, ApplicationRole>(options => {
+                options.SignIn.RequireConfirmedAccount = false;
+                options.User.RequireUniqueEmail = true;
+            })
                 .AddDefaultUI()
                 .AddRoles<ApplicationRole>()
                 .AddRoleManager <RoleManager<ApplicationRole>>()
                 .AddEntityFrameworkStores<ADProjContext>()
                 .AddDefaultTokenProviders();
 
-            services.AddControllersWithViews();
+            services.AddControllersWithViews()
+                .AddRazorRuntimeCompilation();
+
+
             //This DI cannot use singleton because it couldnt scope another DI DBContext
             services.AddScoped<IRecipeService, RecipeService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IGroupService, GroupService>();
+            services.AddScoped<ICommentService, CommentService>();
 
             // This is to handle reference loop situation when returning Json from async method
             // in API controller
@@ -83,7 +100,7 @@ namespace ADProject
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ADProjContext db)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ADProjContext db, UserManager<ApplicationUser> um)
         {
             if (env.IsDevelopment())
             {
@@ -101,7 +118,7 @@ namespace ADProject
 
             db.Database.EnsureDeleted();
             db.Database.EnsureCreated();
-            new DbSeedData(db).Init();
+            new DbSeedData(db, um).Init();
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

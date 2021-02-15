@@ -1,9 +1,11 @@
 ﻿using ADProject.Models;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using BC = BCrypt.Net.BCrypt;
 
 namespace ADProject.DbSeeder
 {
@@ -11,9 +13,12 @@ namespace ADProject.DbSeeder
     {
         private readonly ADProjContext db;
 
-        public DbSeedData(ADProjContext db)
+        private readonly UserManager<ApplicationUser> _userManager;
+
+        public DbSeedData(ADProjContext db, UserManager<ApplicationUser> _userManager)
         {
             this.db = db;
+            this._userManager = _userManager;
         }
 
         public void Init()
@@ -22,6 +27,268 @@ namespace ADProject.DbSeeder
             AddTags();
             AddGroups();
             AddUsers();
+
+            // Use this version to test authentication
+            AddUsersVer2();
+            AddRecipesVer2();
+            AddGroupsVer2();
+        }
+
+        protected void AddGroupsVer2()
+        {
+            ApplicationUser user1 = db.Users.FirstOrDefault(user => user.NormalizedUserName.Equals("AK"));
+            ApplicationUser user2 = db.Users.FirstOrDefault(user => user.NormalizedUserName.Equals("HM"));
+
+            List<UsersGroup> ug = new List<UsersGroup>();
+            ug.Add(new UsersGroup
+            {
+                UserId = user1.Id,
+                IsMod = true,
+                User = user1
+            });
+            ug.Add(new UsersGroup
+            {
+                UserId = user2.Id,
+                IsMod = false,
+                User = user2
+            });
+
+            db.Groups.Add(new Group
+            {
+                GroupName = "Hololive Official",
+                GroupPhoto = "https://user-images.strikinglycdn.com/res/hrscywv4p/image/upload/c_limit,fl_lossy,h_9000,w_1200,f_auto,q_auto/1369026/124086_244660.png",
+                Description = "Official hololive group",
+                DateCreated = new DateTime(2008, 5, 1, 8, 30, 52),
+                IsPublished = true,
+                UsersGroups = ug
+            });
+
+            db.SaveChanges();
+        }
+
+        protected void AddRecipesVer2()
+        {
+            ApplicationUser u1 = new ApplicationUser
+            {
+                FirstName = "Akai",
+                LastName = "Haato",
+                UserName = "ak",
+                NormalizedUserName = "ak".ToUpper(),
+                Email = "ak@email.com",
+                NormalizedEmail = "ak@email.com".ToUpper(),
+                IsAdmin = true,
+            };
+
+            u1.PasswordHash = _userManager.PasswordHasher.HashPassword(u1, "12345");
+            u1.SecurityStamp = _userManager.CreateSecurityTokenAsync(u1).ToString();
+
+            db.Users.Add(u1);
+            db.SaveChanges();
+
+            ApplicationUser user = db.Users.FirstOrDefault(user => user.NormalizedUserName.Equals("AK"));
+
+            List<RecipeIngredient> recipeIngredient = new List<RecipeIngredient>();
+
+            recipeIngredient.Add(new RecipeIngredient
+            {
+                Ingredient = "4 large eggs, room temperature",
+                Quantity = 100,
+                UnitOfMeasurement = "ml"
+            });
+
+            recipeIngredient.Add(new RecipeIngredient
+            {
+                Ingredient = "2 cups sugar",
+                Quantity = 100,
+                UnitOfMeasurement = "ml"
+            });
+
+            recipeIngredient.Add(new RecipeIngredient
+            {
+                Ingredient = "1 teaspoon vanilla extract",
+                Quantity = 100,
+                UnitOfMeasurement = "ml"
+            });
+
+            recipeIngredient.Add(new RecipeIngredient
+            {
+                Ingredient = "2-1/4 cups all purpose flour",
+                Quantity = 100,
+                UnitOfMeasurement = "ml"
+            });
+
+            recipeIngredient.Add(new RecipeIngredient
+            {
+                Ingredient = "2-1/4 teaspoons baking powder",
+                Quantity = 100,
+                UnitOfMeasurement = "ml"
+            });
+
+            recipeIngredient.Add(new RecipeIngredient
+            {
+                Ingredient = "1-1/4 cups 2% milk",
+                Quantity = 100,
+                UnitOfMeasurement = "ml"
+            });
+
+            recipeIngredient.Add(new RecipeIngredient
+            {
+                Ingredient = "10 tablespoons butter, cubed",
+                Quantity = 100,
+                UnitOfMeasurement = "ml"
+            });
+
+            List<RecipeStep> recipeSteps = new List<RecipeStep>();
+            recipeSteps.Add(new RecipeStep
+            {
+                StepNumber = 1,
+                TextInstructions = "mix chocolate with milk",
+                MediaFileUrl = "https://www.wikihow.com/images/thumb/f/ff/Make-a-Simple-Chocolate-Cake-Step-3-Version-3.jpg/aid1334248-v4-728px-Make-a-Simple-Chocolate-Cake-Step-3-Version-3.jpg"
+            });
+            recipeSteps.Add(new RecipeStep
+            {
+                StepNumber = 2,
+                TextInstructions = "put in oven",
+                MediaFileUrl = "https://www.deliciousmagazine.co.uk/wp-content/uploads/2018/09/321197-1-eng-GB_4469.jpg"
+            });
+
+            List<RecipeTag> recipeTag = new List<RecipeTag>();
+            recipeTag.Add(new RecipeTag
+            {
+                IsAllergenTag = true,
+                Tag = new Tag
+                {
+                    TagName = "Milk",
+                    Warning = "Lactose Intolerence"
+                }
+            });
+            recipeTag.Add(new RecipeTag
+            {
+                IsAllergenTag = false,
+                Tag = new Tag
+                {
+                    TagName = "Cake",
+                    Warning = ""
+                }
+            });
+            recipeTag.Add(new RecipeTag
+            {
+                IsAllergenTag = false,
+                Tag = new Tag
+                {
+                    TagName = "Dessert",
+                    Warning = ""
+                }
+            });
+
+            List<Comment> comments = new List<Comment>();
+            comments.Add(new Comment
+            {
+                UserId = user.Id,
+                User = user,
+                Dateposted = new DateTime(2008, 5, 1, 8, 30, 52),
+                Comment1 = "I comment my own recipe"
+            });
+            comments.Add(new Comment
+            {
+                UserId = user.Id,
+                User = user,
+                Dateposted = new DateTime(2008, 5, 1, 8, 30, 52),
+                Comment1 = "because I am so lonely"
+            });
+            comments.Add(new Comment
+            {
+                UserId = user.Id,
+                User = user,
+                Dateposted = new DateTime(2008, 5, 1, 8, 30, 52),
+                Comment1 = "ownself praise ownself"
+            });
+
+
+            db.Recipes.Add(new Recipe
+            {
+                UserId = user.Id,
+                Title = "I am lazy",
+                Description = "So I just copy paste",
+                DateCreated = new DateTime(2008, 5, 1, 8, 30, 52),
+                DurationInMins = 60,
+                Calories = 500,
+                IsPublished = true,
+                MainMediaUrl = "https://th.bing.com/th/id/OIP.P70fg98tIgi-8b-pMMhZXAHaFj?pid=Api&rs=1",
+                RecipeIngredients = recipeIngredient,
+                RecipeSteps = recipeSteps,
+                RecipeTags = recipeTag,
+                Comments = comments,
+            });
+
+            db.Recipes.Add(new Recipe
+            {
+                UserId = user.Id,
+                Title = "I just copy paste",
+                Description = "Beacuse i am efficient",
+                DateCreated = new DateTime(2008, 5, 1, 8, 30, 52),
+                DurationInMins = 60,
+                Calories = 500,
+                IsPublished = true,
+                MainMediaUrl = "https://th.bing.com/th/id/OIP.P70fg98tIgi-8b-pMMhZXAHaFj?pid=Api&rs=1",
+                RecipeIngredients = recipeIngredient,
+                RecipeSteps = recipeSteps,
+                RecipeTags = recipeTag,
+                Comments = comments
+            });
+
+            db.SaveChanges();
+        }
+
+        protected void AddUsersVer2()
+        {
+            ApplicationUser u1 = new ApplicationUser
+            {
+                FirstName = "Yuen Kwan",
+                LastName = "Chia",
+                UserName = "yk",
+                NormalizedUserName = "yk".ToUpper(),
+                Email = "yk@email.com",
+                NormalizedEmail = "yk@email.com".ToUpper(),
+                IsAdmin = true,
+            };
+
+            u1.PasswordHash = _userManager.PasswordHasher.HashPassword(u1, "12345");
+            u1.SecurityStamp = _userManager.CreateSecurityTokenAsync(u1).ToString();
+            db.Users.Add(u1);
+
+            ApplicationUser u2 = new ApplicationUser
+            {
+                FirstName = "Amelia",
+                LastName = "Watson",
+                UserName = "aw",
+                NormalizedUserName = "aw".ToUpper(),
+                Email = "aw@email.com",
+                NormalizedEmail = "aw@email.com".ToUpper(),
+                IsAdmin = true,
+            };
+
+            u2.PasswordHash = _userManager.PasswordHasher.HashPassword(u2, "12345");
+            u2.SecurityStamp = _userManager.CreateSecurityTokenAsync(u2).ToString();
+            db.Users.Add(u2);
+
+            ApplicationUser u3 = new ApplicationUser
+            {
+                FirstName = "Honshou",
+                LastName = "Marine",
+                UserName = "hm",
+                NormalizedUserName = "hm".ToUpper(),
+                Email = "hm@email.com",
+                NormalizedEmail = "hm@email.com".ToUpper(),
+                IsAdmin = true,
+            };
+
+            u3.PasswordHash = _userManager.PasswordHasher.HashPassword(u3, "12345");
+            u3.SecurityStamp = _userManager.CreateSecurityTokenAsync(u3).ToString();
+
+            db.Users.Add(u3);
+
+            db.SaveChanges();
         }
 
         protected void AddUsers()
@@ -31,7 +298,9 @@ namespace ADProject.DbSeeder
                 FirstName = "Jackie",
                 LastName = "Chan",
                 UserName = "jc",
-                PasswordHash = "12345",
+                NormalizedUserName = "jc".ToUpper(),
+                NormalizedEmail = "jackie@email.com".ToUpper(),
+                PasswordHash = BC.HashPassword("12345"),
                 Email = "jackie@email.com",
                 IsAdmin = true
             });
@@ -41,7 +310,9 @@ namespace ADProject.DbSeeder
                 FirstName = "Chun Sing",
                 LastName = "Chan",
                 UserName = "ccs",
-                PasswordHash = "12345",
+                NormalizedUserName = "ccs".ToUpper(),
+                NormalizedEmail = "ccs@email.com".ToUpper(),
+                PasswordHash = BC.HashPassword("12345"),
                 Email = "ccs@email.com",
                 IsAdmin = true
             });
@@ -78,8 +349,10 @@ namespace ADProject.DbSeeder
                 FirstName = "Wilson",
                 LastName = "Chan",
                 UserName = "wc",
-                PasswordHash = "12345",
+                NormalizedUserName = "wc".ToUpper(),
+                PasswordHash = BC.HashPassword("12345"),
                 Email = "wilson@email.com",
+                NormalizedEmail = "wilson@email.com".ToUpper(),
                 IsAdmin = true
             });
 
@@ -197,6 +470,7 @@ namespace ADProject.DbSeeder
                     Warning = ""          
                 }
             });
+
             db.Recipes.Add(new Recipe
             {
                 UserId = user.Id,
@@ -239,12 +513,48 @@ namespace ADProject.DbSeeder
                 FirstName = "Tingkai",
                 LastName = "Chua",
                 UserName = "ctk",
-                PasswordHash = "12435",
+                NormalizedEmail = "ctk@email.com".ToUpper(),
+                NormalizedUserName = "ctk".ToUpper(),
+                PasswordHash = BC.HashPassword("12345"),
                 Email = "ctk@email.com",
                 IsAdmin = true
             });
 
             db.SaveChanges();
+
+            List<GroupTag> groupTag = new List<GroupTag>();
+            groupTag.Add(new GroupTag
+            {
+                Tag = new Tag
+                {
+                    TagName = "noodles",
+                    Warning = "noodles"
+                }
+            });
+            groupTag.Add(new GroupTag
+            {
+                Tag = new Tag
+                {
+                    TagName = "rice",
+                    Warning = "rice"
+                }
+            });
+            groupTag.Add(new GroupTag
+            {
+                Tag = new Tag
+                {
+                    TagName = "meat",
+                    Warning = "meat"
+                }
+            });
+            groupTag.Add(new GroupTag
+            {
+                Tag = new Tag
+                {
+                    TagName = "vegan",
+                    Warning = "vegan"
+                }
+            });
 
             db.Groups.Add(new Group
             {
@@ -252,26 +562,33 @@ namespace ADProject.DbSeeder
                 GroupPhoto = "https://user-images.strikinglycdn.com/res/hrscywv4p/image/upload/c_limit,fl_lossy,h_9000,w_1200,f_auto,q_auto/1369026/124086_244660.png",
                 Description = "For all hololive fans",
                 DateCreated = new DateTime(2008, 5, 1, 8, 30, 52),
-                IsPublished = true
+                IsPublished = true,
+                GroupTags = groupTag
             });
+
+            db.SaveChanges();
 
             db.Groups.Add(new Group
             {
-                GroupName = "Esther's fan club",
-                GroupPhoto = "somephoto",
+                GroupName = "Esther's fan club (Enjoy a picture of bandori, <3)",
+                GroupPhoto = "https://pbs.twimg.com/media/Dki21sEU4AAKlB-?format=jpg&name=medium",
                 Description = "Yuen Kwan is her no.1 fan",
                 DateCreated = new DateTime(2018, 5, 1, 8, 30, 52),
-                IsPublished = true
+                IsPublished = true,
+                GroupTags = groupTag
             });
 
             db.Groups.Add(new Group
             {
-                GroupName = "test",
-                GroupPhoto = "somephoto",
+                GroupName = "Love Live",
+                GroupPhoto = "https://static.gojinshi.com/wp-content/uploads/2020/07/Love-Live-School-Idol-Project-Watch-Order-Guide.jpg",
                 Description = "test",
                 DateCreated = new DateTime(2018, 5, 1, 8, 30, 52),
-                IsPublished = true
+                IsPublished = true,
+                GroupTags = groupTag
             });
+
+            db.SaveChanges();
 
             db.Groups.Add(new Group
             {
@@ -279,8 +596,8 @@ namespace ADProject.DbSeeder
                 GroupPhoto = "https://www.justonecookbook.com/wp-content/uploads/2017/07/Spicy-Shoyu-Ramen-NEW-500x400.jpg",
                 Description = "Shoyu, Tonkotsu and Shio is our holy trinity",
                 DateCreated = new DateTime(2008, 5, 15, 8, 30, 52),
-                IsPublished = true
-
+                IsPublished = true,
+                GroupTags = groupTag
             });
 
             db.Groups.Add(new Group
@@ -289,8 +606,8 @@ namespace ADProject.DbSeeder
                 GroupPhoto = "https://d3e8d6e8.rocketcdn.me/wp-content/uploads/2018/11/South-Indian-Chicken-Curry-3-of-5.jpg",
                 Description = "Let the aroma soak up our senses",
                 DateCreated = new DateTime(2010, 5, 15, 8, 30, 52),
-                IsPublished = true
-
+                IsPublished = true,
+                GroupTags = groupTag
             });
 
             db.Groups.Add(new Group
@@ -299,8 +616,8 @@ namespace ADProject.DbSeeder
                 GroupPhoto = "https://christieathome.com/wp-content/uploads/2020/12/Jajangmyeon3-scaled.jpg",
                 Description = "Oppa Saranghae",
                 DateCreated = new DateTime(2012, 5, 15, 8, 30, 52),
-                IsPublished = true
-
+                IsPublished = true,
+                GroupTags = groupTag
             });
 
             db.SaveChanges();
@@ -334,7 +651,7 @@ namespace ADProject.DbSeeder
 
             db.RecipeGroups.Add(new RecipeGroup
             {
-                GroupId = 4,
+                GroupId = 3,
                 RecipeId = 1
             });
 

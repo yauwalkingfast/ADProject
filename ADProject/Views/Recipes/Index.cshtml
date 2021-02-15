@@ -1,174 +1,171 @@
-﻿@model IEnumerable<ADProject.Models.Recipe>
+﻿@*@model IEnumerable<ADProject.Models.Recipe>
+*@
 
 @{
     ViewData["Title"] = "Index";
+
+    PaginatedList<Recipe> paginatedList = (PaginatedList<Recipe>)ViewData["paginatedList"];
+    var prevDisabled = !paginatedList.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !paginatedList.HasNextPage ? "disabled" : "";
 }
-<h1>My Recipes</h1>
-@*<h1>Index</h1>*@
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+<link href="~/css/RecipeDetail.css" rel="stylesheet" type="text/css" />
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DateCreated)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DurationInMins)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Calories)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ServingSize)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsPublished)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.MainMediaUrl)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.User)
-            </th>
-            <th>
-                Steps
-            </th>
-            <th>
-                Ingredients
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
+<div class="row justify-content-center">
+    <div class="col-sm-12">
+        <div class="border">
+            <div class="display-flex-center">
+                <h1>Recipes</h1>
+            </div>
+            <div class="display-flex-end">
+                <form id="search-form" asp-controller="Recipes" asp-action="Index" method="get">
+                    <div class="form-group form-inline">
+                        <input class="form-control" type="text" placeholder="Search Recipe.." name="search" value="@ViewData["search"]">
+                        <button type="submit" class="btn ml-1"><i class="fa fa-search"></i></button>
+                    </div>
+                </form>
+            </div>
+            <div class="display-flex-end">
+                <a asp-controller="Recipes" asp-action="Create" asp-route-gobackurl="Recipes">Create New Recipe</a>
+            </div>
+        </div>
+
+        @foreach(var recipe in paginatedList)
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Title)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Description)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.DateCreated)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.DurationInMins)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Calories)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ServingSize)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.IsPublished)
-                </td>
-                <td>
-                    <img src=@item.MainMediaUrl alt="a description of the image" width="100px">
-                    @* @Html.DisplayFor(modelItem => item.MainMediaUrl)*@
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.User.Email)
-                </td>
-                <td>
-                    <ul>
-                        @foreach (var step in item.RecipeSteps)
-                        {
-                            <li>
-                                <div>
-                                    @step.StepNumber
+            <div class="row my-4 justify-content-center">
+                <div class="col-sm-10">
+                    <div class="row mb-2">
+                        <div class="col-sm-1">
+                            <i style='font-size:50px' class='fa fa-user'></i>
+                        </div>
+                        <div class="col-sm-11">
+                            <div class="row">
+                                <div class="col-sm">
+                                    <b>@recipe.User.UserName</b> posted a recipe
                                 </div>
-                                <div>
-                                    <img src=@step.MediaFileUrl alt="a description of the image" width="100px">
-                                </div>
-                                <div>
-                                    @step.TextInstructions
-                                </div>
-
-                            </li>
-                        }
-                    </ul>
-                </td>
-                <td>
-                    <ul>
-                        @foreach (var ingredient in item.RecipeIngredients)
-                        {
-                            <li>
-                                <div>
-                                    @ingredient.Ingredient
-                                </div>
-                            </li>
-                        }
-                    </ul>
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.RecipeId">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.RecipeId">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.RecipeId">Delete</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
-@*
-
-    @foreach (var item in Model)
-    {
-    <h2> @Html.DisplayFor(modelItem => item.Title)</h2>
-    <table>
-        <tr>
-            <td>
-                <img src=@item.MainMediaUrl alt="a description of the image" width="400px">
-            </td>
-            <td>
-                <h3>Ingredients</h3>
-                <p> for @Html.DisplayFor(modelItem => item.ServingSize) serving</p>
-                <ul>
-                    @foreach (var ingredient in item.RecipeIngredients)
-                    {
-                        <li>
-                            <div>
-                                @ingredient.Ingredient
                             </div>
-                        </li>
-                    }
-                </ul>
-                <p> Calories: @Html.DisplayFor(modelItem => item.Calories)</p>
-                <p>  @Html.DisplayFor(modelItem => item.DurationInMins) minutes</p>
-                <p> Alergen Tag</p>
-                <a>Add to try Later</a>
-            </td>
-        </tr>
-    </table>
-    <h3>Method</h3>
-    <ul>
-        @foreach (var step in item.RecipeSteps)
-        {
-            <li>
-                 <div>
-                    @step.StepNumber
+                            <div class="row">
+                                <div class="col-sm">
+                                    <h3><b>@recipe.Title</b> </h3>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm">
+                                    Tags:
+                                    @foreach (var tag in recipe.RecipeTags)
+                                    {
+                                        if (tag.IsAllergenTag == false)
+                                        {
+                                            <span>#</span>@tag.Tag.TagName<span> </span>
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <img class="recipe-image" src="@recipe.MainMediaUrl" alt="recipe main image" />
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="row">
+                                <div class="col-sm">
+                                    <h5>Ingredients</h5>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm">
+                                    <p>for @recipe.ServingSize serving</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm">
+                                    <ul>
+                                        @for (int i = 0; i < 3 && i < recipe.RecipeIngredients.Count(); i++)
+                                        {
+                                            <li>@recipe.RecipeIngredients[i].Quantity @recipe.RecipeIngredients[i].UnitOfMeasurement of @recipe.RecipeIngredients[i].Ingredient</li>
+                                        }
+                                        <li><a asp-action="Details" asp-route-gobackurl="Recipes" asp-route-id="@recipe.RecipeId">See All</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm">
+                                    @foreach (var allergen in recipe.RecipeTags)
+                                    {
+                                        if (allergen.IsAllergenTag == true)
+                                        {
+                                            <div class="row mb-2">
+                                                <div class="col-sm-1">
+                                                    <i style='font-size:24px' class='fa fa-exclamation-triangle'></i>
+                                                </div>
+                                                <div class="col-sm-11">
+                                                    Warning: Contains @allergen.Tag.Warning
+                                                </div>
+                                            </div>
+                                            break;
+                                        }
+                                    }
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-sm">
+                                    Calories: @recipe.Calories kcal
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-sm-1">
+                                    <i style='font-size:24px' class='fa fa-clock-o mr-3'></i>
+                                </div>
+                                <div class="col-sm-11">
+                                    @recipe.DurationInMins minutes
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-sm">
+                                    @if (recipe.User.UserName != User.Identity.Name)
+                                    {
+                                        if (recipe.SavedRecipes.Any(sr => sr.User.UserName.Equals(User.Identity.Name) && sr.RecipeId == recipe.RecipeId))
+                                        {
+                                            <a asp-action="RemoveRecipe" asp-route-gobackurl="Recipes/Index/@ViewData["search"]" asp-route-id="@recipe.RecipeId">Remove Recipe</a>
+                                        }
+                                        else
+                                        {
+                                            <a asp-action="SaveRecipe" asp-route-gobackurl="Recipes/Index/@ViewData["search"]" asp-route-id="@recipe.RecipeId">Save Recipe</a>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <a asp-action="Edit" asp-route-gobackurl="Recipes/Index" asp-route-id="@recipe.RecipeId">Edit</a>
+                                        <br />
+                                        <a asp-action="Delete" asp-route-gobackurl="Recipes/Index/@ViewData["search"]" asp-route-id="@recipe.RecipeId">Delete</a>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <img src=@step.MediaFileUrl alt="a description of the image" width="400px">
-                </div>
-                <div>
-                    @step.TextInstructions
-                </div>
-
-            </li>
+            </div>
         }
-    </ul>
-    <a asp-action="Edit" asp-route-id="@item.RecipeId">Edit</a>
-    <a asp-action="Details" asp-route-id="@item.RecipeId">Details</a>
-    <a asp-action="Delete" asp-route-id="@item.RecipeId">Delete</a>
-        }*@
+
+        <div class="row">
+            <div class="col-sm">
+                <a asp-controller="Recipes"
+                   asp-action="Index"
+                   asp-route-pageNumber="@(paginatedList.PageIndex - 1)"
+                   asp-route-search="@ViewData["search"]"
+                   class="btn btn-default @prevDisabled">
+                    Previous
+                </a>
+
+                <a asp-controller="Recipes"
+                   asp-action="Index"
+                   asp-route-pageNumber="@(paginatedList.PageIndex + 1)"
+                   asp-route-search="@ViewData["search"]"
+                   class="btn btn-default @nextDisabled">
+                    Next
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
