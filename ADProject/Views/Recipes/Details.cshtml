@@ -23,7 +23,11 @@
                 <span style="font-size: 32px" class="ml-2">@Model.User.UserName</span>
             </div>
             <div class="col-sm">
-                Featured in: Tribe name
+                Featured in: 
+                @foreach(var recipeGroups in Model.RecipeGroups)
+                {
+                    <span>@recipeGroups.Group.GroupName </span>
+                }
             </div>
             <div class="col-sm">
                 Tags:
