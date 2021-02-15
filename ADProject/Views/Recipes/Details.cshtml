@@ -23,10 +23,10 @@
                 <span style="font-size: 32px" class="ml-2">@Model.User.UserName</span>
             </div>
             <div class="col-sm">
-                Featured in:
-                @foreach(var group in Model.RecipeGroups)
+                Featured in: 
+                @foreach(var recipeGroups in Model.RecipeGroups)
                 {
-                    @group.Group.GroupName<span>, </span>
+                    <span>@recipeGroups.Group.GroupName </span>
                 }
             </div>
             <div class="col-sm">

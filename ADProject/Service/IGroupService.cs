@@ -48,5 +48,7 @@ namespace ADProject.Service
         Task<IQueryable<RecipeGroup>> getRecipesGroupByGroupId(int? groupId);
         Task<IQueryable<RecipeGroup>> getRecipesGroupSearchByGroupId(int? groupId, string search);
 
+        Task<bool> IsGroupMemberAD(int groupId, int userId);
+
     }
 }

@@ -45,18 +45,13 @@ namespace ADProject.ApiControllers
 
         [HttpPost]
         //[Route("post")]
-        public async Task<ActionResult<UsersGroup>> JoinGroup([FromBody] UsersGroup ug)
+        public async Task<ActionResult<booleanJson>> JoinGroup([FromBody] UsersGroup ug)
         {
             bool joined = await _usersService.JoinGroup(ug);
 
-            if (joined)
-            {
-                return ug;
-            }
-            else
-            {
-                return NotFound();
-            }
+            booleanJson boolJ = new booleanJson { flag = joined };
+            return boolJ;
+            
 
         }
 
