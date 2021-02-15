@@ -27,7 +27,7 @@ namespace ADProject.Controllers
         }
 
         // GET: Groups
-        public async Task<IActionResult> Index(bool? joingroupfailed)
+        public async Task<IActionResult> Index(bool? joingroupfailed, int? pageNumber, string search)
         {
             if (joingroupfailed == true)
             {
@@ -38,11 +38,23 @@ namespace ADProject.Controllers
                 ViewData["joingroupfailed"] = false;
             }
 
-            return View(await _groupService.GetAllGroups());
+            ViewData["search"] = search;
+            int pageSize = 9;
+            var groupList = await _groupService.GetAllGroupsQueryable();
+            if (!String.IsNullOrEmpty(search))
+            {
+                groupList = await _groupService.GetAllGroupsSearchQueryable(search);
+            }
+
+            PaginatedList<Group> paginatedList = await PaginatedList<Group>.CreateAsync(groupList, pageNumber ?? 1, pageSize);
+
+            ViewData["paginatedList"] = paginatedList;
+
+            return View();
         }
 
         [Authorize]
-        public async Task<IActionResult> Join(int? id)
+        public async Task<IActionResult> Join(int? id, string gobackurl)
         {
             if(id == null)
             {
@@ -51,14 +63,14 @@ namespace ADProject.Controllers
 
             if(await _groupService.JoinGroupWebVer(id, User.Identity.Name))
             {
-                return RedirectToAction("Details", new { id = id });
+                return RedirectToAction("Details", new { id = id, gobackurl = gobackurl });
             }
 
             return RedirectToAction("Index", new { joingroupfailed = true });
         }
 
         [Authorize]
-        public async Task<IActionResult> Leave(int? id)
+        public async Task<IActionResult> Leave(int? id, string gobackurl)
         {
             if(id == null)
             {
@@ -67,18 +79,41 @@ namespace ADProject.Controllers
 
             if(await _groupService.LeaveGroupWebVer(id, User.Identity.Name))
             {
-                return RedirectToAction("Details", new { id = id });
+                if (gobackurl.Contains("UserProfile"))
+                {
+                    var urls = gobackurl.Split("/");
+                    return RedirectToAction("MyGroups", "UserProfile", new { search = urls[2] });
+                }
+                else
+                {
+                    return RedirectToAction(nameof(Index));
+                }
             }
 
             return RedirectToAction("Index");
         }
 
         // GET: Groups/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int? id, string gobackurl)
         {
+
             if (id == null)
             {
                 return NotFound();
+            }
+
+            if (gobackurl.Contains("UserProfile"))
+            {
+                var urls = gobackurl.Split("/");
+                ViewData["Controller"] = "UserProfile";
+                ViewData["Action"] = "MyGroups";
+                ViewData["GoBackId"] = urls[1];
+            }
+            else
+            {
+                ViewData["Controller"] = "Groups";
+                ViewData["Action"] = "Index";
+                ViewData["GoBackId"] = "";
             }
 
             var group = await _groupService.GetGroupById(id);
@@ -93,8 +128,22 @@ namespace ADProject.Controllers
 
         // GET: Groups/Create
         [Authorize]
-        public IActionResult Create()
+        public IActionResult Create(string gobackurl)
         {
+            if (gobackurl.Contains("UserProfile"))
+            {
+                var urls = gobackurl.Split("/");
+                ViewData["Controller"] = "UserProfile";
+                ViewData["Action"] = "MyGroups";
+                ViewData["GoBackId"] = urls[1];
+            }
+            else
+            {
+                ViewData["Controller"] = "Groups";
+                ViewData["Action"] = "Index";
+                ViewData["GoBackId"] = "";
+            }
+
             return View();
         }
 
@@ -138,7 +187,7 @@ namespace ADProject.Controllers
         [Authorize]
         public async Task<IActionResult> UserAutocomplete()
         {
-            var names = await _context.Users.Select(u => u.UserName).ToListAsync();
+            var names = await _context.Users.Where(u => u.UserName != User.Identity.Name).Select(u => u.UserName).ToListAsync();
             return Json(names);
         }
 
@@ -148,7 +197,9 @@ namespace ADProject.Controllers
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("GroupId,GroupName,GroupPicture,Description,DateCreated,IsPublished,GroupTags,UsersGroups")] Group group)
+        public async Task<IActionResult> Create(
+            [Bind("GroupId,GroupName,GroupPicture,Description,DateCreated,IsPublished,GroupTags,UsersGroups")] Group group,
+            string gobackurl)
         {
             if (group.GroupName.Trim() == "" && !ModelState.IsValid)
             {
@@ -159,7 +210,7 @@ namespace ADProject.Controllers
             group.DateCreated = now;
 
             var groupPicture = group.GroupPicture;
-            var groupPhoto = UploadPicture(groupPicture);
+            var groupPhoto = await UploadPicture(groupPicture);
             //group.GroupPhoto = groupPhoto;
             if (groupPhoto.Equals("error"))
             {
@@ -171,6 +222,7 @@ namespace ADProject.Controllers
             }
 
             ApplicationUser superUser = await _userService.GetUserByUsername(User.Identity.Name);
+            group.UsersGroups.RemoveAll(u => u.User.UserName == User.Identity.Name);
             group.UsersGroups.Add(new UsersGroup
             {
                 UserId = superUser.Id,
@@ -179,43 +231,74 @@ namespace ADProject.Controllers
             });
             
             await _groupService.AddGroup(group);
-            return RedirectToAction("Details", new { id = group.GroupId });
+            return RedirectToAction("Details", new { id = group.GroupId, gobackurl = gobackurl });
         }
 
         // It might be better to put this into a service
+        /*        [Authorize]
+                private string UploadPicture(IFormFile file)
+                {
+                    if (file == null)
+                    {
+                        return "notset";
+                    }
+
+                    try
+                    {
+                        string fileName = Guid.NewGuid().ToString() + ".jpg";
+                        string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", fileName);
+                        using (Stream stream = new FileStream(path, FileMode.Create))
+                        {
+                            file.CopyTo(stream);
+                        }
+
+                        string imageUrl = "images/" + fileName;
+                        return imageUrl;
+                    } 
+                    catch
+                    {
+                        return "error";
+                    }
+                }*/
+
         [Authorize]
-        private string UploadPicture(IFormFile file)
+        private async Task<string> UploadPicture(IFormFile file)
         {
             if (file == null)
             {
                 return "notset";
             }
 
-            try
-            {
-                string fileName = Guid.NewGuid().ToString() + ".jpg";
-                string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", fileName);
-                using (Stream stream = new FileStream(path, FileMode.Create))
-                {
-                    file.CopyTo(stream);
-                }
-
-                string imageUrl = "images/" + fileName;
-                return imageUrl;
-            } 
-            catch
+            string imageUrl = await ImageUpload.ImageUpload.UploadImage(file);
+            if(imageUrl == "")
             {
                 return "error";
             }
+
+            return imageUrl;
         }
 
         // GET: Groups/Edit/5
         [Authorize]
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? id, string gobackurl)
         {
             if (id == null)
             {
                 return NotFound();
+            }
+
+            if (gobackurl.Contains("UserProfile"))
+            {
+                var urls = gobackurl.Split("/");
+                ViewData["Controller"] = "UserProfile";
+                ViewData["Action"] = "MyGroups";
+                ViewData["GoBackId"] = urls[1];
+            }
+            else
+            {
+                ViewData["Controller"] = "Groups";
+                ViewData["Action"] = "Index";
+                ViewData["GoBackId"] = "";
             }
 
             var group = await _groupService.GetGroupById(id);
@@ -271,7 +354,9 @@ namespace ADProject.Controllers
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("GroupId,GroupName,GroupPicture,Description,DateCreated,IsPublished, GroupTags, UsersGroups")] Group group)
+        public async Task<IActionResult> Edit(int id, 
+            [Bind("GroupId,GroupName,GroupPicture,Description,DateCreated,IsPublished, GroupTags, UsersGroups")] Group group,
+            string gobackurl)
         {
             if (id != group.GroupId)
             {
@@ -289,7 +374,7 @@ namespace ADProject.Controllers
             }
 
             var groupPicture = group.GroupPicture;
-            var groupPhoto = UploadPicture(groupPicture);
+            var groupPhoto = await UploadPicture(groupPicture);
             if (groupPhoto.Equals("error"))
             {
                 return View(group);
@@ -306,7 +391,7 @@ namespace ADProject.Controllers
 
             if (await _groupService.EditGroup(id, group))
             {
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Details", new { id = id, gobackurl = gobackurl });
             }
 
             return View(group);
@@ -314,11 +399,25 @@ namespace ADProject.Controllers
 
         // GET: Groups/Delete/5
         [Authorize]
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? id, string gobackurl)
         {
             if (id == null)
             {
                 return NotFound();
+            }
+
+            if (gobackurl.Contains("UserProfile"))
+            {
+                var urls = gobackurl.Split("/");
+                ViewData["Controller"] = "UserProfile";
+                ViewData["Action"] = "MyGroups";
+                ViewData["GoBackId"] = urls[1];
+            }
+            else
+            {
+                ViewData["Controller"] = "Groups";
+                ViewData["Action"] = "Index";
+                ViewData["GoBackId"] = "";
             }
 
             var group = await _groupService.GetGroupById(id);
@@ -332,6 +431,8 @@ namespace ADProject.Controllers
                 return RedirectToAction("Details", new { id = id });
             }
 
+            ViewData["gobackurl"] = gobackurl;
+
             return View(@group);
         }
 
@@ -339,7 +440,7 @@ namespace ADProject.Controllers
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id, string gobackurl)
         {
             if (!await _groupService.IsGroupAdmin(id, User.Identity.Name))
             {
@@ -347,10 +448,17 @@ namespace ADProject.Controllers
             }
 
             var successful = await _groupService.DeleteGroup(id);
-            if (successful)
+
+            if(successful && gobackurl.Contains("UserProfile"))
+            {
+                var urls = gobackurl.Split("/");
+                return RedirectToAction("MyGroups", "UserProfile", new { id = urls[1] });
+            }
+            else if (successful)
             {
                 return RedirectToAction(nameof(Index));
             }
+
             return View("Error");
         }
 

@@ -43,7 +43,7 @@ namespace ADProject.Models
 
         [JsonIgnore]
         [InverseProperty(nameof(RecipeGroup.Group))]
-        public virtual IEnumerable<RecipeGroup> RecipeGroups { get; set; }
+        public virtual List<RecipeGroup> RecipeGroups { get; set; }
 
         [InverseProperty(nameof(UsersGroup.Group))]
         public virtual List<UsersGroup> UsersGroups { get; set; }

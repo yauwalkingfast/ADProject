@@ -28,6 +28,7 @@ namespace ADProject.Models
         [ForeignKey(nameof(RecipeId))]
         [InverseProperty("Comments")]
         public virtual Recipe Recipe { get; set; }
+
         [ForeignKey(nameof(UserId))]
         [InverseProperty("Comments")]
         public virtual ApplicationUser User { get; set; }

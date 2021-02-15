@@ -34,27 +34,75 @@ namespace ADProject.Controllers
         }
 
         // GET: Recipes
-        public async Task<IActionResult> Index()
-        {
-            return View(await _recipesService.GetAllRecipes());
-        }
+        /*        public async Task<IActionResult> Index()
+                {
+                    return View(await _recipesService.GetAllRecipes());
+                }*/
 
-        [HttpPost]
-        public async Task<IActionResult> Index([FromForm] String search)
+/*        public async Task<IActionResult> Index(int? pageNumber)
         {
-           
+            var allRecipes = await _recipesService.GetAllRecipesQueryable();
+            int pageSize = 1;
+            var paginatedList = await PaginatedList<Recipe>.CreateAsync(allRecipes, pageNumber ?? 1, pageSize);
+
+            return View(paginatedList);
+        }*/
+
+        /*        [HttpPost]
+                public async Task<IActionResult> Index([FromForm] String search)
+                {
+
+                    if (!String.IsNullOrEmpty(search))
+                    {
+                        return View(await _recipesService.GetAllRecipesSearch(search));
+                    }
+                    else
+
+                        return View(await _recipesService.GetAllRecipes());
+                }*/
+
+        public async Task<IActionResult> Index(int? pageNumber, string search)
+        {
+
+            ViewData["search"] = search;
+            int pageSize = 3;
+            var recipeList = await _recipesService.GetAllRecipesQueryable();
+
             if (!String.IsNullOrEmpty(search))
             {
-                return View(await _recipesService.GetAllRecipesSearch(search));
+                recipeList = await _recipesService.GetAllRecipeSearchQueryable(search);
             }
-            else
-                
-                return View(await _recipesService.GetAllRecipes());
+
+            PaginatedList<Recipe> paginatedList = await PaginatedList<Recipe>.CreateAsync(recipeList, pageNumber ?? 1, pageSize);
+            ViewData["paginatedList"] = paginatedList;
+
+            return View();
         }
 
         // GET: Recipes/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int? id, string gobackurl)
         {
+            if (gobackurl.Contains("Groups"))
+            {
+                var urls = gobackurl.Split("/");
+                ViewData["Controller"] = "Groups";
+                ViewData["Action"] = "Details";
+                ViewData["GoBackId"] = urls[2];
+            }
+            else if (gobackurl.Contains("UserProfile"))
+            {
+                var urls = gobackurl.Split("/");
+                ViewData["Controller"] = "UserProfile";
+                ViewData["Action"] = "Index";
+                ViewData["GoBackId"] = urls[1];
+            } 
+            else
+            {
+                ViewData["Controller"] = "Recipes";
+                ViewData["Action"] = "Index";
+                ViewData["GoBackId"] = "";
+            }
+
             if (id == null)
             {
                 return NotFound();
@@ -72,8 +120,30 @@ namespace ADProject.Controllers
 
         // GET: Recipes/Create
         [Authorize]
-        public IActionResult Create()
+        public IActionResult Create(string gobackurl)
         {
+            if (gobackurl.Contains("Groups"))
+            {
+                var urls = gobackurl.Split("/");
+                ViewData["Controller"] = "Groups";
+                ViewData["Action"] = "Details";
+                ViewData["GoBackId"] = urls[2];
+            }
+            else if (gobackurl.Contains("UserProfile"))
+            {
+                var urls = gobackurl.Split("/");
+                ViewData["Controller"] = "UserProfile";
+                ViewData["Action"] = "Index";
+                ViewData["GoBackId"] = urls[1];
+            }
+            else
+            {
+                ViewData["Controller"] = "Recipes";
+                ViewData["Action"] = "Index";
+                ViewData["GoBackId"] = "";
+            }
+
+            ViewData["gobackurl"] = gobackurl;
             ViewData["UserId"] = _context.Users.FirstOrDefault(u => u.UserName == User.Identity.Name).UserId;
             ViewData["Recipe"] = new Recipe();
             return View();
@@ -93,14 +163,14 @@ namespace ADProject.Controllers
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([FromBody] Recipe recipe)
+        public async Task<IActionResult> Create([FromBody] Recipe recipe, string gobackurl)
         {
             DateTime now = DateTime.Now;
             recipe.DateCreated = now;
 
-            if(await _recipesService.AddRecipe(recipe));
+            if(await _recipesService.AddRecipe(recipe))
             {
-                return Ok(new { id = recipe.RecipeId });
+                return Ok(new { id = recipe.RecipeId, gobackurl = gobackurl });
             }
 
             ViewData["UserId"] = recipe.UserId;
@@ -109,8 +179,29 @@ namespace ADProject.Controllers
 
         // GET: Recipes/Edit/5
         [Authorize]
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? id, string gobackurl)
         {
+            if (gobackurl.Contains("Groups"))
+            {
+                var urls = gobackurl.Split("/");
+                ViewData["Controller"] = "Groups";
+                ViewData["Action"] = "Details";
+                ViewData["GoBackId"] = urls[2];
+            }
+            else if (gobackurl.Contains("UserProfile"))
+            {
+                var urls = gobackurl.Split("/");
+                ViewData["Controller"] = "UserProfile";
+                ViewData["Action"] = "Index";
+                ViewData["GoBackId"] = urls[1];
+            }
+            else
+            {
+                ViewData["Controller"] = "Recipes";
+                ViewData["Action"] = "Index";
+                ViewData["GoBackId"] = "";
+            }
+
             if (id == null)
             {
                 return NotFound();
@@ -125,12 +216,13 @@ namespace ADProject.Controllers
 
             if(!User.Identity.Name.Equals(recipe.User.UserName))
             {
-                return RedirectToAction("Details", new { id = id });
+                return RedirectToAction("Details", new { id = id, gobackurl = gobackurl });
             }
 
             ViewData["UserId"] = _context.Users.FirstOrDefault().UserId;
             string json = JsonConvert.SerializeObject(recipe, Formatting.Indented);
             ViewData["Recipe"] = json;
+            ViewData["gobackurl"] = gobackurl;
 
             return View();
         }
@@ -141,7 +233,7 @@ namespace ADProject.Controllers
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [FromBody] Recipe recipe)
+        public async Task<IActionResult> Edit(int id, [FromBody] Recipe recipe, string gobackurl)
         {
             if (id != recipe.RecipeId)
             {
@@ -155,7 +247,7 @@ namespace ADProject.Controllers
 
             if(await _recipesService.EditRecipe(id, recipe))
             {
-                return Ok(new { id = recipe.RecipeId });
+                return Ok(new { id = recipe.RecipeId, gobackurl = gobackurl });
             }
 
             return NotFound();
@@ -163,24 +255,47 @@ namespace ADProject.Controllers
 
         // GET: Recipes/Delete/5
         [Authorize]
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? id, string gobackurl)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
+            if (gobackurl.Contains("Groups"))
+            {
+                var urls = gobackurl.Split("/");
+                ViewData["Controller"] = "Groups";
+                ViewData["Action"] = "Details";
+                ViewData["GoBackId"] = urls[2];
+            }
+            else if (gobackurl.Contains("UserProfile"))
+            {
+                var urls = gobackurl.Split("/");
+                ViewData["Controller"] = "UserProfile";
+                ViewData["Action"] = "Index";
+                ViewData["GoBackId"] = urls[1];
+            }
+            else
+            {
+                ViewData["Controller"] = "Recipes";
+                ViewData["Action"] = "Index";
+                ViewData["GoBackId"] = "";
+            }
+
             var recipe = await _recipesService.GetRecipeById(id);
 
             if (!User.Identity.Name.Equals(recipe.User.UserName))
             {
-                return RedirectToAction("Details", new { id = id });
+                return RedirectToAction("Details", new { id = id, gobackurl = gobackurl });
             }
 
             if (recipe == null)
             {
                 return NotFound();
             }
+
+            ViewData["gobackurl"] = gobackurl;
 
             return View(recipe);
         }
@@ -189,7 +304,7 @@ namespace ADProject.Controllers
         [HttpPost, ActionName("Delete")]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id, string gobackurl)
         {
             var recipe = await _recipesService.GetRecipeById(id);
 
@@ -199,9 +314,20 @@ namespace ADProject.Controllers
             }
 
             var successful = await _recipesService.DeleteRecipe(id);
-            if (successful)
+            if(successful && gobackurl.Contains("Groups"))
             {
-                return RedirectToAction(nameof(Index));
+                var urls = gobackurl.Split("/");
+                return RedirectToAction("Details", "Groups", new { id = urls[2] });
+            }
+            else if(successful && gobackurl.Contains("UserProfile"))
+            {
+                var urls = gobackurl.Split("/");
+                return RedirectToAction("Index", "UserProfile", new { id = urls[1] });
+            }
+            else if (successful)
+            {
+                var urls = gobackurl.Split("/");
+                return RedirectToAction(nameof(Index), new { search = urls[2] });
             }
 
             return View("Error");
@@ -209,7 +335,7 @@ namespace ADProject.Controllers
         }
 
         [Authorize]
-        public async Task<IActionResult> SaveRecipe(int? id)
+        public async Task<IActionResult> SaveRecipe(int? id, string gobackurl)
         {
             if(id == null)
             {
@@ -220,14 +346,22 @@ namespace ADProject.Controllers
 
             if(await _recipesService.SaveRecipe(recipeId, User.Identity.Name))
             {
-                return RedirectToAction("Details", new { id = id });
+                if (gobackurl.Contains("Details"))
+                {
+                    return RedirectToAction("Details", new { id = id, gobackurl = gobackurl });
+                }
+                else
+                {
+                    var urls = gobackurl.Split("/");
+                    return RedirectToAction(nameof(Index), new { search = urls[2] });
+                }
             }
 
             return RedirectToAction("Index");
         }
 
         [Authorize]
-        public async Task<IActionResult> RemoveRecipe(int? id)
+        public async Task<IActionResult> RemoveRecipe(int? id, string gobackurl)
         {
             if(id == null)
             {
@@ -238,7 +372,19 @@ namespace ADProject.Controllers
 
             if(await _recipesService.RemoveRecipe(recipeId, User.Identity.Name))
             {
-                return RedirectToAction("Index");
+                if (gobackurl.Contains("SavedRecipes"))
+                {
+                    return RedirectToAction("SavedRecipes", "UserProfile");
+                }
+                else if(gobackurl.Contains("Details"))
+                {
+                    return RedirectToAction("Details", new { id = id, gobackurl = gobackurl });
+                }
+                else
+                {
+                    var urls = gobackurl.Split("/");
+                    return RedirectToAction(nameof(Index), new { search = urls[2] });
+                }
             }
 
             return View("Error");
@@ -308,55 +454,44 @@ namespace ADProject.Controllers
         }
 
         /*        [HttpPost]
-                public IActionResult FileUpload(List<IFormFile> postedFiles)
+                [Authorize]
+                public IActionResult FileUpload([FromForm] FileModel file)
                 {
-                    string wwwPath = this.Environment.WebRootPath;
-                    string contentPath = this.Environment.ContentRootPath;
-
-                    string path = Path.Combine(this.Environment.WebRootPath, "Uploads");
-                    if (!Directory.Exists(path))
+                    try
                     {
-                        Directory.CreateDirectory(path);
-                    }
+                        file.FileName = Guid.NewGuid().ToString() + ".jpg";
+                        string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", file.FileName);
 
-                    List<string> uploadedFiles = new List<string>();
-                    foreach (IFormFile postedFile in postedFiles)
-                    {
-                        string fileName = Path.GetFileName(postedFile.FileName);
-                        using (FileStream stream = new FileStream(Path.Combine(path, fileName), FileMode.Create))
+                        *//*                string path = Path.Combine(Directory.GetCurrentDirectory(), "RecipesImage", file.FileName);
+                        *//*
+                        using (Stream stream = new FileStream(path, FileMode.Create))
                         {
-                            postedFile.CopyTo(stream);
-                            uploadedFiles.Add(fileName);
-                            ViewBag.Message += string.Format("<b>{0}</b> uploaded.<br />", fileName);
+                            file.FormFile.CopyTo(stream);
                         }
-                    }
 
-                    return View();
+                        string imageUrl = "images/" + file.FileName;
+
+        *//*                string imageUrl = "RecipesImage/" + file.FileName;
+        *//*                
+                        return Json(new { fileUrl = imageUrl });
+                    }
+                    catch
+                    {
+                        return StatusCode(400);
+                    }
                 }*/
 
         [HttpPost]
         [Authorize]
-        public IActionResult FileUpload([FromForm] FileModel file)
+        public async Task<IActionResult> FileUpload([FromForm] FileModel file)
         {
-            try
+            IFormFile toUpload = file.FormFile;
+            string imageUrl = await ImageUpload.ImageUpload.UploadImage(toUpload);
+            if(imageUrl != "")
             {
-                file.FileName = Guid.NewGuid().ToString() + ".jpg";
-                string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", file.FileName);
-
-                /*                string path = Path.Combine(Directory.GetCurrentDirectory(), "RecipesImage", file.FileName);
-                */
-                using (Stream stream = new FileStream(path, FileMode.Create))
-                {
-                    file.FormFile.CopyTo(stream);
-                }
-
-                string imageUrl = "images/" + file.FileName;
-
-/*                string imageUrl = "RecipesImage/" + file.FileName;
-*/                
-                return Json(new { fileUrl = imageUrl });
-            }
-            catch
+                return Ok(new { fileUrl = imageUrl });
+            } 
+            else
             {
                 return StatusCode(400);
             }

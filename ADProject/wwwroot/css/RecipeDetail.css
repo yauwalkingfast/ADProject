@@ -1,112 +1,52 @@
-﻿.image_ingredients {
-    width: 100%;
-    padding-top: 30px;
-}
-
-
-td {
-    padding: 10px;
-    text-align: left;
-}
-
-img {
-    height: 500px;
-    width: 500px;
-    border-radius: 8px;
-}
-
-div {
-    padding: 5px;
-}
-dt{
-    padding-top:20px;
-    padding-bottom:20px;
-}
-dd{
-    padding:10px;
-}
-.user {
-    grid-area: user;
-}
-
-.menu {
-    grid-area: menu;
+﻿.main-image {
+    width: 400px;
+    height: 400px;
     overflow: hidden;
-    background-color: #e9e9e9;
-    
-}
-    .menu a {
-        float:left;
-        position: relative;
-        top: 50%;
-        left: 30%;
-        right: 30%;
-        transform: translate(-50%, -50%);
-        display: block;
-        color: black;
-        text-align: center;
-        padding: 14px 16px;
-        text-decoration: none;
-        font-size: 17px;
-    }
-
-.menu a:hover {
-background-color: #ddd;
-color: black;
 }
 
-.searchbar {
-    grid-area: searchbar;
+textarea {
+    min-height: 200px;
+    resize: none;
+}
+
+.step-image {
+    width: 300px;
+    height: 300px;
     overflow: hidden;
-    position:relative;
 }
-    .searchbar a, form {
-        display: inline;
+
+.recipe-image {
+    width: 300px;
+    height: 300px;
+    overflow: hidden;
+}
+
+.border {
+    border-width: 1px;
+    border-color: black;
+}
+
+.display-flex-center {
+    display: flex;
+    justify-content: center;
+}
+
+.display-flex-end {
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 5px;
+}
+
+@media screen and (max-width: 500px) {
+    .main-image {
+        width: 250px;
+        height: 250px;
+        overflow: hidden;
     }
-    .searchbar a {
-        float: right;
-        
+    .step-image {
+        width: 150px;
+        height: 150px;
+        overflow: hidden;
     }
-
-.recipes {
-    grid-area: recipes;
-}
-
-.grid-container {
-    display: grid;
-    grid-template-areas: 'user user user user user user' 
-        'menu menu menu menu menu menu' 
-        'searchbar searchbar searchbar searchbar searchbar searchbar'
-        'recipes recipes recipes recipes recipes recipes ';
-    grid-column-gap: 10px;
-    grid-row-gap: 10px;
-    grid-template-rows: 100px 50px 80px auto;
-    padding: 10px;
-}
-.list_recipe_grid-container {
-    display: grid;
-    grid-template-areas: 'heading heading heading heading heading heading' 
-        'recipes recipes recipes recipes recipes recipes';
-    grid-column-gap: 10px;
-    grid-row-gap: 10px;
-    
-    
-    padding: 10px;
-}
-
-.heading{
-    grid-area:heading;
-    text-align:center;
-    border:solid;
-}
-.heading a, form{
-   display:inline; 
-  
-}
-.heading a{
-    float:right;
-}
-.heading form{
-    float:left;
 }
 

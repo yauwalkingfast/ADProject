@@ -2,65 +2,207 @@
 
 @{
     ViewData["Title"] = "Details";
+    string gobackurl = @ViewData["Controller"] + "/" + @ViewData["Action"] + "/" + @ViewData["GoBackId"];
 }
 
-<h1>Details</h1>
 
-<div>
-    <h4>Group</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.GroupName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.GroupName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.GroupPhoto)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.GroupPhoto)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DateCreated)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DateCreated)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IsPublished)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IsPublished)
-        </dd>
-    </dl>
-</div>
-<div>
-    <h5>Group Members</h5>
-    <ul>
-        @foreach(var usergroup in Model.UsersGroups)
+<link href="~/css/GroupDetails.css" rel="stylesheet" />
+
+
+<div class="row justify-content-center">
+    <div class="col-sm-12">
+
+        <div class="border">
+            <div class="display-flex-center">
+                <h1>@Model.GroupName</h1>
+            </div>
+
+            <div class="row ml-4 mb-4">
+                <div class="col-sm">
+                    <img class="group-photo" src="@Model.GroupPhoto" alt="group photo" />
+                </div>
+                <div class="col-sm">
+                    <div class="row">
+                        <div class="col-sm">
+                            <div>@Model.Description</div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm">
+                            @foreach (var tag in Model.GroupTags)
+                            {
+                                <span>#</span>@tag.Tag.TagName
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm">
+                    <div class="row">
+                        <div class="col-sm">
+                            <ul>
+                                Moderators:
+                                @foreach (var mod in Model.UsersGroups)
+                                {
+                                    if (mod.IsMod == true)
+                                    {
+                                        <li>@mod.User.UserName</li>
+                                    }
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @if (Model.UsersGroups.Any(ug => ug.User.UserName == User.Identity.Name && ug.IsMod == true))
+            {
+                <div class="display-flex-end">
+                    <a asp-action="Edit" asp-route-gobackurl="@gobackurl" asp-route-id="@Model.GroupId">Edit</a>
+                </div>
+                <div class="display-flex-end">
+                    <a asp-action="Delete" asp-route-gobackurl="@gobackurl" asp-route-id="@Model.GroupId">Delete</a>
+                </div>
+            }
+            <div class="display-flex-end">
+                @if (Model.UsersGroups.Any(ug => ug.User.UserName == User.Identity.Name))
+                {
+                    <a asp-action="Leave" asp-route-gobackurl="@gobackurl" asp-route-id="@Model.GroupId">Leave</a>
+                }
+                else
+                {
+                    <a asp-action="Join" asp-route-gobackurl="@gobackurl" asp-route-id="@Model.GroupId">Join</a>
+                }
+            </div>
+
+            @*    <div class="display-flex-end">
+                <form id="search-form" method="get">
+                    <input type="text" placeholder="Search Featured Recipes.." name="search">
+                    <button type="submit"><i class="fa fa-search"></i></button>
+                </form>
+            </div>*@
+        </div>
+
+        @foreach (var recipe in Model.RecipeGroups)
         {
-            <li>@usergroup.User.UserName</li>
+            <div class="row my-4 justify-content-center">
+                <div class="col-sm-10">
+                    <div class="row mb-2">
+                        <div class="col-sm-1">
+                            <i style='font-size:50px' class='fa fa-user'></i>
+                        </div>
+                        <div class="col-sm-11">
+                            <div class="row">
+                                <div class="col-sm">
+                                    <b>@recipe.Recipe.User.UserName</b> posted a recipe
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm">
+                                    <h3><b>@recipe.Recipe.Title</b> </h3>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm">
+                                    Tags:
+                                    @foreach (var tag in recipe.Recipe.RecipeTags)
+                                    {
+                                        if (tag.IsAllergenTag == false)
+                                        {
+                                            <span>#</span>@tag.Tag.TagName<span> </span>
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <img class="recipe-image" src="@recipe.Recipe.MainMediaUrl" alt="recipe main image" />
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="row">
+                                <div class="col-sm">
+                                    <h5>Ingredients</h5>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm">
+                                    <p>for @recipe.Recipe.ServingSize serving</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm">
+                                    <ul>
+                                        @for (int i = 0; i < 3 && i < recipe.Recipe.RecipeIngredients.Count(); i++)
+                                        {
+                                            <li>@recipe.Recipe.RecipeIngredients[i].Quantity @recipe.Recipe.RecipeIngredients[i].UnitOfMeasurement of @recipe.Recipe.RecipeIngredients[i].Ingredient</li>
+                                        }
+                                        <li><a asp-controller="Recipes" asp-action="Details" asp-route-gobackurl="Groups/Details/@Model.GroupId" asp-route-id="@recipe.RecipeId">See All</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm">
+                                    @foreach (var allergen in recipe.Recipe.RecipeTags)
+                                    {
+                                        if (allergen.IsAllergenTag == true)
+                                        {
+                                            <div class="row mb-2">
+                                                <div class="col-sm-1">
+                                                    <i style='font-size:24px' class='fa fa-exclamation-triangle'></i>
+                                                </div>
+                                                <div class="col-sm-11">
+                                                    Warning: Contains @allergen.Tag.Warning
+                                                </div>
+                                            </div>
+                                            break;
+                                        }
+                                    }
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-sm">
+                                    Calories: @recipe.Recipe.Calories kcal
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-sm-1">
+                                    <i style='font-size:24px' class='fa fa-clock-o mr-3'></i>
+                                </div>
+                                <div class="col-sm-11">
+                                    @recipe.Recipe.DurationInMins minutes
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-sm">
+                                    @if (recipe.Recipe.User.UserName != User.Identity.Name)
+                                    {
+                                        if (recipe.Recipe.SavedRecipes.Any(sr => sr.User.UserName.Equals(User.Identity.Name) && sr.RecipeId == recipe.RecipeId))
+                                        {
+                                            <a asp-controller="Recipes" asp-route-gobackurl="Groups/Details/@Model.GroupId" asp-action="RemoveRecipe" asp-route-id="@recipe.RecipeId">Remove Recipe</a>
+                                        }
+                                        else
+                                        {
+                                            <a asp-controller="Recipes" asp-route-gobackurl="Groups/Details/@Model.GroupId" asp-action="SaveRecipe" asp-route-id="@recipe.RecipeId">Save Recipe</a>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <a asp-controller="Recipes" asp-route-gobackurl="Groups/Details/@Model.GroupId" asp-action="Edit" asp-route-id="@recipe.RecipeId">Edit</a>
+                                        <br />
+                                        <a asp-controller="Recipes" asp-route-gobackurl="Groups/Details/@Model.GroupId" asp-action="Delete" asp-route-id="@recipe.RecipeId">Delete</a>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         }
-    </ul>
-</div>
-<div>
-    <h5>Recipes</h5>
-    <ul>
-        @foreach(var recipegroup in Model.RecipeGroups)
-        {
-            <li>@recipegroup.Recipe.Title</li>
-        }
-    </ul>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.GroupId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+        <div class="row mt-4 mb-2">
+            <div class="col-sm">
+                <a asp-controller="@ViewData["Controller"]" asp-action="@ViewData["Action"]" asp-route-id="@ViewData["GoBackId"]">Back to List</a>
+            </div>
+        </div>
+    </div>
 </div>

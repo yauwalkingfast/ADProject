@@ -48,6 +48,8 @@ namespace ADProject.Service
                     .ThenInclude(ug => ug.User)
                     .FirstOrDefaultAsync(g => g.GroupId == id);
 
+                var newUsersGroup = await this.CheckUsernameExistEditVer(group.UsersGroups, id);
+
                 _context.GroupTags.RemoveRange(dbGroup.GroupTags);
                 _context.RecipeGroups.RemoveRange(dbGroup.RecipeGroups);
                 _context.UsersGroups.RemoveRange(dbGroup.UsersGroups);
@@ -65,7 +67,7 @@ namespace ADProject.Service
                 dbGroup.RecipeGroups = group.RecipeGroups;
 
                 dbGroup.GroupTags = await this.CheckTagsDatabase(group.GroupTags);
-                dbGroup.UsersGroups = await this.CheckUsernameExist(group.UsersGroups);
+                dbGroup.UsersGroups = newUsersGroup;
 
                 await _context.SaveChangesAsync();
                 return true;
@@ -88,15 +90,60 @@ namespace ADProject.Service
                 .ToListAsync();
         }
 
+        public async Task<IQueryable<Group>> GetAllGroupsQueryable()
+        {
+            var groups = await this.GetAllGroups();
+            return groups.AsQueryable();
+        }
+
+        public async Task<IQueryable<UsersGroup>> GetMyGroups(int id)
+        {
+            return _context.UsersGroups
+                .Where(ug => ug.UserId == id)
+                .Include(ug => ug.Group)
+                .ThenInclude(g => g.GroupTags)
+                .ThenInclude(gt => gt.Tag)
+                .Include(ug => ug.User)
+                .AsQueryable();
+        }
+
+        public async Task<IQueryable<UsersGroup>> GetMyGroupsSearch(int id, string search)
+        {
+            var myGroups = await this.GetMyGroups(id);
+            return myGroups.Where(ug =>
+                ug.Group.GroupName.Contains(search) ||
+                ug.Group.Description.Contains(search) ||
+                ug.Group.GroupTags.Any(gt => gt.Tag.TagName.Contains(search)));
+        }
+
+        //TODO: Refactor this if there is time as it is really slow
         public async Task<Group> GetGroupById(int? id)
         {
             return await _context.Groups
                 .Include(g => g.GroupTags)
                 .ThenInclude(gt => gt.Tag)
+
                 .Include(g => g.RecipeGroups)
                 .ThenInclude(rg => rg.Recipe)
+                .ThenInclude(r => r.RecipeTags)
+                .ThenInclude(rt => rt.Tag)
+                
+                .Include(g => g.RecipeGroups)
+                .ThenInclude(rg => rg.Recipe)
+                .ThenInclude(r => r.RecipeIngredients)
+
+                .Include(g => g.RecipeGroups)
+                .ThenInclude(rg => rg.Recipe)
+                .ThenInclude(r => r.SavedRecipes)
+                .ThenInclude(sr => sr.User)
+
+                .Include(g => g.RecipeGroups)
+                .ThenInclude(rg => rg.Recipe)
+                .ThenInclude(r => r.User)
+
                 .Include(g => g.UsersGroups)
                 .ThenInclude(ug => ug.User)
+
                 .FirstOrDefaultAsync(g => g.GroupId == id);
         }
 
@@ -149,6 +196,14 @@ namespace ADProject.Service
             return gList;
 
         }
+
+
+        public async Task<IQueryable<Group>> GetAllGroupsSearchQueryable(string search)
+        {
+            var groups = await this.GetAllGroupsSearch(search);
+            return groups.AsQueryable();
+        }
+
         // Check if the username exist in database
         private async Task<List<UsersGroup>> CheckUsernameExist(List<UsersGroup> usersGroup)
         {
@@ -159,7 +214,11 @@ namespace ADProject.Service
                 if(usersGroup[i].User.UserName != null)
                 {
                     var existUser = await _context.Users.FirstOrDefaultAsync(u => u.UserName.ToLower() == usersGroup[i].User.UserName.ToLower().Trim());
-                    if (existUser != null)
+                    if(existUser != null && usersGroup[i].IsMod == true)
+                    {
+                        foundUsers.Add(usersGroup[i]);
+                    }
+                    else if (existUser != null)
                     {
                         foundUsers.Add(new UsersGroup
                         {
@@ -172,6 +231,43 @@ namespace ADProject.Service
             }
 
             return foundUsers.DistinctBy(u => u.User.Id).ToList();
+        }
+
+        private async Task<List<UsersGroup>> CheckUsernameExistEditVer(List<UsersGroup> inputUsersGroup, int groupId)
+        {
+            List<UsersGroup> foundUsers = new List<UsersGroup>();
+            List<UsersGroup> usersGroup = inputUsersGroup.DistinctBy(u => u.User.UserName).ToList();
+
+            for (int i = 0; i < usersGroup.Count; i++)
+            {
+                if (usersGroup[i].User.UserName != null)
+                {
+                    var existUser = await _context.Users.FirstOrDefaultAsync(u => u.UserName.ToLower() == usersGroup[i].User.UserName.ToLower().Trim());
+                    if (existUser != null)
+                    {
+                        if (await this.IsGroupAdmin(groupId, existUser.UserName) == true)
+                        {
+                            foundUsers.Add(new UsersGroup
+                            {
+                                UserId = existUser.Id,
+                                User = existUser,
+                                IsMod = true,
+                            });
+                        }
+                        else
+                        {
+                            foundUsers.Add(new UsersGroup
+                            {
+                                UserId = existUser.Id,
+                                User = existUser,
+                                IsMod = false,
+                            });
+                        }
+                    }
+                }
+            }
+
+            return foundUsers;
         }
 
         // Check if the tag exist in database
@@ -269,7 +365,7 @@ namespace ADProject.Service
 
             foreach(var ug in group.UsersGroups)
             {
-                if (ug.User.UserName.Equals(username) && ug.User.IsAdmin == true)
+                if (ug.User.UserName.Equals(username) && ug.IsMod == true)
                 {
                     return true;
                 }

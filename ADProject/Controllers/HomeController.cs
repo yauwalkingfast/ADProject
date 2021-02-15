@@ -21,28 +21,50 @@ namespace ADProject.Controllers
             _recipeService = recipeService;
             _userService = userService;
         }
-        public async Task<IActionResult> Index()
+
+        /*        public async Task<IActionResult> Index()
+                {
+                    ApplicationUser user = _context.Users.FirstOrDefault();
+                    int id = user.Id;
+                   // ApplicationUser user = await _userService.GetUserById(id);
+                   var recipes= await _recipeService.GetAllRecipesByUserId(id);
+                    ViewData ["FirstName"]= user.FirstName;
+                    return View(recipes);
+                }
+                [HttpPost]
+                public async Task<IActionResult> Index([FromForm]String search)
+                {//i need current user who is logged in for now i have hardcoded the id
+                    int id = 1;
+                    if (!String.IsNullOrEmpty(search))
+                    {
+                        return View( await _recipeService.SearchMyRecipe(search, id));
+                    }
+                    else
+                    //return View(await _userService.GetUserById(id));
+                    return View(await _recipeService.GetAllRecipesByUserId(id));
+                }
+               */
+
+        public async Task<IActionResult> Index(int? pageNumber, string search)
         {
+            // Hard code user for now
             ApplicationUser user = _context.Users.FirstOrDefault();
             int id = user.Id;
-           // ApplicationUser user = await _userService.GetUserById(id);
-           var recipes= await _recipeService.GetAllRecipesByUserId(id);
-            ViewData ["FirstName"]= user.FirstName;
-            return View(recipes);
-        }
-        [HttpPost]
-        public async Task<IActionResult> Index([FromForm]String search)
-        {//i need current user who is logged in for now i have hardcoded the id
-            int id = 1;
+
+            ViewData["search"] = search;
+            int pageSize = 3;
+            var recipeList = await _recipeService.GetAllRecipesByUserIdQueryable(id);
+
             if (!String.IsNullOrEmpty(search))
             {
-                return View( await _recipeService.SearchMyRecipe(search, id));
+                recipeList = await _recipeService.SearchMyRecipeQueryable(search, id);
             }
-            else
-            //return View(await _userService.GetUserById(id));
-            return View(await _recipeService.GetAllRecipesByUserId(id));
+
+            PaginatedList<Recipe> paginatedList = await PaginatedList<Recipe>.CreateAsync(recipeList, pageNumber ?? 1, pageSize);
+            ViewData["paginatedList"] = paginatedList;
+
+            return View();
         }
-       
 
         public IActionResult Privacy()
         {
