@@ -466,5 +466,29 @@ namespace ADProject.Service
             return success >= 1;
         }
 
+        public async Task<bool> IsGroupMemberAD(int groupId, int userId)
+        {
+            var group = await _context.Groups
+                .Include(g => g.UsersGroups)
+                .ThenInclude(ug => ug.User)
+                .FirstOrDefaultAsync(g => g.GroupId == groupId);
+
+            if (group == null)
+            {
+                return false;
+            }
+
+            foreach (var ug in group.UsersGroups)
+            {
+                if (ug.UserId == userId)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+
+        }
+
     }
 }
