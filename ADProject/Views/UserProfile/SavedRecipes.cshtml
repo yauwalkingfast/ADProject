@@ -21,7 +21,7 @@
 <div class="element-container my-3">
     @foreach (var recipe in paginatedList)
     {
-        <div>
+        <div class="featured-background my-1 py-1 mx-1 px-1">
             <div class="element-item">
                 <a asp-controller="Recipes" asp-action="Details" asp-route-gobackurl="UserProfile/SavedRecipes/@user.Id" asp-route-id="@recipe.RecipeId">
                     <img class="element-photo" src="@recipe.Recipe.MainMediaUrl" alt="recipe main photo" />

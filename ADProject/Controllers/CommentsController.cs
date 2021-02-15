@@ -51,7 +51,7 @@ namespace ADProject.Controllers
         }
 
 
-        // GET: Comments
+/*        // GET: Comments
         public async Task<IActionResult> Index()
         {
             var aDProjContext = _context.Comments.Include(c => c.Recipe).Include(c => c.User);
@@ -188,7 +188,7 @@ namespace ADProject.Controllers
             _context.Comments.Remove(comment);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
+        }*/
 
         private bool CommentExists(int id)
         {

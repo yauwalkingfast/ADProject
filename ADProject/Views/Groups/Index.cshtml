@@ -9,7 +9,7 @@
 
 <link href="~/css/GroupStyle.css" rel="stylesheet" />
 
-<div class="border">
+<div class="border mb-2">
     <div class="display-flex-center">
         <h1>Explore</h1>
     </div>
@@ -32,7 +32,7 @@
 <div class="group-container">
     @foreach(var group in paginatedList)
     {
-        <div class="group-item">
+        <div class="group-item featured-background my-2 mx-4">
             <a asp-action="Details" asp-route-gobackurl="Groups" asp-route-id="@group.GroupId">
                 <img class="group-photo" src="@group.GroupPhoto" alt="group photo" />
                 <div class="top-left">@group.GroupName</div>
