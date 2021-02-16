@@ -90,6 +90,12 @@ namespace ADProject.Service
                 .ToListAsync();
         }
 
+        public async Task<List<Group>> GetAllGroups1()
+        {
+            return await _context.Groups
+                .ToListAsync();
+        }
+
         public async Task<IQueryable<Group>> GetAllGroupsQueryable()
         {
             var groups = await this.GetAllGroups();

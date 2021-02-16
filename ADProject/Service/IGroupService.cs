@@ -46,5 +46,7 @@ namespace ADProject.Service
 
         Task<bool> LeaveGroupWebVer(int? groupId, string username);
 
+        Task<List<Group>> GetAllGroups1();
+
     }
 }
