@@ -48,6 +48,15 @@
     text-overflow: ellipsis;
 }
 
+.custom-text-size {
+    font-size: 0.9em;
+}
+
+.custom-header-size {
+    font-size: 1.2em;
+    font-weight: bolder;
+}
+
 @media screen and (min-width: 1300px) and (min-height: 800px) {
     .small-image {
         width: 60vmin;
@@ -62,5 +71,12 @@
         overflow-wrap: break-word;
         overflow: hidden;
         text-overflow: ellipsis;
+    }
+    .custom-text-size {
+        font-size: 1.5em;
+    }
+    .custom-header-size {
+        font-size: 2em;
+        font-weight: bolder;
     }
 }

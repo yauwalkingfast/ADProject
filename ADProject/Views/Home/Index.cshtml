@@ -86,19 +86,21 @@
                             <div class="col-sm-6">
                                 <div class="row mb-2 mt-2">
                                     <div class="col-sm">
-                                        <h3>@recipeList[index].Title</h3>
+                                        <p class="custom-header-size">@recipeList[index].Title</p>
                                     </div>
                                 </div>
                                 <div class="row mb-2">
-                                    <div class="col-sm" style="font-size: 20px;">
-                                        @recipeList[index].Description
+                                    <div class="col-sm custom-text-size">
+                                        <p>
+                                            @recipeList[index].Description
+                                        </p>
                                     </div>
                                 </div>
                                 <div class="row mb-4">
                                     <div class="col-sm-1">
-                                        <i style='font-size:24px' class='fa fa-clock-o mr-3'></i>
+                                        <i class='fa fa-clock-o mr-3 custom-header-size'></i>
                                     </div>
-                                    <div class="col-sm-11">
+                                    <div class="col-sm-11 custom-text-size">
                                         @recipeList[index].DurationInMins minutes
                                     </div>
                                 </div>
@@ -123,11 +125,11 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-sm mx-3 mt-4">
-                                            <h4>@recipeList[index_secondary].Title</h4>
+                                            <p class="custom-header-size">@recipeList[index_secondary].Title</p>
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-sm clamp-me mx-3" style="font-size: 20px;">
+                                        <div class="col-sm clamp-me mx-3 custom-text-size">
                                             @recipeList[index_secondary].Description
                                         </div>
                                     </div>
@@ -160,11 +162,11 @@
                             <div class="col-sm-6">
                                 <div class="row mb-4 mt-2">
                                     <div class="col-sm">
-                                        <h3>@groupList[index_group].GroupName</h3>
+                                        <p class="custom-header-size">@groupList[index_group].GroupName</p>
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-sm" style="font-size: 20px;">
+                                    <div class="col-sm custom-text-size">
                                         @groupList[index_group].Description
                                     </div>
                                 </div>
@@ -189,11 +191,11 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-sm mt-4 mx-3">
-                                            <h4>@groupList[index_secondary_group].GroupName</h4>
+                                            <p class="custom-header-size">@groupList[index_secondary_group].GroupName</p>
                                         </div>
                                     </div>
                                     <div class="row mx-3">
-                                        <div class="col-sm clamp-me" style="font-size: 20px;">
+                                        <div class="col-sm clamp-me custom-text-size">
                                             @groupList[index_secondary_group].Description
                                         </div>
                                     </div>
