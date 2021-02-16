@@ -5,16 +5,20 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 using ADProject.JsonObjects;
+using Microsoft.AspNetCore.Identity;
+using System.Diagnostics;
 
 namespace ADProject.Service
 {
     public class UserService : IUserService
     {
         private readonly ADProjContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public UserService(ADProjContext context)
+        public UserService(ADProjContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         public async Task<ApplicationUser> GetUserById(int? id)
@@ -147,6 +151,32 @@ namespace ADProject.Service
                 return saveResult == 1;
             }
             
+        }
+
+        public async Task<ApplicationUser> ValidateUser(UserValidatorJson userJson)
+        {
+            string email = userJson.email;
+            string password = userJson.password;
+
+            ApplicationUser user = await _context.Users
+                .Include(r => r.Recipes)
+                .Include(r => r.LikesDislikes)
+                .Include(r => r.Comments)
+                .Include(r => r.SavedRecipes)
+                .Include(r => r.UsersGroups)
+                .ThenInclude(rG => rG.Group)
+                .Where(r => r.Email == email)
+                .FirstOrDefaultAsync();
+
+            string hashedPassword = user.PasswordHash;
+
+            if (_userManager.PasswordHasher.VerifyHashedPassword(user, user.PasswordHash, userJson.password)
+            != PasswordVerificationResult.Failed)
+            {
+                return user;
+            }
+
+            return new ApplicationUser();
         }
     }
 }
