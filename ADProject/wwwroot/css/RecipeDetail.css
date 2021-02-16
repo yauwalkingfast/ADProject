@@ -2,6 +2,8 @@
     width: 80vmin;
     height: 60vmin;
     overflow: hidden;
+    border-radius: 10px;
+    object-fit: cover;
 }
 
 textarea {
@@ -13,12 +15,16 @@ textarea {
     width: 55vmin;
     height: 45vmin;
     overflow: hidden;
+    border-radius: 10px;
+    object-fit: cover;
 }
 
 .recipe-image {
     width: 70vmin;
     height: 50vmin;
     overflow: hidden;
+    border-radius: 10px;
+    object-fit: cover;
 }
 
 .border {

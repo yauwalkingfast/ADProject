@@ -18,16 +18,28 @@ a.navbar-brand {
 
 .featured-background {
     background-color: white;
+    border-radius: 10px;
 }
 
 .modal-background {
-    background-color: #f5efeb;
+    background-color: #fafafa;
 }
 
 body {
     /* Margin bottom by footer height */
-    background-color: #fafafa;
+    background-color: #e8e8e8;
     margin-bottom: 60px;
+}
+
+.icon-button {
+    background-color: Transparent;
+    background-repeat: no-repeat;
+    border: none;
+    cursor: pointer;
+    overflow: hidden;
+    outline: none;
+    text-decoration: none;
+    color: black;
 }
 
 /* Provide sufficient contrast against white background */

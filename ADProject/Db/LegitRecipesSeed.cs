@@ -391,6 +391,32 @@ namespace ADProject.Db
                 DateCreated = DateTime.Now
             });
 
+            db.Add(new Group
+            {
+                GroupName = "Cookie lovers",
+                GroupPhoto = "https://imagesvc.meredithcorp.io/v3/mm/image?url=https%3A%2F%2Fstatic.onecms.io%2Fwp-content%2Fuploads%2Fsites%2F9%2F2020%2F12%2F02%2Fbeatiful-cookies-FT-BLOG1220.jpg",
+                Description = "For all cookie lovers out there.",
+                DateCreated = DateTime.Now,
+                IsPublished = true
+            });
+
+            db.SaveChanges();
+
+            Group g = db.Groups.FirstOrDefault(g => g.GroupName == "Cookie lovers");
+            db.Add(new UsersGroup
+            {
+                Group = g,
+                User = u1,
+                IsMod = true
+            });
+
+            Recipe r = db.Recipes.FirstOrDefault(r => r.Title == "Almond Cookies");
+            db.Add(new RecipeGroup
+            {
+                Recipe = r,
+                Group = g
+            });
+
             db.SaveChanges();
         }
 

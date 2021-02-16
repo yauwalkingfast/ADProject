@@ -21,8 +21,8 @@
 <div class="element-container my-3">
     @foreach (var recipe in paginatedList)
     {
-        <div class="featured-background my-1 py-1 mx-1 px-1">
-            <div class="element-item">
+        <div class="my-2 py-0 mx-2 px-0">
+            <div class="element-item featured-background">
                 <a asp-controller="Recipes" asp-action="Details" asp-route-gobackurl="UserProfile/SavedRecipes/@user.Id" asp-route-id="@recipe.RecipeId">
                     <img class="element-photo" src="@recipe.Recipe.MainMediaUrl" alt="recipe main photo" />
                     <div class="top-left">@recipe.Recipe.Title</div>
@@ -35,9 +35,10 @@
                     </div>
                 </a>
             </div>
-            <div class="element-options">
+            <div class="element-options my-2">
                 <div>
-                    <a asp-controller="Recipes" asp-action="RemoveRecipe" asp-route-id="@recipe.RecipeId" asp-route-gobackurl="UserProfile/SavedRecipes/@user.Id/@ViewData["search"]">
+                    <a class="icon-button" asp-controller="Recipes" asp-action="RemoveRecipe" asp-route-id="@recipe.RecipeId" asp-route-gobackurl="UserProfile/SavedRecipes/@user.Id/@ViewData["search"]">
+                        <i style='font-size:24px' class='fa fa-trash'></i>
                         Remove
                     </a>
                 </div>

@@ -21,7 +21,9 @@
                     <div class="carousel-inner">
                         <div class="carousel-item carousel-item-background active">
                             <a asp-controller="Recipes" asp-action="Details" asp-route-gobackurl="Recipes" asp-route-id="@recipeList[0].RecipeId">
-                                <img class="d-block carousel-image" src="@recipeList[0].MainMediaUrl" alt="First slide">
+                                <div class="wrapper">
+                                    <img class="d-block carousel-image" src="@recipeList[0].MainMediaUrl" alt="First slide">
+                                </div>
                                 <div class="carousel-caption d-none d-md-block">
                                     <h5>@recipeList[0].Title</h5>
                                     <p>
@@ -32,7 +34,9 @@
                         </div>
                         <div class="carousel-item carousel-item-background">
                             <a asp-controller="Recipes" asp-action="Details" asp-route-gobackurl="Recipes" asp-route-id="@recipeList[1].RecipeId">
-                                <img class="d-block carousel-image" src="@recipeList[1].MainMediaUrl" alt="Second slide">
+                                <div class="wrapper">
+                                    <img class="d-block carousel-image" src="@recipeList[1].MainMediaUrl" alt="Second slide">
+                                </div>
                                 <div class="carousel-caption d-none d-md-block">
                                     <h5>@recipeList[1].Title</h5>
                                     <p>
@@ -43,7 +47,9 @@
                         </div>
                         <div class="carousel-item carousel-item-background">
                             <a asp-controller="Recipes" asp-action="Details" asp-route-gobackurl="Recipes" asp-route-id="@recipeList[2].RecipeId">
-                                <img class="d-block carousel-image" src="@recipeList[2].MainMediaUrl" alt="Third slide">
+                                <div class="wrapper">
+                                    <img class="d-block carousel-image" src="@recipeList[2].MainMediaUrl" alt="Third slide">
+                                </div>
                                 <div class="carousel-caption d-none d-md-block">
                                     <h5>@recipeList[2].Title</h5>
                                     <p>
@@ -76,9 +82,9 @@
                 @{
                     int index = random.Next(0, recipeList.Count());
                     <a asp-controller="Recipes" asp-action="Details" asp-route-id="@recipeList[index].RecipeId" asp-route-gobackurl="Recipes" class="a-decoration">
-                        <div class="row mb-3 px-2 py-2 justify-content-center featured-background">
+                        <div class="row mb-3 justify-content-between featured-background">
                             <div class="col-sm-6">
-                                <div class="row mb-2">
+                                <div class="row mb-2 mt-2">
                                     <div class="col-sm">
                                         <h5>@recipeList[index].Title</h5>
                                     </div>
@@ -97,7 +103,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-sm-6">
+                            <div class="col-sm-6 pr-0">
                                 <img src="@recipeList[index].MainMediaUrl" alt="main recipe image" class="big-image" />
                             </div>
                         </div>
@@ -109,7 +115,7 @@
                         {
                             int index_secondary = random.Next(0, recipeList.Count());
                             <a asp-controller="Recipes" asp-action="Details" asp-route-id="@recipeList[index_secondary].RecipeId" asp-route-gobackurl="Recipes" class="a-decoration">
-                                <div class="col-sm featured-background">
+                                <div class="col-sm px-0 featured-background small-image-container">
                                     <div class="row">
                                         <div class="col-sm">
                                             <img src="@recipeList[index_secondary].MainMediaUrl" alt="main recipe image" class="small-image" />
@@ -127,7 +133,9 @@
                 </div>
                 <div class="row mb-5">
                     <div class="col-sm">
-                        <a asp-controller="Recipes" asp-action="Index">See More Recipes</a>
+                        <a asp-controller="Recipes" asp-action="Index">
+                            See More Recipes
+                        </a>
                     </div>
                 </div>
             </div>
@@ -143,9 +151,9 @@
                 @{
                     int index_group = random.Next(0, groupList.Count());
                     <a asp-controller="Groups" asp-action="Details" asp-route-id="@groupList[index_group].GroupId" asp-route-gobackurl="Groups" class="a-decoration">
-                        <div class="row mb-3 px-2 py-2 justify-content-center featured-background">
+                        <div class="row mb-3 justify-content-center featured-background">
                             <div class="col-sm-6">
-                                <div class="row mb-4">
+                                <div class="row mb-4 mt-2">
                                     <div class="col-sm">
                                         <h5>@groupList[index_group].GroupName</h5>
                                     </div>
@@ -156,7 +164,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-sm-6">
+                            <div class="col-sm-6 pr-0">
                                 <img src="@groupList[index_group].GroupPhoto" alt="main group image" class="big-image" />
                             </div>
                         </div>
@@ -168,7 +176,7 @@
                         {
                             int index_secondary_group = random.Next(0, groupList.Count());
                             <a asp-controller="Groups" asp-action="Details" asp-route-id="@groupList[index_secondary_group].GroupId" asp-route-gobackurl="Groups" class="a-decoration">
-                                <div class="col-sm featured-background">
+                                <div class="col-sm px-0 featured-background small-image-container">
                                     <div class="row">
                                         <div class="col-sm">
                                             <img src="@groupList[index_secondary_group].GroupPhoto" alt="main group image" class="small-image" />
