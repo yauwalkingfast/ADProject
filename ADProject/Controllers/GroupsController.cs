@@ -94,7 +94,7 @@ namespace ADProject.Controllers
         }
 
         // GET: Groups/Details/5
-        public async Task<IActionResult> Details(int? id, string gobackurl)
+        public async Task<IActionResult> Details(int? id, string gobackurl, int? pageNumber, string search)
         {
 
             if (id == null)
@@ -115,9 +115,18 @@ namespace ADProject.Controllers
                 ViewData["Action"] = "Index";
                 ViewData["GoBackId"] = "";
             }
-
+            ViewData["search"] = search;
             var group = await _groupService.GetGroupById(id);
+            var recipeGroups = await _groupService.getRecipesGroupByGroupId(id);
+            if (!String.IsNullOrEmpty(search))
+            {
+                recipeGroups = await _groupService.getRecipesGroupSearchByGroupId(id, search);
+            }
+            PaginatedList<RecipeGroup> paginatedList = await PaginatedList<RecipeGroup>.CreateAsync(recipeGroups, pageNumber ?? 1, 9);
 
+            ViewData["paginatedList"] = paginatedList;
+
+            //ViewData["RecipeGroup"] = recipeGroups;
             if (group == null)
             {
                 return NotFound();

@@ -13,55 +13,29 @@ namespace ADProject.Controllers
     public class HomeController : Controller
     {
         private readonly ADProjContext _context;
-        private readonly IUserService _userService;
         private readonly IRecipeService _recipeService;
-        public HomeController(ADProjContext context, IUserService userService, IRecipeService recipeService)
+        private readonly IGroupService _groupService;
+
+        public HomeController(ADProjContext context, IRecipeService recipeService, IGroupService groupService)
         {
             _context = context;
             _recipeService = recipeService;
-            _userService = userService;
+            _groupService = groupService;
         }
 
-        /*        public async Task<IActionResult> Index()
-                {
-                    ApplicationUser user = _context.Users.FirstOrDefault();
-                    int id = user.Id;
-                   // ApplicationUser user = await _userService.GetUserById(id);
-                   var recipes= await _recipeService.GetAllRecipesByUserId(id);
-                    ViewData ["FirstName"]= user.FirstName;
-                    return View(recipes);
-                }
-                [HttpPost]
-                public async Task<IActionResult> Index([FromForm]String search)
-                {//i need current user who is logged in for now i have hardcoded the id
-                    int id = 1;
-                    if (!String.IsNullOrEmpty(search))
-                    {
-                        return View( await _recipeService.SearchMyRecipe(search, id));
-                    }
-                    else
-                    //return View(await _userService.GetUserById(id));
-                    return View(await _recipeService.GetAllRecipesByUserId(id));
-                }
-               */
-
-        public async Task<IActionResult> Index(int? pageNumber, string search)
+        public async Task<IActionResult> Index(int? pageNumber)
         {
-            // Hard code user for now
-            ApplicationUser user = _context.Users.FirstOrDefault();
-            int id = user.Id;
 
-            ViewData["search"] = search;
-            int pageSize = 3;
-            var recipeList = await _recipeService.GetAllRecipesByUserIdQueryable(id);
+            // Pagination is not implemented in the homepage, but we use it to control how many recipes/groups we want to give to the homepage
+            int pageSize = 9;
 
-            if (!String.IsNullOrEmpty(search))
-            {
-                recipeList = await _recipeService.SearchMyRecipeQueryable(search, id);
-            }
+            var recipeList = await _recipeService.GetAllRecipesQueryable();
+            PaginatedList<Recipe> paginatedRecipeList = await PaginatedList<Recipe>.CreateAsync(recipeList, pageNumber ?? 1, pageSize);
+            ViewData["recipeList"] = paginatedRecipeList;
 
-            PaginatedList<Recipe> paginatedList = await PaginatedList<Recipe>.CreateAsync(recipeList, pageNumber ?? 1, pageSize);
-            ViewData["paginatedList"] = paginatedList;
+            var groupList = await _groupService.GetAllGroupsQueryable();
+            PaginatedList<Group> paginatedGroupList = await PaginatedList<Group>.CreateAsync(groupList, pageNumber ?? 1, pageSize);
+            ViewData["groupList"] = paginatedGroupList;
 
             return View();
         }

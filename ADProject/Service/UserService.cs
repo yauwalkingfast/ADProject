@@ -93,10 +93,32 @@ namespace ADProject.Service
 
         public async Task<bool> JoinGroup(UsersGroup ug)
         {
-            _context.Add(ug);
-            var saveResult = await _context.SaveChangesAsync();
-            return saveResult >= 1;
+            int userId = ug.UserId;
+            int groupId = ug.GroupId;
+
+            //Check if record exists
+            UsersGroup usersGroup = await _context.UsersGroups
+                .Where(x => x.UserId == userId)
+                .FirstOrDefaultAsync(x => x.GroupId == groupId);
+
+
+            if (usersGroup == null)
+            {
+
+                _context.Add(ug);
+                var saveResult = await _context.SaveChangesAsync();
+                return true;
+            }
+            else
+            {
+                _context.UsersGroups.Remove(usersGroup);
+                var saveResult = await _context.SaveChangesAsync();
+                return false;
+            }
+
+            
         }
+
 
         public async Task<bool> SaveRecipe(SaveUserRecipe saveUserRecipe)
         {
