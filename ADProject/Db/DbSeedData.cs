@@ -242,21 +242,6 @@ namespace ADProject.DbSeeder
 
         protected void AddUsersVer2()
         {
-            ApplicationUser u1 = new ApplicationUser
-            {
-                FirstName = "Yuen Kwan",
-                LastName = "Chia",
-                UserName = "yk",
-                NormalizedUserName = "yk".ToUpper(),
-                Email = "yk@email.com",
-                NormalizedEmail = "yk@email.com".ToUpper(),
-                IsAdmin = true,
-            };
-
-            u1.PasswordHash = _userManager.PasswordHasher.HashPassword(u1, "12345");
-            u1.SecurityStamp = _userManager.CreateSecurityTokenAsync(u1).ToString();
-            db.Users.Add(u1);
-
             ApplicationUser u2 = new ApplicationUser
             {
                 FirstName = "Amelia",

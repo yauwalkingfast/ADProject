@@ -6,39 +6,7 @@
     Random random = new Random();
 }
 
-<style>
-    .carousel-col {
-        display: flex;
-        justify-content: center;
-    }
-    .carousel-item-background {
-        background-color: grey;
-    }
-    .carousel-image {
-        width: 90vw;
-        height: 50vh;
-        object-fit: cover;
-        opacity: 0.7;
-    }
-    .a-decoration {
-        text-decoration: none;
-        color: black;
-    }
-        .a-decoration:hover {
-            text-decoration: none;
-            color: black;
-        }
-    .big-image {
-        width: 70vmin;
-        height: 50vmin;
-        overflow: hidden;
-    }
-    .small-image {
-        width: 50vmin;
-        height: 45vmin;
-        overflow: hidden;
-    }
-</style>
+<link rel="stylesheet" href="~/css/HomeStyle.css">
 
 <div class="row">
     <div class="col-sm">
@@ -108,19 +76,19 @@
                 @{
                     int index = random.Next(0, recipeList.Count());
                     <a asp-controller="Recipes" asp-action="Details" asp-route-id="@recipeList[index].RecipeId" asp-route-gobackurl="Recipes" class="a-decoration">
-                        <div class="row mb-4 justify-content-center">
-                            <div class="col-sm">
-                                <div class="row">
+                        <div class="row mb-3 px-2 py-2 justify-content-center featured-background">
+                            <div class="col-sm-6">
+                                <div class="row mb-2">
                                     <div class="col-sm">
-                                        @recipeList[index].Title
+                                        <h5>@recipeList[index].Title</h5>
                                     </div>
                                 </div>
-                                <div class="row">
+                                <div class="row mb-2">
                                     <div class="col-sm">
                                         @recipeList[index].Description
                                     </div>
                                 </div>
-                                <div class="row">
+                                <div class="row mb-4">
                                     <div class="col-sm-1">
                                         <i style='font-size:24px' class='fa fa-clock-o mr-3'></i>
                                     </div>
@@ -129,19 +97,19 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-sm">
+                            <div class="col-sm-6">
                                 <img src="@recipeList[index].MainMediaUrl" alt="main recipe image" class="big-image" />
                             </div>
                         </div>
                     </a>
                 }
-                <div class="row mb-2 justify-content-center">
+                <div class="row mb-2 justify-content-between">
                     @{
                         for (int i = 0; i < 3; i++)
                         {
                             int index_secondary = random.Next(0, recipeList.Count());
                             <a asp-controller="Recipes" asp-action="Details" asp-route-id="@recipeList[index_secondary].RecipeId" asp-route-gobackurl="Recipes" class="a-decoration">
-                                <div class="col-sm">
+                                <div class="col-sm featured-background">
                                     <div class="row">
                                         <div class="col-sm">
                                             <img src="@recipeList[index_secondary].MainMediaUrl" alt="main recipe image" class="small-image" />
@@ -175,11 +143,11 @@
                 @{
                     int index_group = random.Next(0, groupList.Count());
                     <a asp-controller="Groups" asp-action="Details" asp-route-id="@groupList[index_group].GroupId" asp-route-gobackurl="Groups" class="a-decoration">
-                        <div class="row mb-4 justify-content-center">
-                            <div class="col-sm">
-                                <div class="row">
+                        <div class="row mb-3 px-2 py-2 justify-content-center featured-background">
+                            <div class="col-sm-6">
+                                <div class="row mb-4">
                                     <div class="col-sm">
-                                        @groupList[index_group].GroupName
+                                        <h5>@groupList[index_group].GroupName</h5>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -188,19 +156,19 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-sm">
+                            <div class="col-sm-6">
                                 <img src="@groupList[index_group].GroupPhoto" alt="main group image" class="big-image" />
                             </div>
                         </div>
                     </a>
                 }
-                <div class="row mb-2 justify-content-center">
+                <div class="row mb-2 justify-content-between">
                     @{
                         for (int i = 0; i < 3; i++)
                         {
                             int index_secondary_group = random.Next(0, groupList.Count());
                             <a asp-controller="Groups" asp-action="Details" asp-route-id="@groupList[index_secondary_group].GroupId" asp-route-gobackurl="Groups" class="a-decoration">
-                                <div class="col-sm">
+                                <div class="col-sm featured-background">
                                     <div class="row">
                                         <div class="col-sm">
                                             <img src="@groupList[index_secondary_group].GroupPhoto" alt="main group image" class="small-image" />
@@ -226,3 +194,8 @@
 
     </div>
 </div>
+
+<!-- Keep the carousel moving -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
