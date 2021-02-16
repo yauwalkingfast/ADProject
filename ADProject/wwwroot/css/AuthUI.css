@@ -1,0 +1,100 @@
+﻿.btn-google:hover {
+    background: #b22222;
+    color: #fff;
+}
+
+.btn-facebook:hover {
+    background: #2b4db1;
+    color: #fff;
+}
+
+.btn-twitter:hover {
+    background: #007bb6;
+    color: #fff;
+}
+
+.btn-microsoft:hover {
+    background: #00618E;
+    color: #fff;
+}
+
+.btn-facebook {
+    background: #305c99;
+    color: #fff;
+}
+
+.btn-twitter {
+    background: #00cdff;
+    color: #fff;
+}
+
+.btn-google {
+    background: #d24228;
+    color: #fff;
+}
+
+.btn-linkedin {
+    background: #007bb6;
+    color: #fff;
+}
+
+.btn-microsoft {
+    background: #007bb6;
+    color: #fff;
+}
+
+body {
+    height: 100vh;
+    background: #bf9bac !important;
+    display: flex;
+    flex-direction: column;
+    /*align-items: center;*/
+    /*justify-content: center;*/
+}
+
+.card {
+    overflow: hidden;
+    border: 0 !important;
+    border-radius: 20px !important;
+    box-shadow: 0 0.5rem 1rem 0 rgba(0, 0, 0, 0.1);
+}
+
+.img-left {
+    width: 45%;
+    background: url(https://images.unsplash.com/photo-1467003909585-2f8a72700288?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=634&q=80) center;
+    background-size: cover;
+}
+
+img.logo {
+    max-width: 10%;
+    max-height: 10%;
+}
+
+.card-body {
+    padding: 2rem;
+}
+
+.title {
+    margin-bottom: 2rem;
+}
+
+
+
+.custom-checkbox .custom-control-input:checked ~ .custom-control-label::before {
+    background-color: #007bff !important;
+    border: 0px;
+}
+
+
+
+.forget-link, .register-link {
+    color: #007bff;
+    font-weight: bold;
+}
+
+    .forget-link:hover, .register-link:hover {
+        color: #0069d9;
+        text-decoration: none;
+    }
+
+

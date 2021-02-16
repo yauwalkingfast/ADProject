@@ -4,78 +4,160 @@
     ViewData["Title"] = "Register";
 }
 
-<h1>@ViewData["Title"]</h1>
 
-<div class="row">
-    <div class="col-md-4">
-        <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
-            <h4>Create a new account.</h4>
-            <hr />
-            <div asp-validation-summary="All" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Input.FirstName"></label>
-                <input asp-for="Input.FirstName" class="form-control" />
-                <span asp-validation-for="Input.FirstName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Input.LastName"></label>
-                <input asp-for="Input.LastName" class="form-control" />
-                <span asp-validation-for="Input.LastName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Input.Username"></label>
-                <input asp-for="Input.Username" class="form-control" />
-                <span asp-validation-for="Input.Username" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Input.Email"></label>
-                <input asp-for="Input.Email" class="form-control" />
-                <span asp-validation-for="Input.Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Input.Password"></label>
-                <input asp-for="Input.Password" class="form-control" />
-                <span asp-validation-for="Input.Password" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Input.ConfirmPassword"></label>
-                <input asp-for="Input.ConfirmPassword" class="form-control" />
-                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
-            </div>
-            <button type="submit" class="btn btn-primary">Register</button>
-        </form>
-    </div>
-    <div class="col-md-6 col-md-offset-2">
-        <section>
-            <h4>Use another service to register.</h4>
-            <hr />
-            @{
-                if ((Model.ExternalLogins?.Count ?? 0) == 0)
-                {
-                    <div>
-                        <p>
-                            There are no external authentication services configured. See <a href="https://go.microsoft.com/fwlink/?LinkID=532715">this article</a>
-                            for details on setting up this ASP.NET application to support logging in via external services.
-                        </p>
-                    </div>
-                }
-                else
-                {
-                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
-                        <div>
-                            <p>
-                                @foreach (var provider in Model.ExternalLogins)
-                                {
-                                    <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
-                                }
-                            </p>
+
+
+<link href="~/css/AuthUI.css" rel="stylesheet" />
+
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="row px-3">
+            <div class="col-lg-10 col-xl-9 card flex-row mx-auto px-0">
+                <div class="img-left d-none d-md-flex"></div>
+
+                <div class="card-body">
+                    <h4 class="title text-center mt-4">
+                        Create a new account
+
+
+                    </h4>
+
+                    <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
+
+                        <hr />
+                        <div asp-validation-summary="All" class="text-danger"></div>
+                        <div class="form-group">
+                            <label asp-for="Input.FirstName"></label>
+                            <input asp-for="Input.FirstName" class="form-control" />
+                            <span asp-validation-for="Input.FirstName" class="text-danger"></span>
                         </div>
+                        <div class="form-group">
+                            <label asp-for="Input.LastName"></label>
+                            <input asp-for="Input.LastName" class="form-control" />
+                            <span asp-validation-for="Input.LastName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Input.Username"></label>
+                            <input asp-for="Input.Username" class="form-control" />
+                            <span asp-validation-for="Input.Username" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Input.Email"></label>
+                            <input asp-for="Input.Email" class="form-control" />
+                            <span asp-validation-for="Input.Email" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Input.Password"></label>
+                            <input asp-for="Input.Password" class="form-control" />
+                            <span asp-validation-for="Input.Password" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Input.ConfirmPassword"></label>
+                            <input asp-for="Input.ConfirmPassword" class="form-control" />
+                            <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Register</button>
                     </form>
-                }
-            }
-        </section>
+
+                    <div class="text-center mb-3">
+                        or login with
+                    </div>
+
+                    @{
+                        if ((Model.ExternalLogins?.Count ?? 0) == 0)
+                        {
+                            <div>
+                                <p>
+                                    There are no external authentication services configured. See <a href="https://go.microsoft.com/fwlink/?LinkID=532715">this article</a>
+                                    for details on setting up this ASP.NET application to support logging in via external services.
+                                </p>
+                            </div>
+                        }
+                        else
+                        {
+                            <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
+                                <div>
+                                    <p>
+                                        @foreach (var provider in Model.ExternalLogins)
+                                        {
+                                            if (provider.Name == "Google")
+                                            {
+                                                <div class="col-md-4">
+                                                    <button type="submit" class="btn btn-block btn-google" value="@provider.Name"
+                                                            title="Log in using your @provider.DisplayName account" name="provider">
+
+                                                        Google
+                                                    </button>
+                                                </div>
+                                            }
+                                            else if (provider.Name == "Facebook")
+                                            {
+                                                <div class="col-md-4">
+                                                    <button class="btn-block btn btn-facebook" type="submit" value="@provider.Name"
+                                                            title="Log in using your @provider.DisplayName account" name="provider">
+
+                                                        Facebook
+                                                    </button>
+                                                </div>
+                                            }
+                                            else if (provider.Name == "Twitter")
+                                            {
+                                                <div class="col-md-4">
+                                                    <button class="btn-block btn btn-twitter" type="submit" value="@provider.Name"
+                                                            title="Log in using your @provider.DisplayName account" name="provider">
+
+                                                        Twitter
+                                                    </button>
+                                                </div>
+                                            }
+                                            else if (provider.Name == "Microsoft")
+                                            {
+                                                <div class="col-md-4">
+                                                    <button class="btn-block btn btn-microsoft" type="submit" value="@provider.Name"
+                                                            title="Log in using your @provider.DisplayName account" name="provider">
+
+                                                        Microsoft
+                                                    </button>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <div class="col-md-4">
+                                                    <button class="btn-block btn btn-linkedin" type="submit" name="provider"
+                                                            value="@provider.Name" title="Log in using your @provider.DisplayName account">
+
+
+                                                        Sign in with @provider.Name
+
+                                                    </button>
+                                                </div>
+
+                                            }
+                                        }
+                                    </p>
+                                </div>
+                            </form>
+                        }
+                    }
+
+
+
+
+                </div>
+            </div>
+        </div>
     </div>
-</div>
+</body>
+</html>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
