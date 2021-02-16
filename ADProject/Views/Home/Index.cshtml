@@ -123,7 +123,12 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-sm">
-                                            @recipeList[index_secondary].Title
+                                            <h5>@recipeList[index_secondary].Title</h5>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm clamp-me">
+                                            @recipeList[index_secondary].Description
                                         </div>
                                     </div>
                                 </div>
@@ -184,7 +189,12 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-sm">
-                                            @groupList[index_secondary_group].GroupName
+                                            <h5>@groupList[index_secondary_group].GroupName</h5>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm clamp-me">
+                                            @groupList[index_secondary_group].Description
                                         </div>
                                     </div>
                                 </div>
@@ -202,6 +212,16 @@
 
     </div>
 </div>
+
+<!-- Clamp JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clamp-js/0.7.0/clamp.js" integrity="sha512-TnePtmz3HL4p8nFS2lR46u0iHrwObVnUednDASZK/qS9btkd09xKs1PeCt1kpS4a0gWNQx1AF+WnDHDK+xWcAw==" crossorigin="anonymous"></script>
+<script type="text/javascript">
+    var module = document.getElementsByClassName("clamp-me");
+
+    for (let i = 0; i < module.length; i++) {
+        $clamp(module[i], { clamp: 4 })
+    }
+</script>
 
 <!-- Keep the carousel moving -->
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>

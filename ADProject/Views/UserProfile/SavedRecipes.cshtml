@@ -26,7 +26,11 @@
                 <a asp-controller="Recipes" asp-action="Details" asp-route-gobackurl="UserProfile/SavedRecipes/@user.Id" asp-route-id="@recipe.RecipeId">
                     <img class="element-photo" src="@recipe.Recipe.MainMediaUrl" alt="recipe main photo" />
                     <div class="top-left">@recipe.Recipe.Title</div>
-                    <div class="middle">@recipe.Recipe.Description</div>
+                    <div class="middle">
+                        <div class="clamp-me">
+                            @recipe.Recipe.Description
+                        </div>
+                    </div>
                     <div class="bottom-left">
                         @for (int i = 0; i < 3 && i < recipe.Recipe.RecipeTags.Count(); i++)
                         {
@@ -64,3 +68,13 @@
         Next
     </a>
 </div>
+
+<!-- Clamp JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clamp-js/0.7.0/clamp.js" integrity="sha512-TnePtmz3HL4p8nFS2lR46u0iHrwObVnUednDASZK/qS9btkd09xKs1PeCt1kpS4a0gWNQx1AF+WnDHDK+xWcAw==" crossorigin="anonymous"></script>
+<script type="text/javascript">
+    var module = document.getElementsByClassName("clamp-me");
+
+    for (let i = 0; i < module.length; i++) {
+        $clamp(module[i], { clamp: 5 })
+    }
+</script>
