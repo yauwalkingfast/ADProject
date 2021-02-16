@@ -24,8 +24,8 @@ namespace ADProject.DbSeeder
         public void Init()
         {
             AddRecipes();
-            AddTags();
-            AddGroups();
+/*            AddTags();
+*/            AddGroups();
             AddUsers();
 
             // Use this version to test authentication

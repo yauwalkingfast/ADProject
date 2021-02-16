@@ -229,6 +229,169 @@ namespace ADProject.Db
             });
 
             db.SaveChanges();
+
+            // Recipe 2
+            List<RecipeIngredient> recipeIngredient2 = new List<RecipeIngredient>();
+            recipeIngredient2.Add(new RecipeIngredient
+            {
+                Ingredient = "beef chunk roast",
+                Quantity = 1,
+                UnitOfMeasurement = "2-lb"
+            });
+            recipeIngredient2.Add(new RecipeIngredient
+            {
+                Ingredient = "dried oregano",
+                Quantity = 2,
+                UnitOfMeasurement = "tsp"
+            });
+            recipeIngredient2.Add(new RecipeIngredient
+            {
+                Ingredient = "brown sugar",
+                Quantity = 2,
+                UnitOfMeasurement = "tsp"
+            });
+            recipeIngredient2.Add(new RecipeIngredient
+            {
+                Ingredient = "kosher salt",
+                Quantity = 0.5,
+                UnitOfMeasurement = ""
+            });
+            recipeIngredient2.Add(new RecipeIngredient
+            {
+                Ingredient = "chili powder",
+                Quantity = 1,
+                UnitOfMeasurement = "tsp"
+            });
+            recipeIngredient2.Add(new RecipeIngredient
+            {
+                Ingredient = "cumin",
+                Quantity = 1,
+                UnitOfMeasurement = "tsp"
+            });
+            recipeIngredient2.Add(new RecipeIngredient
+            {
+                Ingredient = "garlic powder",
+                Quantity = 1,
+                UnitOfMeasurement = "tsp"
+            });
+            recipeIngredient2.Add(new RecipeIngredient
+            {
+                Ingredient = "vegetable oil",
+                Quantity = 1,
+                UnitOfMeasurement = "tsp"
+            });
+            recipeIngredient2.Add(new RecipeIngredient
+            {
+                Ingredient = "medium yellow onion, sliced",
+                Quantity = 1,
+                UnitOfMeasurement = ""
+            });
+            recipeIngredient2.Add(new RecipeIngredient
+            {
+                Ingredient = "Mexican beer",
+                Quantity = 12,
+                UnitOfMeasurement = "oz"
+            });
+            recipeIngredient2.Add(new RecipeIngredient
+            {
+                Ingredient = "bag corn chips",
+                Quantity = 12,
+                UnitOfMeasurement = "oz"
+            });
+            recipeIngredient2.Add(new RecipeIngredient
+            {
+                Ingredient = "Monterey Jack cheese",
+                Quantity = 3,
+                UnitOfMeasurement = "slices"
+            });
+
+            List<RecipeStep> recipeSteps2 = new List<RecipeStep>();
+            recipeSteps2.Add(new RecipeStep
+            {
+                StepNumber = 1,
+                MediaFileUrl = "https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/190423-instant-pot-nachos-159-1556728757.jpg?crop=1.00xw:0.376xh;0,0.120xh&resize=768:*",
+                TextInstructions = "In a small bowl, whisk to combine oregano, brown sugar, salt, chili powder, cumin, and garlic powder. Rub spice mix all over roast."
+            });
+            recipeSteps2.Add(new RecipeStep
+            {
+                StepNumber = 2,
+                TextInstructions = "Heat Instant Pot to Sauté and add vegetable oil. Sear all sides of chuck roast until golden, about 2 minutes per side. Remove roast."
+            });
+            recipeSteps2.Add(new RecipeStep
+            {
+                StepNumber = 3,
+                TextInstructions = "Pour beer into Instant Pot, then add chuck roast back to pot. Scatter onions over pot roast and secure Instant Pot lid."
+            });
+            recipeSteps2.Add(new RecipeStep
+            {
+                StepNumber = 4,
+                TextInstructions = "Select Pressure Cook and cook on high for 2 1/2 hours. Let pressure release naturally for 10 minutes, then quick release remaining air. Remove roast from instant pot and use two forks to shred into bite-sized pieces."
+            });
+            recipeSteps2.Add(new RecipeStep
+            {
+                StepNumber = 5,
+                TextInstructions = "Preheat oven to 375and line a large baking sheet with aluminum foil. Spread an even layer of chips onto the baking sheet, then top with 1/3 of the cheese, jalapenos, and shredded beef."
+            });
+            recipeSteps2.Add(new RecipeStep
+            {
+                StepNumber = 6,
+                TextInstructions = " Top with more chips, and another 1/3 of cheese, jalapeños, and beef. Finish with one more layer of chips and the remaining cheese, jalapeños, and beef. Bake until cheese is melty and chips have crisped slightly, 10 minutes.",
+            });
+            recipeSteps2.Add(new RecipeStep
+            {
+                StepNumber = 7,
+                TextInstructions = "Garnish with avocado, radishes, cilantro, and red onion. Serve with lime wedges on the side for squeezing."
+            });
+
+            Tag t7 = new Tag
+            {
+                TagName = "Cheese",
+                Warning = "Lactose Intolerant"
+            };
+            Tag t8 = new Tag
+            {
+                TagName = "Beef",
+                Warning = ""
+            };
+
+            db.Add(t7);
+            db.Add(t8);
+            db.SaveChanges();
+
+            List<RecipeTag> recipeTags2 = new List<RecipeTag>();
+            recipeTags2.Add(new RecipeTag
+            {
+                IsAllergenTag = false,
+                Tag = t7
+            });
+            recipeTags2.Add(new RecipeTag
+            {
+                IsAllergenTag = true,
+                Tag = t7
+            });
+            recipeTags2.Add(new RecipeTag
+            {
+                IsAllergenTag = false,
+                Tag = t8
+            });
+
+            db.Add(new Recipe
+            {
+                Title = "Instant Pot Shredded Beef Nachos",
+                Description = "Who doesn't love a big tray of nachos? These are particularly good, considering they're loaded with delicious, tender braised beef chuck roast. If your cut of meat is especially big, you can save the leftovers for quick and easy tacos—just add tortillas!",
+                DurationInMins = 60,
+                Calories = 500,
+                ServingSize = 2,
+                IsPublished = true,
+                MainMediaUrl = "https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/190423-instant-pot-nachos-191-1556728757.jpg?crop=0.668xw:1.00xh;0.247xw,0.00255xh&resize=980:*",
+                RecipeIngredients = recipeIngredient2,
+                RecipeSteps = recipeSteps2,
+                RecipeTags = recipeTags2,
+                User = u1,
+                DateCreated = DateTime.Now
+            });
+
+            db.SaveChanges();
         }
 
         protected void AddTags()
