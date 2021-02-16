@@ -170,6 +170,7 @@ namespace ADProject.Service
         public async Task<List<Recipe>> GetAllRecipesSearch(string search)
         {
             List<Recipe> rList = await _context.Recipes
+                .Include(r => r.User)
                 .Include(r => r.RecipeSteps)
                 .Include(r => r.RecipeIngredients)
                 .Include(r => r.Comments)
@@ -182,7 +183,7 @@ namespace ADProject.Service
                           r.RecipeTags.Any(y => y.Tag.TagName.Contains(search)))
                 .ToListAsync();
 
-/*            foreach (Recipe r in rList)
+            foreach (Recipe r in rList)
             {
                 ApplicationUser n = new ApplicationUser
                 {
@@ -191,7 +192,7 @@ namespace ADProject.Service
                 };
 
                 r.User = n;
-            }*/
+            }
 
             return rList;
         }

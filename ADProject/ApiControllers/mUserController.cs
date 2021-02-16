@@ -55,5 +55,14 @@ namespace ADProject.ApiControllers
             return isSaved;
         }
 
+        [HttpPost]
+        [Route("validateuser")]
+        public async Task<ApplicationUser> ValidateUser([FromBody] UserValidatorJson userJson)
+        {
+            ApplicationUser user = await _usersService.ValidateUser(userJson);
+
+            return user;
+        }
+
     }
 }
