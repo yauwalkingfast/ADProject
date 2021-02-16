@@ -48,7 +48,7 @@
     padding: 0px;
     border-radius: 10px;
     width: 50vmin;
-    height: 45vmin;
+    height: 55vmin;
     text-align: center;
     overflow-wrap: break-word;
     overflow: hidden;
@@ -66,7 +66,7 @@
 
 .element-photo {
     width: 50vmin;
-    height: 45vmin;
+    height: 50vmin;
     overflow: hidden;
     opacity: 1;
     transition: .5s ease;
@@ -110,4 +110,29 @@
 
 .element-item a {
     color: black;
+}
+
+@media screen and (min-width: 1300px) and (min-height: 800px) {
+    .element-item {
+        align-self: center;
+        position: relative;
+        padding: 0px;
+        border-radius: 10px;
+        width: 60vmin;
+        height: 65vmin;
+        text-align: center;
+        overflow-wrap: break-word;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .element-photo {
+        width: 60vmin;
+        height: 60vmin;
+        overflow: hidden;
+        opacity: 1;
+        transition: .5s ease;
+        backface-visibility: hidden;
+        object-fit: cover;
+        border-radius: 10px;
+    }
 }

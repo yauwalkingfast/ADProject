@@ -39,7 +39,7 @@
 
 .group-photo {
     width: 50vmin;
-    height: 45vmin;
+    height: 50vmin;
     overflow: hidden;
     opacity: 1;
     transition: .5s ease;
@@ -81,10 +81,10 @@
     color: black;
 }
 
-@media screen and (max-width: 500px) {
+@media screen and (min-width: 1300px) and (min-height: 800px) {
     .group-photo {
-        width: 80vmin;
-        height: 70vmin;
+        width: 60vmin;
+        height: 60vmin;
         overflow: hidden;
         opacity: 1;
         transition: .5s ease;

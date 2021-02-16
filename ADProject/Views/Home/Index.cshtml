@@ -82,15 +82,15 @@
                 @{
                     int index = random.Next(0, recipeList.Count());
                     <a asp-controller="Recipes" asp-action="Details" asp-route-id="@recipeList[index].RecipeId" asp-route-gobackurl="Recipes" class="a-decoration">
-                        <div class="row mb-3 justify-content-between featured-background">
+                        <div class="row mb-5 justify-content-between featured-background">
                             <div class="col-sm-6">
                                 <div class="row mb-2 mt-2">
                                     <div class="col-sm">
-                                        <h5>@recipeList[index].Title</h5>
+                                        <h3>@recipeList[index].Title</h3>
                                     </div>
                                 </div>
                                 <div class="row mb-2">
-                                    <div class="col-sm">
+                                    <div class="col-sm" style="font-size: 20px;">
                                         @recipeList[index].Description
                                     </div>
                                 </div>
@@ -115,19 +115,19 @@
                         {
                             int index_secondary = random.Next(0, recipeList.Count());
                             <a asp-controller="Recipes" asp-action="Details" asp-route-id="@recipeList[index_secondary].RecipeId" asp-route-gobackurl="Recipes" class="a-decoration">
-                                <div class="col-sm px-0 featured-background small-image-container">
+                                <div class="col-sm px-0 mb-4 featured-background small-image-container">
                                     <div class="row">
                                         <div class="col-sm">
                                             <img src="@recipeList[index_secondary].MainMediaUrl" alt="main recipe image" class="small-image" />
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-sm">
-                                            <h5>@recipeList[index_secondary].Title</h5>
+                                        <div class="col-sm mx-3 mt-4">
+                                            <h4>@recipeList[index_secondary].Title</h4>
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-sm clamp-me">
+                                        <div class="col-sm clamp-me mx-3" style="font-size: 20px;">
                                             @recipeList[index_secondary].Description
                                         </div>
                                     </div>
@@ -156,15 +156,15 @@
                 @{
                     int index_group = random.Next(0, groupList.Count());
                     <a asp-controller="Groups" asp-action="Details" asp-route-id="@groupList[index_group].GroupId" asp-route-gobackurl="Groups" class="a-decoration">
-                        <div class="row mb-3 justify-content-center featured-background">
+                        <div class="row mb-5 justify-content-center featured-background">
                             <div class="col-sm-6">
                                 <div class="row mb-4 mt-2">
                                     <div class="col-sm">
-                                        <h5>@groupList[index_group].GroupName</h5>
+                                        <h3>@groupList[index_group].GroupName</h3>
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-sm">
+                                    <div class="col-sm" style="font-size: 20px;">
                                         @groupList[index_group].Description
                                     </div>
                                 </div>
@@ -181,19 +181,19 @@
                         {
                             int index_secondary_group = random.Next(0, groupList.Count());
                             <a asp-controller="Groups" asp-action="Details" asp-route-id="@groupList[index_secondary_group].GroupId" asp-route-gobackurl="Groups" class="a-decoration">
-                                <div class="col-sm px-0 featured-background small-image-container">
+                                <div class="col-sm px-0 mb-4 featured-background small-image-container">
                                     <div class="row">
                                         <div class="col-sm">
                                             <img src="@groupList[index_secondary_group].GroupPhoto" alt="main group image" class="small-image" />
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-sm">
-                                            <h5>@groupList[index_secondary_group].GroupName</h5>
+                                        <div class="col-sm mt-4 mx-3">
+                                            <h4>@groupList[index_secondary_group].GroupName</h4>
                                         </div>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-sm clamp-me">
+                                    <div class="row mx-3">
+                                        <div class="col-sm clamp-me" style="font-size: 20px;">
                                             @groupList[index_secondary_group].Description
                                         </div>
                                     </div>
@@ -219,7 +219,7 @@
     var module = document.getElementsByClassName("clamp-me");
 
     for (let i = 0; i < module.length; i++) {
-        $clamp(module[i], { clamp: 4 })
+        $clamp(module[i], { clamp: 2 })
     }
 </script>
 

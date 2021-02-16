@@ -37,7 +37,6 @@
     height: 45vmin;
     overflow: hidden;
     object-fit: cover;
-    border-radius: 10px;
 }
 
 .small-image-container {
@@ -47,4 +46,21 @@
     overflow-wrap: break-word;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+@media screen and (min-width: 1300px) and (min-height: 800px) {
+    .small-image {
+        width: 60vmin;
+        height: 50vmin;
+        overflow: hidden;
+        object-fit: cover;
+    }
+    .small-image-container {
+        width: 60vmin;
+        height: 78vmin;
+        text-align: center;
+        overflow-wrap: break-word;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 }
