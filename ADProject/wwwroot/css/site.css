@@ -18,16 +18,42 @@ a.navbar-brand {
 
 .featured-background {
     background-color: white;
+    border-radius: 10px;
 }
 
 .modal-background {
-    background-color: #f5efeb;
+    background-color: #fafafa;
+}
+
+.btn-custom, .btn-custom:hover, .btn-custom:active, .btn-custom:visited {
+    background-color: #734b5e !important;
+    color: white;
+}
+
+.r4me-logo {
+    width: 15vmin;
+    height: 5vmin;
+}
+
+.nav-item-size {
+    font-size: 1.2em;
 }
 
 body {
     /* Margin bottom by footer height */
-    background-color: #fafafa;
+    background-color: #e8e8e8;
     margin-bottom: 60px;
+}
+
+.icon-button {
+    background-color: Transparent;
+    background-repeat: no-repeat;
+    border: none;
+    cursor: pointer;
+    overflow: hidden;
+    outline: none;
+    text-decoration: none;
+    color: black;
 }
 
 /* Provide sufficient contrast against white background */
