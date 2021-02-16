@@ -1,11 +1,11 @@
 ﻿@model ADProject.Models.Group
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Group";
     PaginatedList<RecipeGroup> paginatedList = (PaginatedList<RecipeGroup>)ViewData["paginatedList"];
     var prevDisabled = !paginatedList.HasPreviousPage ? "disabled" : "";
     var nextDisabled = !paginatedList.HasNextPage ? "disabled" : "";
-    string gobackurl = @ViewData["Controller"] + "/" + @ViewData["Action"] + "/" + @ViewData["GoBackId"];
+    string gobackurl = ViewData["Controller"] + "/" + ViewData["Action"] + "/" + ViewData["GoBackId"];
 }
 
 
@@ -75,11 +75,11 @@
             <div class="display-flex-end">
                 @if (Model.UsersGroups.Any(ug => ug.User.UserName == User.Identity.Name))
                 {
-                    <a class="button" asp-action="Leave" asp-route-gobackurl="@gobackurl" asp-route-id="@Model.GroupId">Leave</a>
+                    <a class="btn btn-custom" asp-action="Leave" asp-route-gobackurl="@gobackurl" asp-route-id="@Model.GroupId">Leave</a>
                 }
                 else
                 {
-                    <a class="button" asp-action="Join" asp-route-gobackurl="@gobackurl" asp-route-id="@Model.GroupId">Join</a>
+                    <a class="btn btn-custom" asp-action="Join" asp-route-gobackurl="@gobackurl" asp-route-id="@Model.GroupId">Join</a>
                 }
             </div>
 

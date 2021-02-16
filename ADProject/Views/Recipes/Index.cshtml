@@ -2,7 +2,7 @@
 *@
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Recipe";
 
     PaginatedList<Recipe> paginatedList = (PaginatedList<Recipe>)ViewData["paginatedList"];
     var prevDisabled = !paginatedList.HasPreviousPage ? "disabled" : "";

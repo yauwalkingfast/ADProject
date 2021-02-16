@@ -25,6 +25,20 @@ a.navbar-brand {
     background-color: #fafafa;
 }
 
+.btn-custom, .btn-custom:hover, .btn-custom:active, .btn-custom:visited {
+    background-color: #734b5e !important;
+    color: white;
+}
+
+.r4me-logo {
+    width: 15vmin;
+    height: 5vmin;
+}
+
+.nav-item-size {
+    font-size: 1.2em;
+}
+
 body {
     /* Margin bottom by footer height */
     background-color: #e8e8e8;

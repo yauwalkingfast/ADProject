@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - ADProject</title>
+    <title>@ViewData["Title"] - Recipe4Me</title>
     @*    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     *@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
@@ -15,13 +15,14 @@
 
     <!-- jQuery UI -->
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="icon" type="image/png" href="~/r4meNoBGNoWords.png" sizes="16x16" />
 </head>
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light navbar-background border-bottom box-shadow mb-3">
-            <div class="container">
+            <div class="container-fluid">
                 <a class="navbar-brand navbar-text" asp-area="" asp-controller="Home" asp-action="Index">
-                    ADProject
+                    <img src="~/logowordswhite.png" alt="r4me logo" class="r4me-logo" />
                 </a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
@@ -30,15 +31,14 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between my-3">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link navbar-text" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-item-size nav-link navbar-text" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link navbar-text" asp-area="" asp-controller="Recipes" asp-action="Index">Recipes</a>
+                            <a class="nav-item-size nav-link navbar-text" asp-area="" asp-controller="Recipes" asp-action="Index">Recipes</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link navbar-text" asp-area="" asp-controller="Groups" asp-action="Index">Groups</a>
+                            <a class="nav-item-size nav-link navbar-text" asp-area="" asp-controller="Groups" asp-action="Index">Groups</a>
                         </li>
-
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>
@@ -53,7 +53,7 @@
 
     <footer class="border-top footer text-muted" style="background-color: black;">
         <div class="container navbar-text">
-            &copy; 2021 - ADProject - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2021 - Recipe4Me - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
 

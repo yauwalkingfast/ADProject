@@ -49,15 +49,22 @@
 }
 
 .custom-text-size {
-    font-size: 0.9em;
+    font-size: 1.2em;
 }
 
 .custom-header-size {
-    font-size: 1.2em;
+    font-size: 1.4em;
     font-weight: bolder;
 }
 
 @media screen and (min-width: 1300px) and (min-height: 800px) {
+    .big-image {
+        width: 93vmin;
+        height: 60vmin;
+        overflow: hidden;
+        object-fit: cover;
+        border-radius: 10px;
+    }
     .small-image {
         width: 60vmin;
         height: 50vmin;
