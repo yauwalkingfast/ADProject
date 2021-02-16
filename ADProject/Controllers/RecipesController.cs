@@ -33,34 +33,6 @@ namespace ADProject.Controllers
             _recipesService = recipeService;
         }
 
-        // GET: Recipes
-        /*        public async Task<IActionResult> Index()
-                {
-                    return View(await _recipesService.GetAllRecipes());
-                }*/
-
-/*        public async Task<IActionResult> Index(int? pageNumber)
-        {
-            var allRecipes = await _recipesService.GetAllRecipesQueryable();
-            int pageSize = 1;
-            var paginatedList = await PaginatedList<Recipe>.CreateAsync(allRecipes, pageNumber ?? 1, pageSize);
-
-            return View(paginatedList);
-        }*/
-
-        /*        [HttpPost]
-                public async Task<IActionResult> Index([FromForm] String search)
-                {
-
-                    if (!String.IsNullOrEmpty(search))
-                    {
-                        return View(await _recipesService.GetAllRecipesSearch(search));
-                    }
-                    else
-
-                        return View(await _recipesService.GetAllRecipes());
-                }*/
-
         public async Task<IActionResult> Index(int? pageNumber, string search)
         {
 
@@ -390,36 +362,6 @@ namespace ADProject.Controllers
             return View("Error");
         }
 
-
-        /*        [HttpPost]
-                public IActionResult GenerateAllergenTag([FromBody] int recipeId)
-                {
-                    GenerateTag trial = new GenerateTag(_recipesService);
-
-                    string allergens = trial.GetAllergenTag(recipeId);
-
-                    tempAllergenTags tempAlTags = JsonConvert.DeserializeObject<tempAllergenTags>(allergens);
-                    if (tempAlTags.allergens != null)
-                    {
-                        Debug.WriteLine(tempAlTags.allergens[0]);
-                    }
-
-                    //Saving the recipe into the DB first before generating the tags
-                    *//*if (ModelState.IsValid)
-                    {   //uses Service class to add Recipe
-                        var successful = await _recipesService.AddRecipe(recipe);
-                        if (successful)
-                        {
-                            return RedirectToAction(nameof(Index));
-                        }
-                    }
-                    ViewData["UserId"] = new SelectList(_context.Users, "UserId", "Email", recipe.UserId);
-                    return View(recipe);*//*
-
-
-                    return RedirectToAction("Create");
-                }*/
-
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
@@ -452,34 +394,6 @@ namespace ADProject.Controllers
             string json = JsonConvert.SerializeObject(tags, Formatting.Indented);
             return Json(new { tags = json });
         }
-
-        /*        [HttpPost]
-                [Authorize]
-                public IActionResult FileUpload([FromForm] FileModel file)
-                {
-                    try
-                    {
-                        file.FileName = Guid.NewGuid().ToString() + ".jpg";
-                        string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", file.FileName);
-
-                        *//*                string path = Path.Combine(Directory.GetCurrentDirectory(), "RecipesImage", file.FileName);
-                        *//*
-                        using (Stream stream = new FileStream(path, FileMode.Create))
-                        {
-                            file.FormFile.CopyTo(stream);
-                        }
-
-                        string imageUrl = "images/" + file.FileName;
-
-        *//*                string imageUrl = "RecipesImage/" + file.FileName;
-        *//*                
-                        return Json(new { fileUrl = imageUrl });
-                    }
-                    catch
-                    {
-                        return StatusCode(400);
-                    }
-                }*/
 
         [HttpPost]
         [Authorize]

@@ -1,0 +1,37 @@
+﻿.carousel-col {
+    display: flex;
+    justify-content: center;
+}
+
+.carousel-item-background {
+    background-color: grey;
+}
+
+.carousel-image {
+    width: 90vw;
+    height: 50vh;
+    object-fit: cover;
+    opacity: 0.7;
+}
+
+.a-decoration {
+    text-decoration: none;
+    color: black;
+}
+
+    .a-decoration:hover {
+        text-decoration: none;
+        color: black;
+    }
+
+.big-image {
+    width: 80vmin;
+    height: 50vmin;
+    overflow: hidden;
+}
+
+.small-image {
+    width: 50vmin;
+    height: 45vmin;
+    overflow: hidden;
+}

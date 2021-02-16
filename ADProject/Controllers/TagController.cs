@@ -27,20 +27,6 @@ namespace ADProject.Controllers
             _recipesService = recipeService;
         }
         
-        // GET: api/<TagController>
-        /*[HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
-
-        // GET api/<TagController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }*/
-
         // POST api/<TagController>
         [HttpGet("{id}")]
         public string Get(int id)

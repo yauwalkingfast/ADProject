@@ -80,15 +80,17 @@
                <div class="display-flex-end">
                     <form id="search-form" asp-controller="Groups" asp-action="Details" asp-route-gobackurl="@gobackurl" asp-route-id="@Model.GroupId" method="get">
                         <input type="hidden" value="@gobackurl" name="gobackurl" />
-                        <input type="text" placeholder="Search Featured Recipes.." name="search" value="@ViewData["Search"]">
-                        <button type="submit"><i class="fa fa-search"></i></button>
+                        <div class="form-group form-inline">
+                            <input class="form-control" type="text" placeholder="Search Featured Recipes.." name="search" value="@ViewData["Search"]">
+                            <button type="submit" class="btn ml-1"><i class="fa fa-search"></i></button>
+                        </div>
                     </form>
                 </div>
         </div>
 
         @foreach (var recipe in paginatedList)
         {
-            <div class="row my-4 justify-content-center">
+            <div class="row my-4 py-4 mx-2 justify-content-center featured-background">
                 <div class="col-sm-10">
                     <div class="row mb-2">
                         <div class="col-sm-1">
