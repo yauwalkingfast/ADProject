@@ -37,8 +37,8 @@
     }
 
 .group-photo {
-    width: 300px;
-    height: 250px;
+    width: 50vmin;
+    height: 45vmin;
     overflow: hidden;
     opacity: 1;
     transition: .5s ease;
@@ -78,8 +78,8 @@
 
 @media screen and (max-width: 500px) {
     .group-photo {
-        width: 200px;
-        height: 200px;
+        width: 80vmin;
+        height: 70vmin;
         overflow: hidden;
         opacity: 1;
         transition: .5s ease;

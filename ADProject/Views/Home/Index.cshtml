@@ -77,18 +77,18 @@
                     int index = random.Next(0, recipeList.Count());
                     <a asp-controller="Recipes" asp-action="Details" asp-route-id="@recipeList[index].RecipeId" asp-route-gobackurl="Recipes" class="a-decoration">
                         <div class="row mb-3 px-2 py-2 justify-content-center featured-background">
-                            <div class="col-sm">
-                                <div class="row">
+                            <div class="col-sm-6">
+                                <div class="row mb-2">
                                     <div class="col-sm">
-                                        @recipeList[index].Title
+                                        <h5>@recipeList[index].Title</h5>
                                     </div>
                                 </div>
-                                <div class="row">
+                                <div class="row mb-2">
                                     <div class="col-sm">
                                         @recipeList[index].Description
                                     </div>
                                 </div>
-                                <div class="row">
+                                <div class="row mb-4">
                                     <div class="col-sm-1">
                                         <i style='font-size:24px' class='fa fa-clock-o mr-3'></i>
                                     </div>
@@ -97,7 +97,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-sm">
+                            <div class="col-sm-6">
                                 <img src="@recipeList[index].MainMediaUrl" alt="main recipe image" class="big-image" />
                             </div>
                         </div>
@@ -144,10 +144,10 @@
                     int index_group = random.Next(0, groupList.Count());
                     <a asp-controller="Groups" asp-action="Details" asp-route-id="@groupList[index_group].GroupId" asp-route-gobackurl="Groups" class="a-decoration">
                         <div class="row mb-3 px-2 py-2 justify-content-center featured-background">
-                            <div class="col-sm">
-                                <div class="row">
+                            <div class="col-sm-6">
+                                <div class="row mb-4">
                                     <div class="col-sm">
-                                        @groupList[index_group].GroupName
+                                        <h5>@groupList[index_group].GroupName</h5>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -156,7 +156,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-sm">
+                            <div class="col-sm-6">
                                 <img src="@groupList[index_group].GroupPhoto" alt="main group image" class="big-image" />
                             </div>
                         </div>

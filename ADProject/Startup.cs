@@ -1,4 +1,5 @@
 using ADProject.Data;
+using ADProject.Db;
 using ADProject.DbSeeder;
 using ADProject.Models;
 using ADProject.Service;
@@ -114,11 +115,14 @@ namespace ADProject
                 app.UseHsts();
             }
 
-            app.UseCors("ReactPolicy");
-
+/*            app.UseCors("ReactPolicy");
+*/
             db.Database.EnsureDeleted();
             db.Database.EnsureCreated();
+
             new DbSeedData(db, um).Init();
+
+            new LegitRecipesSeed(db, um).Init();
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
