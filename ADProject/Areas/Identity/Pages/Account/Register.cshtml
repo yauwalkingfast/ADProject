@@ -13,7 +13,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" type="text/css" href="style.css">
+    
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
     <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
@@ -27,8 +27,6 @@
                 <div class="card-body">
                     <h4 class="title text-center mt-4">
                         Create a new account
-
-
                     </h4>
 
                     <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
@@ -65,7 +63,7 @@
                             <input asp-for="Input.ConfirmPassword" class="form-control" />
                             <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
                         </div>
-                        <button type="submit" class="btn btn-primary">Register</button>
+                        <button type="submit" class="btn btn-primary block">Register</button>
                     </form>
 
                     <div class="text-center mb-3">
@@ -92,7 +90,7 @@
                                             if (provider.Name == "Google")
                                             {
                                                 <div class="col-md-4">
-                                                    <button type="submit" class="btn btn-block btn-google" value="@provider.Name"
+                                                    <button type="submit" class="btn btn-block btn-google btn-danger" value="@provider.Name"
                                                             title="Log in using your @provider.DisplayName account" name="provider">
 
                                                         Google
