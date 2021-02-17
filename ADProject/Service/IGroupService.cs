@@ -45,6 +45,12 @@ namespace ADProject.Service
         Task<bool> JoinGroupWebVer(int? groupId, string username);
 
         Task<bool> LeaveGroupWebVer(int? groupId, string username);
+        Task<IQueryable<RecipeGroup>> getRecipesGroupByGroupId(int? groupId);
+        Task<IQueryable<RecipeGroup>> getRecipesGroupSearchByGroupId(int? groupId, string search);
+
+        Task<bool> IsGroupMemberAD(int groupId, int userId);
+
+        Task<List<Group>> GetAllGroups1();
 
     }
 }

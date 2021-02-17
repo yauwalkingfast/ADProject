@@ -45,7 +45,14 @@
 .element-item {
     align-self: center;
     position: relative;
-    padding: 10px;
+    padding: 0px;
+    border-radius: 10px;
+    width: 50vmin;
+    height: 50vmin;
+    text-align: center;
+    overflow-wrap: break-word;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
     .element-item:hover .element-photo {
@@ -58,12 +65,14 @@
     }
 
 .element-photo {
-    width: 300px;
-    height: 250px;
+    width: 50vmin;
+    height: 50vmin;
     overflow: hidden;
     opacity: 1;
     transition: .5s ease;
     backface-visibility: hidden;
+    object-fit: cover;
+    border-radius: 10px;
 }
 
 .top-left {
@@ -72,6 +81,7 @@
     font-weight: bold;
     background-color: white;
     padding: 1px;
+    border-radius: 10px;
 }
 
 .bottom-left {
@@ -79,31 +89,65 @@
     bottom: 0;
     background-color: white;
     padding: 1px;
+    border-radius: 10px;
 }
 
 .middle {
+    width: 50vmin;
+    height: 40vmin;
     transition: .5s ease;
     opacity: 0;
     position: absolute;
-    top: 50%;
+    top: 55%;
     left: 50%;
     transform: translate(-50%, -50%);
     -ms-transform: translate(-50%, -50%);
     text-align: center;
     overflow-wrap: break-word;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .element-item a {
     color: black;
 }
 
-@media screen and (max-width: 500px) {
+@media screen and (min-width: 1300px) and (min-height: 800px) {
+    .element-item {
+        align-self: center;
+        position: relative;
+        padding: 0px;
+        border-radius: 10px;
+        width: 60vmin;
+        height: 60vmin;
+        text-align: center;
+        overflow-wrap: break-word;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
     .element-photo {
-        width: 200px;
-        height: 200px;
+        width: 60vmin;
+        height: 60vmin;
         overflow: hidden;
         opacity: 1;
         transition: .5s ease;
         backface-visibility: hidden;
+        object-fit: cover;
+        border-radius: 10px;
+    }
+    .middle {
+        width: 60vmin;
+        height: 50vmin;
+        transition: .5s ease;
+        opacity: 0;
+        position: absolute;
+        top: 55%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        -ms-transform: translate(-50%, -50%);
+        text-align: center;
+        overflow-wrap: break-word;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 }

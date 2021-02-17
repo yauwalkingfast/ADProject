@@ -24,7 +24,8 @@
 .group-item {
     align-self: center;
     position: relative;
-    padding: 10px;
+    padding: 0px;
+    border-radius: 10px;
 }
 
     .group-item:hover .group-photo {
@@ -37,12 +38,14 @@
     }
 
 .group-photo {
-    width: 300px;
-    height: 250px;
+    width: 50vmin;
+    height: 50vmin;
     overflow: hidden;
     opacity: 1;
     transition: .5s ease;
     backface-visibility: hidden;
+    object-fit: cover;
+    border-radius: 10px;
 }
 
 .top-left {
@@ -51,6 +54,7 @@
     font-weight: bold;
     background-color: white;
     padding: 1px;
+    border-radius: 10px;
 }
 
 .bottom-left {
@@ -58,6 +62,7 @@
     bottom: 0;
     background-color: white;
     padding: 1px;
+    border-radius: 10px
 }
 
 .middle {
@@ -76,24 +81,13 @@
     color: black;
 }
 
-@media screen and (max-width: 500px) {
+@media screen and (min-width: 1300px) and (min-height: 800px) {
     .group-photo {
-        width: 200px;
-        height: 200px;
+        width: 60vmin;
+        height: 60vmin;
         overflow: hidden;
         opacity: 1;
         transition: .5s ease;
         backface-visibility: hidden;
     }
 }
-
-/*.create_heading {
-    text-align: center;
-}
-table{
-    width:100%;
-}
-input{
- 
-}
-*/

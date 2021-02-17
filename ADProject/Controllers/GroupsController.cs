@@ -94,7 +94,7 @@ namespace ADProject.Controllers
         }
 
         // GET: Groups/Details/5
-        public async Task<IActionResult> Details(int? id, string gobackurl)
+        public async Task<IActionResult> Details(int? id, string gobackurl, int? pageNumber, string search)
         {
 
             if (id == null)
@@ -115,9 +115,18 @@ namespace ADProject.Controllers
                 ViewData["Action"] = "Index";
                 ViewData["GoBackId"] = "";
             }
-
+            ViewData["search"] = search;
             var group = await _groupService.GetGroupById(id);
+            var recipeGroups = await _groupService.getRecipesGroupByGroupId(id);
+            if (!String.IsNullOrEmpty(search))
+            {
+                recipeGroups = await _groupService.getRecipesGroupSearchByGroupId(id, search);
+            }
+            PaginatedList<RecipeGroup> paginatedList = await PaginatedList<RecipeGroup>.CreateAsync(recipeGroups, pageNumber ?? 1, 9);
 
+            ViewData["paginatedList"] = paginatedList;
+
+            //ViewData["RecipeGroup"] = recipeGroups;
             if (group == null)
             {
                 return NotFound();
@@ -234,33 +243,6 @@ namespace ADProject.Controllers
             return RedirectToAction("Details", new { id = group.GroupId, gobackurl = gobackurl });
         }
 
-        // It might be better to put this into a service
-        /*        [Authorize]
-                private string UploadPicture(IFormFile file)
-                {
-                    if (file == null)
-                    {
-                        return "notset";
-                    }
-
-                    try
-                    {
-                        string fileName = Guid.NewGuid().ToString() + ".jpg";
-                        string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", fileName);
-                        using (Stream stream = new FileStream(path, FileMode.Create))
-                        {
-                            file.CopyTo(stream);
-                        }
-
-                        string imageUrl = "images/" + fileName;
-                        return imageUrl;
-                    } 
-                    catch
-                    {
-                        return "error";
-                    }
-                }*/
-
         [Authorize]
         private async Task<string> UploadPicture(IFormFile file)
         {
@@ -315,41 +297,6 @@ namespace ADProject.Controllers
 
             return View(group);
         }
-
-        // POST: Groups/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        /*        [HttpPost]
-                [ValidateAntiForgeryToken]
-                public async Task<IActionResult> Edit(int id, [Bind("GroupId,GroupName,GroupPicture,Description,DateCreated,IsPublished")] Group group)
-                {
-                    if (id != group.GroupId)
-                    {
-                        return NotFound();
-                    }
-
-                    if (ModelState.IsValid)
-                    {
-                        try
-                        {
-                            _context.Update(group);
-                            await _context.SaveChangesAsync();
-                        }
-                        catch (DbUpdateConcurrencyException)
-                        {
-                            if (!GroupExists(group.GroupId))
-                            {
-                                return NotFound();
-                            }
-                            else
-                            {
-                                throw;
-                            }
-                        }
-                        return RedirectToAction(nameof(Index));
-                    }
-                    return View(group);
-                }*/
 
         [HttpPost]
         [Authorize]

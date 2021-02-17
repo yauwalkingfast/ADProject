@@ -1,137 +1,231 @@
-﻿@*@model IEnumerable<ADProject.Models.Recipe>
-*@
+﻿@{
+    ViewData["Title"] = "Home";
 
-@{
-    ViewData["Title"] = "Index";
-    string FirstName = (string)ViewData["FirstName"];
-
-    PaginatedList<Recipe> paginatedList = (PaginatedList<Recipe>)ViewData["paginatedList"];
-    var prevDisabled = !paginatedList.HasPreviousPage ? "disabled" : "";
-    var nextDisabled = !paginatedList.HasNextPage ? "disabled" : "";
+    PaginatedList<Recipe> recipeList = (PaginatedList<Recipe>)ViewData["recipeList"];
+    PaginatedList<Group> groupList = (PaginatedList<Group>)ViewData["groupList"];
+    Random random = new Random();
 }
 
-<h1>My Recipes</h1>
-@*this page is designed for user's MY Recipes page that shows the list of the user's posted recipe*@
+<link rel="stylesheet" href="~/css/HomeStyle.css">
 
-<link href="~/css/RecipeDetail.css" rel="stylesheet" type="text/css" />
-
-<div class="grid-container">
-
-
-    <div class="user">
-        <i style='font-size:64px' class='fa fa-user'></i>
-        @FirstName
-
-    </div>
-    <div class="menu">
-
-        <a asp-action="Index">MyRecipes</a>
-        <a asp-action="Index">Completed</a>
-        <a asp-action="Index">Posts</a>
-        <a asp-action="Index">TryLater</a>
-        <a asp-controller="Groups" asp-action="Index">My Tribes</a>
-
-    </div>
-    <div class="searchbar">
-        <form id="search-form" asp-controller="Home" asp-action="Index" method="get">
-            <input type="text" placeholder="Search.." name="search" value="@ViewData["search"]">
-            <button type="submit"><i class="fa fa-search"></i></button>
-        </form>
-        <a asp-controller="Recipes" asp-action="Create">Create New</a>
-    </div>
-    @*@foreach(var recipe in Model.Recipes)*@
-    @foreach (var item in paginatedList)
-    {
-        int i = 0;
-        <div class="recipes">
-            <table>
-                <tr>
-                    <td>
-                        <h2> @Html.DisplayFor(modelItem => item.Title)</h2>
-                        <div>
-                            Tags :
-                            @foreach (var tag in item.RecipeTags)
-                            {
-                                if (tag.IsAllergenTag == false)
-                                {<text>#</text>
-                                @tag.Tag.TagName
-                                <text> </text>
-
-                            }
-
-                        }
-                        </div>
-                        <a asp-controller="Recipes" asp-action="Details" asp-route-id="@item.RecipeId">
-                            <img src=@item.MainMediaUrl alt="a description of the image">
-                        </a>
-                    </td>
-
-                    <td>
-                        <h3>Ingredients</h3>
-                        <p> for @item.ServingSize serving</p>
-                        <ul>
-                            @foreach (var ingredient in item.RecipeIngredients)
-                            {
-
-                                if (i <= 3)
-                                {
-                                    <li>
-                                        <div>
-                                            @ingredient.Ingredient @ingredient.Quantity @ingredient.UnitOfMeasurement
-                                        </div>
-                                    </li>
-                                    i++;
-                                }
-                                else { break; }
-                            }
-                            <div><a asp-controller="Recipes" asp-action="Details" asp-route-id="@item.RecipeId">See All</a></div>
-                        </ul>
-                        <div>Calories: @item.Calories)</div>
-                        <div>
-                            <i style='font-size:24px' class='fa fa-clock-o'></i>
-                            @item.DurationInMins minutes
-                        </div>
-
-
-
-                        @foreach (var allergenTag in item.RecipeTags)
-                        {
-                            if (allergenTag.IsAllergenTag == true)
-                            {
-                                <div>
-
-                                    <i style='font-size:24px' class='fa fa-exclamation-triangle'></i>
-                                    Warning may contains the traces of @allergenTag.Tag.Warning
+<div class="row">
+    <div class="col-sm">
+        <div class="row mb-5">
+            <div class="col carousel-col">
+                <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+                    <ol class="carousel-indicators">
+                        <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+                        <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+                        <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+                    </ol>
+                    <div class="carousel-inner">
+                        <div class="carousel-item carousel-item-background active">
+                            <a asp-controller="Recipes" asp-action="Details" asp-route-gobackurl="Recipes" asp-route-id="@recipeList[0].RecipeId">
+                                <div class="wrapper">
+                                    <img class="d-block carousel-image" src="@recipeList[0].MainMediaUrl" alt="First slide">
                                 </div>
-
-                            }
-                        }
-                        <div>
-                            <a href="###"><i style='font-size:24px' class='fa fa-plus'></i> Add to try Later</a>
+                                <div class="carousel-caption d-none d-md-block">
+                                    <h5>@recipeList[0].Title</h5>
+                                    <p>
+                                        @recipeList[0].Description.Substring(0, Math.Min(100, recipeList[0].Description.Length))
+                                    </p>
+                                </div>
+                            </a>
                         </div>
-                    </td>
-
+                        <div class="carousel-item carousel-item-background">
+                            <a asp-controller="Recipes" asp-action="Details" asp-route-gobackurl="Recipes" asp-route-id="@recipeList[1].RecipeId">
+                                <div class="wrapper">
+                                    <img class="d-block carousel-image" src="@recipeList[1].MainMediaUrl" alt="Second slide">
+                                </div>
+                                <div class="carousel-caption d-none d-md-block">
+                                    <h5>@recipeList[1].Title</h5>
+                                    <p>
+                                        @recipeList[1].Description.Substring(0, Math.Min(100, recipeList[1].Description.Length))
+                                    </p>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="carousel-item carousel-item-background">
+                            <a asp-controller="Recipes" asp-action="Details" asp-route-gobackurl="Recipes" asp-route-id="@recipeList[2].RecipeId">
+                                <div class="wrapper">
+                                    <img class="d-block carousel-image" src="@recipeList[2].MainMediaUrl" alt="Third slide">
+                                </div>
+                                <div class="carousel-caption d-none d-md-block">
+                                    <h5>@recipeList[2].Title</h5>
+                                    <p>
+                                        @recipeList[2].Description.Substring(0, Math.Min(100, recipeList[2].Description.Length))
+                                    </p>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                    <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Next</span>
+                    </a>
+                </div>
+            </div>
         </div>
 
-        @*<a asp-action="Edit" asp-route-id="@item.RecipeId">Edit</a>
-            <a asp-action="Details" asp-route-id="@item.RecipeId">Details</a>
-            <a asp-action="Delete" asp-route-id="@item.RecipeId">Delete</a>*@
-    }
 
-    <a asp-controller="Home"
-       asp-action="Index"
-       asp-route-pageNumber="@(paginatedList.PageIndex - 1)"
-       asp-route-search="@ViewData["search"]"
-       class="btn btn-default @prevDisabled">
-        Previous
-    </a>
+        <div class="row mx-5">
+            <div class="col-sm">
+                <div class="row mb-3">
+                    <div class="col-sm">
+                        <h4>Featured Recipes</h4>
+                    </div>
+                </div>
+                @{
+                    int index = random.Next(0, recipeList.Count());
+                    <a asp-controller="Recipes" asp-action="Details" asp-route-id="@recipeList[index].RecipeId" asp-route-gobackurl="Recipes" class="a-decoration">
+                        <div class="row mb-5 justify-content-between featured-background">
+                            <div class="col-sm-6">
+                                <div class="row mb-2 mt-2">
+                                    <div class="col-sm">
+                                        <p class="custom-header-size">@recipeList[index].Title</p>
+                                    </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-sm custom-text-size">
+                                        <p>
+                                            @recipeList[index].Description
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="row mb-4">
+                                    <div class="col-sm-1">
+                                        <i class='fa fa-clock-o mr-3 custom-header-size'></i>
+                                    </div>
+                                    <div class="col-sm-11 custom-text-size">
+                                        @recipeList[index].DurationInMins minutes
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 pr-0">
+                                <img src="@recipeList[index].MainMediaUrl" alt="main recipe image" class="big-image" />
+                            </div>
+                        </div>
+                    </a>
+                }
+                <div class="row mb-2 justify-content-between">
+                    @{
+                        for (int i = 0; i < 3; i++)
+                        {
+                            int index_secondary = random.Next(0, recipeList.Count());
+                            <a asp-controller="Recipes" asp-action="Details" asp-route-id="@recipeList[index_secondary].RecipeId" asp-route-gobackurl="Recipes" class="a-decoration">
+                                <div class="col-sm px-0 mb-4 featured-background small-image-container">
+                                    <div class="row">
+                                        <div class="col-sm">
+                                            <img src="@recipeList[index_secondary].MainMediaUrl" alt="main recipe image" class="small-image" />
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm mx-3 mt-4">
+                                            <p class="custom-header-size">@recipeList[index_secondary].Title</p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm clamp-me mx-3 custom-text-size">
+                                            @recipeList[index_secondary].Description
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        }
+                    }
+                </div>
+                <div class="row mb-5">
+                    <div class="col-sm">
+                        <a asp-controller="Recipes" asp-action="Index">
+                            See More Recipes
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    <a asp-controller="Home"
-       asp-action="Index"
-       asp-route-pageNumber="@(paginatedList.PageIndex + 1)"
-       asp-route-search="@ViewData["search"]"
-       class="btn btn-default @nextDisabled">
-        Next
-    </a>
+        <div class="row mx-5">
+            <div class="col-sm">
+                <div class="row mb-3">
+                    <div class="col-sm">
+                        <h4>Featured Groups</h4>
+                    </div>
+                </div>
+                @{
+                    int index_group = random.Next(0, groupList.Count());
+                    <a asp-controller="Groups" asp-action="Details" asp-route-id="@groupList[index_group].GroupId" asp-route-gobackurl="Groups" class="a-decoration">
+                        <div class="row mb-5 justify-content-center featured-background">
+                            <div class="col-sm-6">
+                                <div class="row mb-4 mt-2">
+                                    <div class="col-sm">
+                                        <p class="custom-header-size">@groupList[index_group].GroupName</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm custom-text-size">
+                                        @groupList[index_group].Description
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 pr-0">
+                                <img src="@groupList[index_group].GroupPhoto" alt="main group image" class="big-image" />
+                            </div>
+                        </div>
+                    </a>
+                }
+                <div class="row mb-2 justify-content-between">
+                    @{
+                        for (int i = 0; i < 3; i++)
+                        {
+                            int index_secondary_group = random.Next(0, groupList.Count());
+                            <a asp-controller="Groups" asp-action="Details" asp-route-id="@groupList[index_secondary_group].GroupId" asp-route-gobackurl="Groups" class="a-decoration">
+                                <div class="col-sm px-0 mb-4 featured-background small-image-container">
+                                    <div class="row">
+                                        <div class="col-sm">
+                                            <img src="@groupList[index_secondary_group].GroupPhoto" alt="main group image" class="small-image" />
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm mt-4 mx-3">
+                                            <p class="custom-header-size">@groupList[index_secondary_group].GroupName</p>
+                                        </div>
+                                    </div>
+                                    <div class="row mx-3">
+                                        <div class="col-sm clamp-me custom-text-size">
+                                            @groupList[index_secondary_group].Description
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        }
+                    }
+                </div>
+                <div class="row mb-5">
+                    <div class="col-sm">
+                        <a asp-controller="Groups" asp-action="Index">See More Groups</a>
+                    </div>
+                </div>
+            </div>
+        </div>
 
+    </div>
 </div>
+
+<!-- Clamp JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clamp-js/0.7.0/clamp.js" integrity="sha512-TnePtmz3HL4p8nFS2lR46u0iHrwObVnUednDASZK/qS9btkd09xKs1PeCt1kpS4a0gWNQx1AF+WnDHDK+xWcAw==" crossorigin="anonymous"></script>
+<script type="text/javascript">
+    var module = document.getElementsByClassName("clamp-me");
+
+    for (let i = 0; i < module.length; i++) {
+        $clamp(module[i], { clamp: 2 })
+    }
+</script>
+
+<!-- Keep the carousel moving -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>

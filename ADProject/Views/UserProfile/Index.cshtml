@@ -25,33 +25,39 @@
 <div class="element-container my-3">
     @foreach (var recipe in paginatedList)
     {
-    <div>
-        <div class="element-item">
-            <a asp-controller="Recipes" asp-action="Details" asp-route-gobackurl="UserProfile/@user.Id" asp-route-id="@recipe.RecipeId">
-                <img class="element-photo" src="@recipe.MainMediaUrl" alt="recipe main photo" />
-                <div class="top-left">@recipe.Title</div>
-                <div class="middle">@recipe.Description</div>
-                <div class="bottom-left">
-                    @for (int i = 0; i < 3 && i < recipe.RecipeTags.Count(); i++)
-                    {
-                        <span>#</span>@recipe.RecipeTags[i].Tag.TagName<span> </span>
-                    }
+        <div class="my-2 py-0 mx-2 px-0">
+            <div class="featured-background element-item">
+                <a asp-controller="Recipes" asp-action="Details" asp-route-gobackurl="UserProfile/@user.Id" asp-route-id="@recipe.RecipeId">
+                    <img class="element-photo" src="@recipe.MainMediaUrl" alt="recipe main photo" />
+                    <div class="top-left">@recipe.Title</div>
+                    <div class="middle">
+                        <div class="clamp-me">
+                            @recipe.Description
+                        </div>
+                    </div>
+                    <div class="bottom-left">
+                        @for (int i = 0; i < 3 && i < recipe.RecipeTags.Count(); i++)
+                        {
+                            <span>#</span>@recipe.RecipeTags[i].Tag.TagName<span> </span>
+                        }
+                    </div>
+                </a>
+            </div>
+            <div class="element-options my-2">
+                <div>
+                    <a class="icon-button" asp-controller="Recipes" asp-action="Edit" asp-route-id="@recipe.RecipeId" asp-route-gobackurl="UserProfile/@user.Id">
+                        <i style='font-size:24px' class='fa fa-edit'></i>
+                        Edit
+                    </a>
                 </div>
-            </a>
-        </div>
-        <div class="element-options">
-            <div>
-                <a asp-controller="Recipes" asp-action="Edit" asp-route-id="@recipe.RecipeId" asp-route-gobackurl="UserProfile/@user.Id">
-                    Edit
-                </a>
-            </div>
-            <div>
-                <a asp-controller="Recipes" asp-action="Delete" asp-route-id="@recipe.RecipeId" asp-route-gobackurl="UserProfile/@user.Id">
-                    Delete
-                </a>
+                <div>
+                    <a class="icon-button" asp-controller="Recipes" asp-action="Delete" asp-route-id="@recipe.RecipeId" asp-route-gobackurl="UserProfile/@user.Id">
+                        <i style='font-size:24px' class='fa fa-times'></i>
+                        Delete
+                    </a>
+                </div>
             </div>
         </div>
-    </div>
     }
 </div>
 
@@ -72,3 +78,13 @@
         Next
     </a>
 </div>
+
+<!-- Clamp JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clamp-js/0.7.0/clamp.js" integrity="sha512-TnePtmz3HL4p8nFS2lR46u0iHrwObVnUednDASZK/qS9btkd09xKs1PeCt1kpS4a0gWNQx1AF+WnDHDK+xWcAw==" crossorigin="anonymous"></script>
+<script type="text/javascript">
+    var module = document.getElementsByClassName("clamp-me");
+
+    for (let i = 0; i < module.length; i++) {
+        $clamp(module[i], { clamp: 5 })
+    }
+</script>

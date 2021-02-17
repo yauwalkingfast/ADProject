@@ -1,8 +1,11 @@
 ﻿@model ADProject.Models.Group
 
 @{
-    ViewData["Title"] = "Details";
-    string gobackurl = @ViewData["Controller"] + "/" + @ViewData["Action"] + "/" + @ViewData["GoBackId"];
+    ViewData["Title"] = "Group";
+    PaginatedList<RecipeGroup> paginatedList = (PaginatedList<RecipeGroup>)ViewData["paginatedList"];
+    var prevDisabled = !paginatedList.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !paginatedList.HasNextPage ? "disabled" : "";
+    string gobackurl = ViewData["Controller"] + "/" + ViewData["Action"] + "/" + ViewData["GoBackId"];
 }
 
 
@@ -57,34 +60,43 @@
             @if (Model.UsersGroups.Any(ug => ug.User.UserName == User.Identity.Name && ug.IsMod == true))
             {
                 <div class="display-flex-end">
-                    <a asp-action="Edit" asp-route-gobackurl="@gobackurl" asp-route-id="@Model.GroupId">Edit</a>
+                    <a class="icon-button" asp-action="Edit" asp-route-gobackurl="@gobackurl" asp-route-id="@Model.GroupId">
+                        <i style='font-size:24px' class='fa fa-edit'></i>
+                        Edit Group
+                    </a>
                 </div>
                 <div class="display-flex-end">
-                    <a asp-action="Delete" asp-route-gobackurl="@gobackurl" asp-route-id="@Model.GroupId">Delete</a>
+                    <a class="icon-button" asp-action="Delete" asp-route-gobackurl="@gobackurl" asp-route-id="@Model.GroupId">
+                        <i style='font-size:24px' class='fa fa-times'></i>
+                        Delete Group
+                    </a>
                 </div>
             }
             <div class="display-flex-end">
                 @if (Model.UsersGroups.Any(ug => ug.User.UserName == User.Identity.Name))
                 {
-                    <a asp-action="Leave" asp-route-gobackurl="@gobackurl" asp-route-id="@Model.GroupId">Leave</a>
+                    <a class="btn btn-custom" asp-action="Leave" asp-route-gobackurl="@gobackurl" asp-route-id="@Model.GroupId">Leave</a>
                 }
                 else
                 {
-                    <a asp-action="Join" asp-route-gobackurl="@gobackurl" asp-route-id="@Model.GroupId">Join</a>
+                    <a class="btn btn-custom" asp-action="Join" asp-route-gobackurl="@gobackurl" asp-route-id="@Model.GroupId">Join</a>
                 }
             </div>
 
-            @*    <div class="display-flex-end">
-                <form id="search-form" method="get">
-                    <input type="text" placeholder="Search Featured Recipes.." name="search">
-                    <button type="submit"><i class="fa fa-search"></i></button>
-                </form>
-            </div>*@
+               <div class="display-flex-end">
+                    <form id="search-form" asp-controller="Groups" asp-action="Details" asp-route-gobackurl="@gobackurl" asp-route-id="@Model.GroupId" method="get">
+                        <input type="hidden" value="@gobackurl" name="gobackurl" />
+                        <div class="form-group form-inline">
+                            <input class="form-control" type="text" placeholder="Search Featured Recipes.." name="search" value="@ViewData["Search"]">
+                            <button type="submit" class="btn ml-1"><i class="fa fa-search"></i></button>
+                        </div>
+                    </form>
+                </div>
         </div>
 
-        @foreach (var recipe in Model.RecipeGroups)
+        @foreach (var recipe in paginatedList)
         {
-            <div class="row my-4 justify-content-center">
+            <div class="row my-4 py-4 mx-2 justify-content-center featured-background">
                 <div class="col-sm-10">
                     <div class="row mb-2">
                         <div class="col-sm-1">
@@ -179,18 +191,53 @@
                                     {
                                         if (recipe.Recipe.SavedRecipes.Any(sr => sr.User.UserName.Equals(User.Identity.Name) && sr.RecipeId == recipe.RecipeId))
                                         {
-                                            <a asp-controller="Recipes" asp-route-gobackurl="Groups/Details/@Model.GroupId" asp-action="RemoveRecipe" asp-route-id="@recipe.RecipeId">Remove Recipe</a>
+                                            <a class="icon-button" asp-controller="Recipes" asp-route-gobackurl="Groups/Details/@Model.GroupId" asp-action="RemoveRecipe" asp-route-id="@recipe.RecipeId">
+                                                <div class="row">
+                                                    <div class="col-sm-1 ">
+                                                        <i style='font-size:24px' class='fa fa-trash'></i>
+                                                    </div>
+                                                    <div class="col-sm-11">
+                                                        Remove Recipe
+                                                    </div>
+                                                </div>
+                                            </a>
                                         }
                                         else
                                         {
-                                            <a asp-controller="Recipes" asp-route-gobackurl="Groups/Details/@Model.GroupId" asp-action="SaveRecipe" asp-route-id="@recipe.RecipeId">Save Recipe</a>
+                                            <a class="icon-button" asp-controller="Recipes" asp-route-gobackurl="Groups/Details/@Model.GroupId" asp-action="SaveRecipe" asp-route-id="@recipe.RecipeId">
+                                                <div class="row">
+                                                    <div class="col-sm-1 ">
+                                                        <i style='font-size:24px' class='fa fa-save'></i>
+                                                    </div>
+                                                    <div class="col-sm-11">
+                                                        Save Recipe
+                                                    </div>
+                                                </div>
+                                            </a>
                                         }
                                     }
                                     else
                                     {
-                                        <a asp-controller="Recipes" asp-route-gobackurl="Groups/Details/@Model.GroupId" asp-action="Edit" asp-route-id="@recipe.RecipeId">Edit</a>
-                                        <br />
-                                        <a asp-controller="Recipes" asp-route-gobackurl="Groups/Details/@Model.GroupId" asp-action="Delete" asp-route-id="@recipe.RecipeId">Delete</a>
+                                        <a class="icon-button" asp-controller="Recipes" asp-route-gobackurl="Groups/Details/@Model.GroupId" asp-action="Edit" asp-route-id="@recipe.RecipeId">
+                                            <div class="row mb-2">
+                                                <div class="col-sm-1 ">
+                                                    <i style='font-size:24px' class='fa fa-edit'></i>
+                                                </div>
+                                                <div class="col-sm-11">
+                                                    Edit Recipe
+                                                </div>
+                                            </div>
+                                        </a>
+                                        <a class="icon-button" asp-controller="Recipes" asp-route-gobackurl="Groups/Details/@Model.GroupId" asp-action="Delete" asp-route-id="@recipe.RecipeId">
+                                            <div class="row">
+                                                <div class="col-sm-1 ">
+                                                    <i style='font-size:24px' class='fa fa-times'></i>
+                                                </div>
+                                                <div class="col-sm-11">
+                                                    Delete Recipe
+                                                </div>
+                                            </div>
+                                        </a>
                                     }
                                 </div>
                             </div>
@@ -199,8 +246,30 @@
                 </div>
             </div>
         }
+
         <div class="row mt-4 mb-2">
             <div class="col-sm">
+                <div>
+                    <a asp-controller="Groups"
+                       asp-action="Details"
+                       asp-route-id="@Model.GroupId"
+                       asp-route-pageNumber="@(paginatedList.PageIndex - 1)"
+                       asp-route-search="@ViewData["search"]"
+                       asp-route-gobackurl="@gobackurl"
+                       class="btn btn-default @prevDisabled">
+                        Previous
+                    </a>
+
+                    <a asp-controller="Groups"
+                       asp-action="Details"
+                       asp-route-id="@Model.GroupId"
+                       asp-route-pageNumber="@(paginatedList.PageIndex + 1)"
+                       asp-route-search="@ViewData["search"]"
+                       asp-route-gobackurl="@gobackurl"
+                       class="btn btn-default @nextDisabled">
+                        Next
+                    </a>
+                </div>
                 <a asp-controller="@ViewData["Controller"]" asp-action="@ViewData["Action"]" asp-route-id="@ViewData["GoBackId"]">Back to List</a>
             </div>
         </div>

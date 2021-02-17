@@ -62,5 +62,9 @@ namespace ADProject.Models
         {
             get => UsersGroups.Count;
         }
+
+        [NotMapped]
+        public bool isJoined { get; set; }
+
     }
 }

@@ -4,22 +4,36 @@
     ViewData["Title"] = "Resend email confirmation";
 }
 
-<h1>@ViewData["Title"]</h1>
-<h4>Enter your email.</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form method="post">
-            <div asp-validation-summary="All" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Input.Email"></label>
-                <input asp-for="Input.Email" class="form-control" />
-                <span asp-validation-for="Input.Email" class="text-danger"></span>
+<link href="~/css/AuthUI.css" rel="stylesheet" />
+
+
+
+<body>
+    <div class="container">
+        <div class="row px-3">
+            <div class="col-lg-10 col-xl-9 card flex-row mx-auto px-0">
+
+
+                <div class="card-body">
+                    <h4 class="title text-center mt-4">
+                        Resend Email Confirmation
+                    </h4>
+                    <form method="post">
+                        <div asp-validation-summary="All" class="text-danger"></div>
+                        <div class="form-group">
+                            <label asp-for="Input.Email">Enter your email here</label>
+                            <input asp-for="Input.Email" class="form-control" />
+                            <span asp-validation-for="Input.Email" class="text-danger"></span>
+                        </div>
+                        <button type="submit" class="btn btn-primary block">Resend</button>
+                    </form>
+                </div>
             </div>
-            <button type="submit" class="btn btn-primary">Resend</button>
-        </form>
+        </div>
     </div>
-</div>
+</body>
+
+
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
