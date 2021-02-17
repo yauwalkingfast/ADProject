@@ -1,0 +1,89 @@
+﻿.carousel-col {
+    display: flex;
+    justify-content: center;
+}
+
+.carousel-item-background {
+    background-color: grey;
+}
+
+.carousel-image {
+    width: 90vw;
+    height: 50vh;
+    object-fit: cover;
+    filter: brightness(60%);
+}
+
+.a-decoration {
+    text-decoration: none;
+    color: black;
+}
+
+    .a-decoration:hover {
+        text-decoration: none;
+        color: black;
+    }
+
+.big-image {
+    width: 85vmin;
+    height: 50vmin;
+    overflow: hidden;
+    object-fit:cover;
+    border-radius: 10px;
+}
+
+.small-image {
+    width: 50vmin;
+    height: 45vmin;
+    overflow: hidden;
+    object-fit: cover;
+}
+
+.small-image-container {
+    width: 50vmin;
+    height: 68vmin;
+    text-align: center;
+    overflow-wrap: break-word;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.custom-text-size {
+    font-size: 1.2em;
+}
+
+.custom-header-size {
+    font-size: 1.4em;
+    font-weight: bolder;
+}
+
+@media screen and (min-width: 1300px) and (min-height: 800px) {
+    .big-image {
+        width: 93vmin;
+        height: 60vmin;
+        overflow: hidden;
+        object-fit: cover;
+        border-radius: 10px;
+    }
+    .small-image {
+        width: 60vmin;
+        height: 50vmin;
+        overflow: hidden;
+        object-fit: cover;
+    }
+    .small-image-container {
+        width: 60vmin;
+        height: 78vmin;
+        text-align: center;
+        overflow-wrap: break-word;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .custom-text-size {
+        font-size: 1.5em;
+    }
+    .custom-header-size {
+        font-size: 2em;
+        font-weight: bolder;
+    }
+}

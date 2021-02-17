@@ -25,5 +25,6 @@ namespace ADProject.Service
         //Android
         Task<bool> SaveRecipe(SaveUserRecipe saveUserRecipe);
 
+        Task<ApplicationUser> ValidateUser(UserValidatorJson userJson);
     }
 }

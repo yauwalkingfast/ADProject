@@ -45,11 +45,11 @@ hr {
     .files:after {
         pointer-events: none;
         position: absolute;
-        top: 50px;
+        top: 80px;
         left: 0;
         width: 50px;
         right: 0;
-        height: 56px;
+        height: 80px;
         content: "";
         background-image: url(https://image.flaticon.com/icons/png/128/109/109612.png);
         display: block;
@@ -64,12 +64,12 @@ hr {
 
 .files:before {
     position: absolute;
-    bottom: 50px;
+    bottom: 40px;
     left: 0;
     pointer-events: none;
     width: 100%;
     right: 0;
-    height: 57px;
+    height: 40px;
     content: " or drag it here. ";
     display: block;
     margin: 0 auto;

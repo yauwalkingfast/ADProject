@@ -128,6 +128,18 @@ namespace ADProject.ApiControllers
             return rg;
         }
 
+        [HttpGet]
+        [Route("getall")]
+        public async Task<ActionResult<List<Group>>> getAllGroups()
+        {
+            List<Group> groupList = await _groupService.GetAllGroups1();
+            if (groupList == null)
+            {
+                return NotFound();
+            }
+            return groupList;
+        }
+
         public Group stringToTag(string s, Group g)
         {
             string[] toArray = s.Split('#');

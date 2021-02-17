@@ -1,7 +1,7 @@
 @model ADProject.Models.Recipe
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Recipe";
     int userId = (int)ViewData["UserId"];
     string recipe = (string)ViewData["Recipe"];
     string gobackurl = (string)ViewData["gobackurl"];
@@ -10,7 +10,7 @@
 <div id="edit"></div>
 
 <div>
-    <a asp-controller="@ViewData["Controller"]" asp-action="@ViewData["Action"]" asp-route-id="@ViewData["GoBackId"]">Back to List</a>
+    <a asp-controller="@ViewData["Controller"]" asp-action="@ViewData["Action"]" asp-route-id="@ViewData["GoBackId"]" asp-route-gobackurl="@gobackurl">Back to List</a>
 </div>
 
 @section Scripts {

@@ -2,7 +2,7 @@
 *@
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Recipe";
 
     PaginatedList<Recipe> paginatedList = (PaginatedList<Recipe>)ViewData["paginatedList"];
     var prevDisabled = !paginatedList.HasPreviousPage ? "disabled" : "";
@@ -32,7 +32,7 @@
 
         @foreach(var recipe in paginatedList)
         {
-            <div class="row my-4 justify-content-center">
+            <div class="row py-4 my-4 mx-2 justify-content-center featured-background">
                 <div class="col-sm-10">
                     <div class="row mb-2">
                         <div class="col-sm-1">
@@ -127,18 +127,53 @@
                                     {
                                         if (recipe.SavedRecipes.Any(sr => sr.User.UserName.Equals(User.Identity.Name) && sr.RecipeId == recipe.RecipeId))
                                         {
-                                            <a asp-action="RemoveRecipe" asp-route-gobackurl="Recipes/Index/@ViewData["search"]" asp-route-id="@recipe.RecipeId">Remove Recipe</a>
+                                            <a class="icon-button" asp-action="RemoveRecipe" asp-route-gobackurl="Recipes/Index/@ViewData["search"]" asp-route-id="@recipe.RecipeId">
+                                                <div class="row">
+                                                    <div class="col-sm-1 ">
+                                                        <i style='font-size:24px' class='fa fa-trash'></i>
+                                                    </div>
+                                                    <div class="col-sm-11">
+                                                        Remove Recipe
+                                                    </div>
+                                                </div>
+                                            </a>
                                         }
                                         else
                                         {
-                                            <a asp-action="SaveRecipe" asp-route-gobackurl="Recipes/Index/@ViewData["search"]" asp-route-id="@recipe.RecipeId">Save Recipe</a>
+                                            <a class="icon-button" asp-action="SaveRecipe" asp-route-gobackurl="Recipes/Index/@ViewData["search"]" asp-route-id="@recipe.RecipeId">
+                                                <div class="row">
+                                                    <div class="col-sm-1 ">
+                                                        <i style='font-size:24px' class='fa fa-save'></i>
+                                                    </div>
+                                                    <div class="col-sm-11">
+                                                        Save Recipe
+                                                    </div>
+                                                </div>    
+                                            </a>
                                         }
                                     }
                                     else
                                     {
-                                        <a asp-action="Edit" asp-route-gobackurl="Recipes/Index" asp-route-id="@recipe.RecipeId">Edit</a>
-                                        <br />
-                                        <a asp-action="Delete" asp-route-gobackurl="Recipes/Index/@ViewData["search"]" asp-route-id="@recipe.RecipeId">Delete</a>
+                                        <a class="icon-button" asp-action="Edit" asp-route-gobackurl="Recipes/Index" asp-route-id="@recipe.RecipeId">
+                                            <div class="row mb-2">
+                                                <div class="col-sm-1 ">
+                                                    <i style='font-size:24px' class='fa fa-edit'></i>
+                                                </div>
+                                                <div class="col-sm-11">
+                                                    Edit Recipe
+                                                </div>
+                                            </div>
+                                        </a>
+                                        <a class="icon-button" asp-action="Delete" asp-route-gobackurl="Recipes/Index/@ViewData["search"]" asp-route-id="@recipe.RecipeId">
+                                            <div class="row">
+                                                <div class="col-sm-1 ">
+                                                    <i style='font-size:24px' class='fa fa-times'></i>
+                                                </div>
+                                                <div class="col-sm-11">
+                                                    Delete Recipe
+                                                </div>
+                                            </div>
+                                        </a>
                                     }
                                 </div>
                             </div>

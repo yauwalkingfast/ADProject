@@ -4,8 +4,8 @@
 @inject UserManager<ApplicationUser> UserManager
 
 @{
-    ViewData["Title"] = "Details";
-    string gobackurl = @ViewData["Controller"] + "/" + @ViewData["Action"] + "/" + @ViewData["GoBackId"];
+    ViewData["Title"] = "Recipe";
+    string gobackurl = ViewData["Controller"] + "/" + ViewData["Action"] + "/" + ViewData["GoBackId"];
 }
 
 <link href="~/css/RecipeDetail.css" rel="stylesheet" />
@@ -23,8 +23,8 @@
                 <span style="font-size: 32px" class="ml-2">@Model.User.UserName</span>
             </div>
             <div class="col-sm">
-                Featured in: 
-                @foreach(var recipeGroups in Model.RecipeGroups)
+                Featured in:
+                @foreach (var recipeGroups in Model.RecipeGroups)
                 {
                     <span>@recipeGroups.Group.GroupName </span>
                 }
@@ -102,18 +102,53 @@
                         {
                             if (Model.SavedRecipes.Any(sr => sr.User.UserName.Equals(User.Identity.Name) && sr.RecipeId == Model.RecipeId))
                             {
-                                <a asp-action="RemoveRecipe" asp-route-id="@Model.RecipeId" asp-route-gobackurl="@gobackurl">Remove Recipe</a>
+                                <a class="icon-button" asp-action="RemoveRecipe" asp-route-id="@Model.RecipeId" asp-route-gobackurl="@gobackurl">
+                                    <div class="row">
+                                        <div class="col-sm-1 ">
+                                            <i style='font-size:24px' class='fa fa-trash'></i>
+                                        </div>
+                                        <div class="col-sm-11">
+                                            Remove Recipe
+                                        </div>
+                                    </div>
+                                </a>
                             }
                             else
                             {
-                                <a asp-action="SaveRecipe" asp-route-id="@Model.RecipeId" asp-route-gobackurl="@gobackurl">Save Recipe</a>
+                                <a class="icon-button" asp-action="SaveRecipe" asp-route-id="@Model.RecipeId" asp-route-gobackurl="@gobackurl">
+                                    <div class="row">
+                                        <div class="col-sm-1 ">
+                                            <i style='font-size:24px' class='fa fa-save'></i>
+                                        </div>
+                                        <div class="col-sm-11">
+                                            Save Recipe
+                                        </div>
+                                    </div>
+                                </a>
                             }
                         }
                         else
                         {
-                            <a asp-action="Edit" asp-route-gobackurl="@gobackurl" asp-route-id="@Model.RecipeId">Edit</a>
-                            <br />
-                            <a asp-action="Delete" asp-route-gobackurl="@gobackurl" asp-route-id="@Model.RecipeId">Delete</a>
+                            <a class="icon-button" asp-action="Edit" asp-route-gobackurl="@gobackurl" asp-route-id="@Model.RecipeId">
+                                <div class="row mb-2">
+                                    <div class="col-sm-1 ">
+                                        <i style='font-size:24px' class='fa fa-edit'></i>
+                                    </div>
+                                    <div class="col-sm-11">
+                                        Edit Recipe
+                                    </div>
+                                </div>
+                            </a>
+                            <a class="icon-button" asp-action="Delete" asp-route-gobackurl="@gobackurl" asp-route-id="@Model.RecipeId">
+                                <div class="row">
+                                    <div class="col-sm-1 ">
+                                        <i style='font-size:24px' class='fa fa-times'></i>
+                                    </div>
+                                    <div class="col-sm-11">
+                                        Delete Recipe
+                                    </div>
+                                </div>
+                            </a>
                         }
                     </div>
                 </div>
@@ -121,6 +156,7 @@
         </div>
         @foreach (var step in Model.RecipeSteps)
         {
+            <hr />
             <div class="row mt-4">
                 <div class="col-sm">
                     <p><b>Step @step.StepNumber</b></p>
@@ -129,15 +165,16 @@
             <div class="row">
                 @if (!String.IsNullOrEmpty(step.MediaFileUrl))
                 {
-                    <div class="col-sm">
+                    <div class="col-sm-5">
                         <img class="step-image" src="@step.MediaFileUrl" alt="main recipe image">
                     </div>
                 }
-                <div class="col-sm">
+                <div class="col-sm-7">
                     @step.TextInstructions
                 </div>
             </div>
         }
+        <hr />
         <div class="row">
             <div class="col-sm">
                 <p><h5><b>Comments: </b></h5></p>
@@ -147,7 +184,8 @@
         {
             <div class="row mb-4">
                 <div class="col-sm">
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                    <button type="button" class="btn btn-custom" data-toggle="modal" data-target="#exampleModal">
+                        <i style='font-size:20px' class='fa fa-comments'></i>
                         Add Comments
                     </button>
                 </div>
@@ -157,7 +195,7 @@
         <!-- Modal -->
         <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
-                <div class="modal-content">
+                <div class="modal-content modal-background">
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLabel">Create Comment</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -207,6 +245,11 @@
         </div>
     </div>
 </div>
+
+<!-- Bootstrap Modal -->
+@*<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+*@
 
 <script type="text/javascript">
     async function submitComment() {

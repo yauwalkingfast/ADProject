@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Group";
     bool joingroupfailed = (bool)ViewData["joingroupfailed"];
 
     PaginatedList<Group> paginatedList = (PaginatedList<Group>)ViewData["paginatedList"];
@@ -9,7 +9,7 @@
 
 <link href="~/css/GroupStyle.css" rel="stylesheet" />
 
-<div class="border">
+<div class="border mb-2">
     <div class="display-flex-center">
         <h1>Explore</h1>
     </div>
@@ -19,7 +19,7 @@
             <div class="form-group form-inline">
                 <input class="form-control" type="text" placeholder="Search Group.." name="search" value="@ViewData["search"]">
                 <button type="submit" class="btn ml-1"><i class="fa fa-search"></i></button>
-            </div> 
+            </div>
         </form>
     </div>
 
@@ -30,13 +30,17 @@
 
 
 <div class="group-container">
-    @foreach(var group in paginatedList)
+    @foreach (var group in paginatedList)
     {
-        <div class="group-item">
+        <div class="group-item featured-background my-2 mx-4 px-0 py=0">
             <a asp-action="Details" asp-route-gobackurl="Groups" asp-route-id="@group.GroupId">
                 <img class="group-photo" src="@group.GroupPhoto" alt="group photo" />
                 <div class="top-left">@group.GroupName</div>
-                <div class="middle">@group.Description</div>
+                <div class="middle">
+                    <div class="clamp-me">
+                        @group.Description
+                    </div>
+                </div>
                 <div class="bottom-left">
                     @for (int i = 0; i < 3 && i < group.GroupTags.Count(); i++)
                     {
@@ -65,3 +69,13 @@
         Next
     </a>
 </div>
+
+<!-- Clamp JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clamp-js/0.7.0/clamp.js" integrity="sha512-TnePtmz3HL4p8nFS2lR46u0iHrwObVnUednDASZK/qS9btkd09xKs1PeCt1kpS4a0gWNQx1AF+WnDHDK+xWcAw==" crossorigin="anonymous"></script>
+<script type="text/javascript">
+    var module = document.getElementsByClassName("clamp-me");
+
+    for (let i = 0; i < module.length; i++) {
+        $clamp(module[i], { clamp: 5 })
+    }
+</script>

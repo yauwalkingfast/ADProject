@@ -1,7 +1,9 @@
 ﻿.main-image {
-    width: 400px;
-    height: 400px;
+    width: 80vmin;
+    height: 60vmin;
     overflow: hidden;
+    border-radius: 10px;
+    object-fit: cover;
 }
 
 textarea {
@@ -10,15 +12,19 @@ textarea {
 }
 
 .step-image {
-    width: 300px;
-    height: 300px;
+    width: 55vmin;
+    height: 45vmin;
     overflow: hidden;
+    border-radius: 10px;
+    object-fit: cover;
 }
 
 .recipe-image {
-    width: 300px;
-    height: 300px;
+    width: 70vmin;
+    height: 50vmin;
     overflow: hidden;
+    border-radius: 10px;
+    object-fit: cover;
 }
 
 .border {
@@ -35,18 +41,5 @@ textarea {
     display: flex;
     justify-content: flex-end;
     padding-right: 5px;
-}
-
-@media screen and (max-width: 500px) {
-    .main-image {
-        width: 250px;
-        height: 250px;
-        overflow: hidden;
-    }
-    .step-image {
-        width: 150px;
-        height: 150px;
-        overflow: hidden;
-    }
 }
 

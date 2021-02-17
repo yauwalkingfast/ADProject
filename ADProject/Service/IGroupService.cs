@@ -50,5 +50,7 @@ namespace ADProject.Service
 
         Task<bool> IsGroupMemberAD(int groupId, int userId);
 
+        Task<List<Group>> GetAllGroups1();
+
     }
 }
