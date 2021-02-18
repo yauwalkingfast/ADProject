@@ -82,6 +82,53 @@ namespace ADProject.ApiControllers
 
 
         [HttpPost]
+        [Route("create")]
+        public async Task<ActionResult<Recipe>> CreateNewRecipe([FromBody] RecipePlusTags recipePlusTags)
+        {
+            Recipe recipe = recipePlusTags.recipe;
+            //Recipe recipe = recipePlusTags.recipe;
+            string tags = recipePlusTags.tags;
+            DateTime now = DateTime.Now;
+            recipe.DateCreated = now;
+            List<RecipeTag> recipeTags = JsonConvert.DeserializeObject<List<RecipeTag>>(tags);
+
+
+            /*string[] tags_arr = tags.Replace(" ", "").Split("#");
+
+            foreach (string tag in tags_arr)
+            {​​​​
+            if (!String.IsNullOrEmpty(tag))
+            {​​​​
+            Tag t = new Tag
+            {​​​​
+            TagName = tag,
+            Warning = tag
+            }​​​​;
+
+            RecipeTag recipeTag = new RecipeTag
+            {​​​​
+            Tag = t,
+            Recipe = recipe
+            }​​​​;
+            recipeTags.Add(recipeTag);
+            }​​​​
+            }​​​​*/
+
+
+            recipe.RecipeTags = recipeTags;
+
+            await _recipesService.AddRecipe(recipe);
+
+            if (recipe == null)
+            {
+                return NotFound();
+            }
+
+
+            return recipe;
+        }
+        
+        [HttpPost]
         //[Route("post")]
         public async Task<ActionResult<Recipe>> CreateRecipe([FromBody] Recipe recipe)
         {

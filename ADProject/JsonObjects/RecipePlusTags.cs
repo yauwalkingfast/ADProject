@@ -8,11 +8,13 @@ namespace ADProject.JsonObjects
 {
     public class RecipePlusTags
     {
-        public RecipePlusTags () { }
+
+
+        public RecipePlusTags() { }
+
 
         public Recipe recipe { get; set; }
 
         public string tags { get; set; }
-        //public RecipeTagListJson recipeTagList { get; set; }
     }
 }
