@@ -6,15 +6,8 @@ using System.Threading.Tasks;
 
 namespace ADProject.JsonObjects
 {
-    public class RecipePlusTags
+    public class RecipeTagListJson
     {
-
-
-        public RecipePlusTags() { }
-
-
-        public Recipe recipe { get; set; }
-
-        public string tags { get; set; }
+        public List<RecipeTag> values { get; set; }
     }
 }
