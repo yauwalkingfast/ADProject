@@ -150,48 +150,48 @@ namespace ADProject.ApiControllers
             
         }
 
-        [HttpPost]
-        [Route("create")]
-        public async Task<ActionResult<Recipe>> CreateNewRecipe([FromBody] RecipePlusTags recipePlusTags)
-        {
-            Recipe recipe = recipePlusTags.recipe;
-            string tags = recipePlusTags.tags;
-            DateTime now = DateTime.Now;
-            recipe.DateCreated = now;
-            List<RecipeTag> recipeTags = JsonConvert.DeserializeObject<List<RecipeTag>>(tags);
+        //[HttpPost]
+        //[Route("create")]
+        //public async Task<ActionResult<Recipe>> CreateNewRecipe([FromBody] RecipePlusTags recipePlusTags)
+        //{
+        //    Recipe recipe = recipePlusTags.recipe;
+        //    string tags = recipePlusTags.tags;
+        //    DateTime now = DateTime.Now;
+        //    recipe.DateCreated = now;
+        //    List<RecipeTag> recipeTags = JsonConvert.DeserializeObject<List<RecipeTag>>(tags);
 
-            /*string[] tags_arr = tags.Replace(" ", "").Split("#");
+        //    /*string[] tags_arr = tags.Replace(" ", "").Split("#");
 
-            foreach (string tag in tags_arr)
-            {
-                if (!String.IsNullOrEmpty(tag))
-                {
-                    Tag t = new Tag
-                    {
-                        TagName = tag,
-                        Warning = tag
-                    };
+        //    foreach (string tag in tags_arr)
+        //    {
+        //        if (!String.IsNullOrEmpty(tag))
+        //        {
+        //            Tag t = new Tag
+        //            {
+        //                TagName = tag,
+        //                Warning = tag
+        //            };
 
-                    RecipeTag recipeTag = new RecipeTag
-                    {
-                        Tag = t,
-                        Recipe = recipe
-                    };
-                    recipeTags.Add(recipeTag);
-                }
-            }*/
+        //            RecipeTag recipeTag = new RecipeTag
+        //            {
+        //                Tag = t,
+        //                Recipe = recipe
+        //            };
+        //            recipeTags.Add(recipeTag);
+        //        }
+        //    }*/
 
-            recipe.RecipeTags = recipeTags;
+        //    recipe.RecipeTags = recipeTags;
 
-            await _recipesService.AddRecipe(recipe);
+        //    await _recipesService.AddRecipe(recipe);
 
-            if (recipe == null)
-            {
-                return NotFound();
-            }
+        //    if (recipe == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            return recipe;
-        }
+        //    return recipe;
+        //}
 
         [HttpDelete]
         [Route("delete/{id}")]

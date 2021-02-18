@@ -25,6 +25,8 @@ namespace ADProject.Service
         {
             ApplicationUser user = await _context.Users
                 .Include(r => r.Recipes)
+                .ThenInclude(rt => rt.RecipeTags)
+                .ThenInclude(t => t.Tag)
                 .Include(r => r.LikesDislikes)
                 .Include(r => r.SavedRecipes)
                 .Include(r => r.UsersGroups)
@@ -40,6 +42,14 @@ namespace ADProject.Service
                 };
 
                 r.User = n;
+            }
+
+            foreach (Recipe rg in user.Recipes)
+            {
+                foreach (RecipeTag rt in rg.RecipeTags)
+                {
+                    rt.Recipe = null;
+                }
             }
 
             return user;
